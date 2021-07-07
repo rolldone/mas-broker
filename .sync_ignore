@@ -1,0 +1,5 @@
+.sync_ignore 
+sync-config.json
+dist/
+node_modules/
+.git/

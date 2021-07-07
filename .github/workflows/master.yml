@@ -1,0 +1,32 @@
+# This is a basic workflow to help you get started with Actions
+
+name: master Build and Deploy
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the dev branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
+      with:
+        host: 152.228.230.68
+        username: akasa
+        key: ${{ secrets.ARTYWIZ_SBG7_KEY }}
+        script: |
+          docker exec artywizprod_broadcast_service bash -c " \
+          pm2 delete all | \
+          yarn install && \
+          npm run build && \
+          pm2 start dist/app.js"
+          
