@@ -75,5 +75,11 @@
     "skipLibCheck": true,                           /* Skip type checking of declaration files. */
     "forceConsistentCasingInFileNames": true        /* Disallow inconsistently-cased references to the same file. */
   },
-  "exclude": ["dist_2","dist"]
+  "exclude": [
+    "dist_2",
+    "dist",
+    "node_modules",
+    "image_node",
+    ".github"
+  ]
 }

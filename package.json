@@ -5,7 +5,7 @@
   "name": "image_loader_app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/app.js",
   "scripts": {
     "type-check": "npx tsc --noEmit",
     "build": "npx tsc",
@@ -49,6 +49,7 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
     "multer": "^1.4.2",
+    "mysql2": "^2.2.5",
     "named-routes": "^2.0.7",
     "node-multithread": "^1.0.4",
     "node-redis-pubsub": "^5.0.0",
@@ -56,6 +57,7 @@
     "objectmodel": "^4.2.3",
     "query-string": "^7.0.0",
     "redis-clients": "^0.5.2",
+    "sequelize": "^6.6.5",
     "serialize-error": "^8.0.1",
     "socket.io": "^2.4.1",
     "socket.io-client": "^2.4.0",
@@ -66,5 +68,8 @@
     "typescript": "^4.2.4",
     "uberproto": "^2.0.6",
     "validatorjs": "^3.22.1"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.2.0"
   }
 }

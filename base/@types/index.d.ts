@@ -77,7 +77,7 @@ interface BaseRouteInterface extends BaseProtoInterface<BaseRouteInterface> {
   _path?: string
   _middleware?: Array<any>
   set?: Function
-  use?: { (path: string, middleware: Array<any>, callbackRouter: Function): void }
+  use?: { (path: string, middleware: Array<any>, callbackRouter: {(route:BaseRouteInterface):void}): void }
   get?: Function
   post?: Function
   baseRoute?: string
