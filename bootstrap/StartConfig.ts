@@ -1,3 +1,4 @@
+import Auth from "@root/app/main/compute/Auth";
 import StaticType from "../base/StaticType";
 
 // const config = require('@config');
@@ -11,6 +12,7 @@ export default function StartConfig(next : Function){
   global.Util = Util.create(); */
 
   /* Static Type check allowed type data */
+  global.Auth = Auth.create();
   global.staticType = StaticType;
   global.CustomError = function(name,message){
     var err : Error = new Error();

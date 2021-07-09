@@ -28,6 +28,7 @@ interface BaseProtoInterface<T extends BaseProtoInterface<T>> {
 
 interface BaseControllerInterface extends BaseProtoInterface<BaseControllerInterface> {
   getBaseQuery?: Function
+  returnValidator?: { (props: object, filter: object): ValidatorInterface }
   returnSimpleError?: { (ex: any, res: import('express').Response): void },
   isMatchNodeIdentity?: { (identity: string): Boolean }
 }
@@ -68,6 +69,9 @@ interface BaseServiceInterface extends BaseProtoInterface<BaseServiceInterface> 
   _removeDuplicate ?: { (x: string, theChar: string): string }
 }
 
+interface BaseComputeInterface extends BaseServiceInterface {
+
+}
 
 interface BaseRouteInterface extends BaseProtoInterface<BaseRouteInterface> {
   displayRoute?: { (req: any, res: any): any }

@@ -7,6 +7,9 @@ class User extends Model {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
   public first_name!: string;
   public last_name!: string | null; // for nullable fields
+  public password!: string
+  public email!: string
+  public status!: number
 }
 
 User.init({
@@ -22,6 +25,19 @@ User.init({
   last_name: {
     type: new DataTypes.STRING(255),
     allowNull: true
+  },
+  password: {
+    type: new DataTypes.TEXT,
+    allowNull: false
+  },
+  email: {
+    type: new DataTypes.STRING(255),
+    allowNull: false
+  },
+  status: {
+    type: new DataTypes.TINYINT,
+    allowNull: false,
+    defaultValue: 0
   }
 }, {
   tableName: "users",
@@ -40,3 +56,5 @@ User.init({
   if (foundUser === null) return;
   console.log(foundUser.name);
 } */
+
+export default User;

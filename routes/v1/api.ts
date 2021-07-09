@@ -1,6 +1,7 @@
 import HomeController from "@root/app/basic/controllers/xhr/HomeController";
 import AuthController from "@root/app/main/controllers/AuthController";
 import UserController from "@root/app/main/controllers/UserController";
+import SetAuthMiddleware from "@root/app/main/middleware/SetAuthMiddleware";
 import BaseRoute from "../../base/BaseRoute";
 
 export default BaseRoute.extend<BaseRouteInterface>({
@@ -14,6 +15,8 @@ export default BaseRoute.extend<BaseRouteInterface>({
       route.post('/login', 'auth.login', [], AuthController.binding().apiLogin);
       route.post('/register', 'auth.register', [], AuthController.binding().register);
       route.post('/logout', 'auth.logout', [], AuthController.binding().logout);
+    });
+    self.use('/auth',[SetAuthMiddleware.bind('api')],function(route){
       route.get('/profile', 'auth.profile', [], AuthController.binding().profile);
     });
     self.use('/user', [], function (route) {

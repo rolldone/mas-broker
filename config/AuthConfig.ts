@@ -1,5 +1,5 @@
 import Admin from "@root/app/main/models/Admin"
-import User from "@root/app/main/models/User"
+import UserModel from "@root/app/main/models/UserModel"
 import { BaseModelInterface } from "@root/base/BaseModel"
 
 export interface AuthConfigInterface {
@@ -47,7 +47,7 @@ export default <AuthConfigInterface>{
   provider: {
     users: {
       driver: 'sequelize',
-      model: User
+      model: UserModel
     },
     admins: {
       driver: 'sequelize',

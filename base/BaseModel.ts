@@ -1,5 +1,6 @@
 import BaseProto from "./BaseProto";
 import staticType from "./StaticType";
+import { Model } from "sequelize";
 
 export interface BaseModelInterface extends BaseProtoInterface<BaseModelInterface> {
   model: any | null
@@ -7,15 +8,16 @@ export interface BaseModelInterface extends BaseProtoInterface<BaseModelInterfac
   _excludes?: Array<any>
   _raw?: boolean
   _nest?: boolean
+  setIncludes ?: {(props:Array<any>):void}
   getRaw?: { (): boolean }
   getNest?: { (): boolean }
   getIncludes?: { (includes?: Array<any>): void }
   getExcludes?: { (excludes?: Array<any>): void }
-  save?: { (props: any, currentModel?: any): Promise<object> }
-  update?: { (props: any): Promise<object> }
-  delete?: { (props: any): Promise<object> }
-  first?: { (props: any): Promise<object> }
-  get?: { (props: any): Promise<object> }
+  save?: (...props : any)=> Promise<any>
+  update?: (props: any)=> Promise<any>
+  delete?:(props: any)=> Promise<any>
+  first?: (props: any)=> Promise<any>
+  get?: (props: any)=> Promise<any>
   raw?: boolean | null
   nest?: boolean | null
   _removeSameString?: { (fullPath: string, basePath: string): string }
@@ -29,6 +31,9 @@ const BaseModel = BaseProto.extend<BaseModelInterface>({
   _nest: true,
   raw: null,
   nest: null,
+  setIncludes : function(props){
+    this._includes = props;
+  },
   getRaw: function () {
     return this.raw || this._raw;
   },

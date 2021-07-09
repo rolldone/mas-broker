@@ -1,8 +1,12 @@
 import express from 'express';
 import BaseProto from './BaseProto';
 const {serializeError, deserializeError} = require('serialize-error');
+import { Validator } from "@root/tool";
 
 export default BaseProto.extend<BaseControllerInterface>({
+  returnValidator(form_data,form_rule){
+    return new Validator(form_data,form_rule);
+  },
   binding(...props : any){
     let self : any= this;
     try{
