@@ -4,6 +4,32 @@ const UberProto: BaseProtoInterface<any> = uberproto;
 
 export default UberProto.extend<BaseProtoInterface<any>>({
   __init: 'construct',
+  binding(...props : any){
+    let self : any= this;
+    try{
+      self = UberProto.create.call(self,...props);
+      // console.log('vadfnmvdfvm',self);
+      for(var key in self){
+        switch(Object.prototype.toString.call(self[key])){
+          case '[object String]':
+          case '[object Number]':
+          case '[object Object]':
+          case '[object Null]':
+          case '[object Undefined]':
+              break;
+          default:
+            self[key] = self[key].bind(self);
+            break;
+        } 
+      }
+      return self;
+    }catch(ex){
+      console.error('--------------------------------------------------------------------------------------------------------------------------------'); 
+      console.error('error.binding_controller','=>','Maybe you want binding, but this method or value "'+key+'" inside construct is undefined!');
+      console.error('-----------------------------------------------------------------------------------------------------------------------------'); 
+      console.error(ex);
+    }
+  },
   _replaceAt : function(input, search, replace, start, end) {
     return input.slice(0, start)
         + input.slice(start, end).replace(search, replace)

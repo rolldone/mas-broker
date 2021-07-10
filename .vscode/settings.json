@@ -1,0 +1,9 @@
+{
+  "rest-client.environmentVariables": {
+
+    "$shared": {
+      "host" : "http://masbroker.lan",
+      "group_id" : ""
+    }
+  }
+}

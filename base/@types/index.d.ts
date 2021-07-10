@@ -7,7 +7,7 @@ interface BaseProtoInterface<T extends BaseProtoInterface<T>> {
    * Arrow Function
    * Direct to be this
    */
-  binding?: () => this
+  binding?: (...props ?: any) => this
   create?: (...props ?: any) => this
   _super?: Function
   /**
@@ -28,6 +28,7 @@ interface BaseProtoInterface<T extends BaseProtoInterface<T>> {
 
 interface BaseControllerInterface extends BaseProtoInterface<BaseControllerInterface> {
   getBaseQuery?: Function
+  returnValidator?: { (props: object, filter: object): ValidatorInterface }
   returnSimpleError?: { (ex: any, res: import('express').Response): void },
   isMatchNodeIdentity?: { (identity: string): Boolean }
 }
@@ -68,6 +69,9 @@ interface BaseServiceInterface extends BaseProtoInterface<BaseServiceInterface> 
   _removeDuplicate ?: { (x: string, theChar: string): string }
 }
 
+interface BaseComputeInterface extends BaseServiceInterface {
+
+}
 
 interface BaseRouteInterface extends BaseProtoInterface<BaseRouteInterface> {
   displayRoute?: { (req: any, res: any): any }
@@ -77,7 +81,7 @@ interface BaseRouteInterface extends BaseProtoInterface<BaseRouteInterface> {
   _path?: string
   _middleware?: Array<any>
   set?: Function
-  use?: { (path: string, middleware: Array<any>, callbackRouter: Function): void }
+  use?: { (path: string, middleware: Array<any>, callbackRouter: {(route:BaseRouteInterface):void}): void }
   get?: Function
   post?: Function
   baseRoute?: string

@@ -1,5 +1,5 @@
+import BaseController from '@root/base/BaseController';
 import express from 'express';
-import BaseController from './BaseController';
 
 interface HomeControllerInterface extends BaseControllerInterface {
   index : Function
@@ -7,7 +7,7 @@ interface HomeControllerInterface extends BaseControllerInterface {
 
 const HomeController : HomeControllerInterface = BaseController.extend(<HomeControllerInterface>{
   async index(req : express.Request, res : express.Response){
-    res.send('Welcome to artywiz broadcast service! '+global.node_identity);
+    res.send('Welcome to Mas Broker service! '+global.node_identity);
   }
 });
 

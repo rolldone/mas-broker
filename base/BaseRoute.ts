@@ -32,6 +32,7 @@ const BaseRoute = BaseProto.extend<BaseRouteInterface>({
   // private
   set(action : string,...props : Array<any>){
     props[0]=this.baseRoute+(this._path||'')+props[0];
+    props[0]=this.removeDuplicate(props[0],'/');
     console.log('action',action);
     console.log('props',props);
     console.log('_path',this._path);

@@ -4,6 +4,7 @@ declare module NodeJS {
     CustomError : {(name : string, message : string): void}
     staticType : {(inVariable : any, typeDatas : Array<any>) : void}
     app : any,
+    Auth: any,
     Server : any,
     queues : any,
     pubsub : any,
