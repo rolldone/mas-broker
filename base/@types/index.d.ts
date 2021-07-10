@@ -7,7 +7,7 @@ interface BaseProtoInterface<T extends BaseProtoInterface<T>> {
    * Arrow Function
    * Direct to be this
    */
-  binding?: () => this
+  binding?: (...props ?: any) => this
   create?: (...props ?: any) => this
   _super?: Function
   /**

@@ -13,7 +13,7 @@ export interface AuthInterface extends BaseComputeInterface{
   expiredConst : number
   expiredRefreshToken : number
   timestampToDatetime : {(unix_timestamp:number):Promise<string>}
-  generatePassword : {(val:string, err?: Function):Promise<string>}
+  generatePassword : {(val:string):Promise<string>}
   checkPassword : {(val:string,val2:string):Promise<boolean>}
   getCurrentGuest : {(props:any):Promise<any>}
   splitToken : {(token:string):string}
@@ -57,7 +57,7 @@ const Auth = BaseService.extend<AuthInterface>({
       resolve(formattedTime);
     });
   },
-  generatePassword : function(val, err) {
+  generatePassword : function(val) {
     return new Promise(function(resolve,reject) {
       Bcrypt.hash(val, saltRounds).then(function(hash) {
         // Store hash in your password DB.
@@ -130,29 +130,31 @@ const Auth = BaseService.extend<AuthInterface>({
   generateToken : function(authConfig,data) {
     let self = this;
     return new Promise(async function(resolve,reject) {
-      let now = new Date();
-      let newExpired = now.getTime() + self.expiredConst;
-      let newDateTime = (await self.timestampToDatetime(newExpired)) + "";
-      // Object.assign({}, data)
-      //TODO: masukan data yang benar ke JWT sign dan cek token yang dibuat pada saat registrasi
-      let token = JsonWebToken.sign(data, authConfig.key, {
-        expiresIn: (self.expiredConst / 1000) + "s"
-      });
-      let encrypteToken = await self.generatePassword(token,function(err : any){
-        if(err != null) return reject(err);
-      })
-      // console.log('expiredConst',encrypteToken);
-      let refresh_token = JsonWebToken.sign({
-        token : token,
-      }, AppConfig.APP_SECRET, {
-        expiresIn: (self.expiredRefreshToken / 1000) + "s"
-      })
-      resolve({
-        encrypteToken : encrypteToken,
-        token: token,
-        refresh_token: refresh_token,
-        expired_at: newDateTime
-      });
+      try{
+        let now = new Date();
+        let newExpired = now.getTime() + self.expiredConst;
+        let newDateTime = (await self.timestampToDatetime(newExpired)) + "";
+        // Object.assign({}, data)
+        //TODO: masukan data yang benar ke JWT sign dan cek token yang dibuat pada saat registrasi
+        let token = JsonWebToken.sign(data, authConfig.key, {
+          expiresIn: (self.expiredConst / 1000) + "s"
+        });
+        let encrypteToken = await self.generatePassword(token)
+        // console.log('expiredConst',encrypteToken);
+        let refresh_token = JsonWebToken.sign({
+          token : token,
+        }, AppConfig.APP_SECRET, {
+          expiresIn: (self.expiredRefreshToken / 1000) + "s"
+        })
+        resolve({
+          encrypteToken : encrypteToken,
+          token: token,
+          refresh_token: refresh_token,
+          expired_at: newDateTime
+        });
+      }catch(ex){
+        reject(ex);
+      }
     })
   },
   /* Authentication like laravel  */

@@ -1,6 +1,6 @@
 import DotEnv from "../tool/DotEnv";
 
-export default {
+module.exports = {
   main : {
     username: DotEnv.DB_USERNAME,
     password: DotEnv.DB_PASSWORD,

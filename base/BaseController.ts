@@ -11,12 +11,14 @@ export default BaseProto.extend<BaseControllerInterface>({
     let self : any= this;
     try{
       self = BaseProto.create.call(self,...props);
+      // console.log('vadfnmvdfvm',self);
       for(var key in self){
         switch(Object.prototype.toString.call(self[key])){
           case '[object String]':
           case '[object Number]':
           case '[object Object]':
           case '[object Null]':
+          case '[object Undefined]':
               break;
           default:
             self[key] = self[key].bind(self);
@@ -25,9 +27,9 @@ export default BaseProto.extend<BaseControllerInterface>({
       }
       return self;
     }catch(ex){
-      console.error('----------------------------------------------------------------------------------------------------------'); 
-      console.error('error.binding_controller','=>','Maybe you want binding, but this method "'+key+'" is not a function!');
-      console.error('----------------------------------------------------------------------------------------------------------'); 
+      console.error('--------------------------------------------------------------------------------------------------------------------------------'); 
+      console.error('error.binding_controller','=>','Maybe you want binding, but this method or value "'+key+'" inside construct is undefined!');
+      console.error('-----------------------------------------------------------------------------------------------------------------------------'); 
       console.error(ex);
     }
   },

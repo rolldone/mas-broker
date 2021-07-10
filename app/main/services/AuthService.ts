@@ -4,10 +4,10 @@ import Auth, { AuthInterface } from "../compute/Auth";
 import UserModel, { UserModelInterface } from "../models/UserModel";
 
 export interface AuthServiceInterface extends BaseServiceInterface {
-  apiLogin: { (props: any): any }
-  returnAuth : {():AuthInterface}
-  returnUserModel : {():UserModelInterface}
-  register: {(props:any):any}
+  apiLogin?: { (props: any): any }
+  returnAuth ?: {():AuthInterface}
+  returnUserModel ?: {():UserModelInterface}
+  register?: {(props:any):any}
 }
 
 const AuthService = BaseService.extend<AuthServiceInterface>({
@@ -66,9 +66,7 @@ const AuthService = BaseService.extend<AuthServiceInterface>({
       switch(await validator.check()){
         case validator.passes:
           let UserApp = this.returnUserModel();
-          props.password = await Auth.generatePassword(props.password,function(error:any){
-            throw new Error(error);
-          });
+          props.password = await Auth.generatePassword(props.password);
           props.status = 1;
           let resData = await UserApp.save(props);
           return resData;

@@ -1,15 +1,15 @@
 import BaseController from "@root/base/BaseController";
 import { Response, Request } from "express";
-import { AuthInterface } from "../compute/Auth";
-import AuthService, { AuthServiceInterface } from "../services/AuthService";
+import { AuthInterface } from "../../compute/Auth";
+import AuthService, { AuthServiceInterface } from "../../services/AuthService";
 export interface AuthControllerInterface extends BaseControllerInterface {
-  construct: { (props: any): void }
-  basicLogin: { (req: Request, res: Response): void }
-  apiLogin: { (req: Request, res: Response): void }
-  register: { (req: Request, res: Response): void }
-  logout: { (req: Request, res: Response): void }
-  profile: { (req: Request, res: Response): void }
-  returnAuthService: { (): AuthServiceInterface }
+  construct?: { (props: any): void }
+  basicLogin?: { (req: Request, res: Response): void }
+  apiLogin?: { (req: Request, res: Response): void }
+  register?: { (req: Request, res: Response): void }
+  logout?: { (req: Request, res: Response): void }
+  profile?: { (req: Request, res: Response): void }
+  returnAuthService?: { (): AuthServiceInterface }
 }
 
 declare var Auth : AuthInterface;
@@ -63,9 +63,15 @@ const AuthController = BaseController.extend<AuthControllerInterface>({
   logout(req, res) {
 
   },
-  profile(req, res) {
+  async profile(req, res) {
     try{
-      
+      let resData = {
+        status : 'success',
+        status_code : 200,
+        return : await Auth.getAuth()
+      }
+      res.status(resData.status_code);
+      res.json(resData);
     }catch(ex){
       return this.returnSimpleError(ex,res);
     }

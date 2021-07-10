@@ -1,4 +1,4 @@
-import Database from "@root/config/Database";
+const Database = require('../sequelize/Database');
 import { Sequelize, Model, DataTypes } from "sequelize";
 
 const sequelize = new Sequelize(Database.main);

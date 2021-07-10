@@ -1,7 +1,5 @@
-import BaseService from "./BaseService";
+import MainAuthService, { AuthServiceInterface } from "@root/app/main/services/AuthService";
 
-export interface AuthServiceInterface extends BaseServiceInterface {}
-
-const AuthService = BaseService.extend<AuthServiceInterface>({});
+const AuthService = MainAuthService.extend<AuthServiceInterface>({});
 
 export default AuthService;

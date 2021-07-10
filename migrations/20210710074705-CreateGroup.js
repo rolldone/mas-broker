@@ -1,33 +1,32 @@
 'use strict';
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        await queryInterface.createTable('users', {
+        await queryInterface.createTable('groups', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            first_name: {
-                type: Sequelize.STRING,
+            user_id: {
+                type: Sequelize.INTEGER,
                 allowNull: false,
             },
-            last_name: {
-                type: Sequelize.STRING,
-                allowNull: true
-            },
-            email: {
-                type: Sequelize.STRING,
-                allowNull: false
-            },
-            password: {
+            group_key: {
                 type: Sequelize.TEXT,
+                allowNull: false,
+            },
+            name: {
+                type: Sequelize.STRING,
                 allowNull: false
+            },
+            description: {
+                type: Sequelize.TEXT,
+                allowNull: true
             },
             status: {
                 type: Sequelize.INTEGER(1),
-                allowNull: false,
-                defaultValue: 0
+                allowNull: false
             },
             createdAt: {
                 allowNull: false,
@@ -40,7 +39,7 @@ module.exports = {
         });
     },
     down: async (queryInterface, Sequelize) => {
-        await queryInterface.dropTable('users');
+        await queryInterface.dropTable('groups');
     }
 };
-//# sourceMappingURL=20210708023223-create-user.js.map
+//# sourceMappingURL=20210710074705-CreateGroup.js.map

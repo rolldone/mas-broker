@@ -1,0 +1,76 @@
+#@host=http://masbroker.lan
+###
+# @name authToken
+POST {{host}}/api/v1/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+email=donny.rolanda@gmail.com
+&password=43lw9rj2
+
+###
+@token = {{authToken.response.body.$.return.token}}
+
+###
+# @name userProfile
+GET {{host}}/api/v1/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+@user_id = {{userProfile.response.body.$.return.id}}
+@user_status = {{userProfile.response.body.$.return.status}}
+
+###
+# @name getGroups
+GET {{host}}/api/v1/group/groups
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@group_id = {{getGroups.response.body.$.return[0].id}}
+
+###
+# @name eventAdd
+POST {{host}}/api/v1/event/add
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+user_id={{user_id}}
+&group_id={{group_id}}
+&name=First Event
+&description=this is first event
+&status=1
+&event_key=first.event
+
+###
+@event_id = {{eventAdd.response.body.$.return.id}}
+
+###
+# @name eventUpdate
+POST {{host}}/api/v1/event/update
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+id={{event_id}}
+&user_id={{user_id}}
+&group_id={{group_id}}
+&name=First Event
+&description=this is first event update it
+&status=1
+&event_key=first_update.event
+
+###
+# @name getEvents
+GET {{host}}/api/v1/event/events
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@event_id = {{getEvents.response.body.$.return[0].id}}
+
+###
+# @name getEvent
+GET {{host}}/api/v1/event/{{event_id}}/view
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+

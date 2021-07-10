@@ -1,0 +1,58 @@
+#@host=http://masbroker.lan
+###
+# @name authToken
+POST {{host}}/api/v1/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+email=donny.rolanda@gmail.com
+&password=43lw9rj2
+
+###
+@token = {{authToken.response.body.$.return.token}}
+
+###
+# @name userProfile
+GET {{host}}/api/v1/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+@user_id = {{userProfile.response.body.$.return.id}}
+@user_status = {{userProfile.response.body.$.return.status}}
+
+###
+# @name groupAdd
+POST {{host}}/api/v1/group/add
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+user_id={{user_id}}
+&name=First Group
+&description=this is first group
+&status=1
+
+###
+@group_id = {{groupAdd.response.body.$.return.id}}
+
+
+###
+# @name groupUpdate
+POST {{host}}/api/v1/group/update
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+id={{group_id}}
+&name=First Groupggg
+&description=this is first group
+&status=1
+
+###
+GET {{host}}/api/v1/group/groups
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+GET {{host}}/api/v1/group/{{group_id}}/view
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+

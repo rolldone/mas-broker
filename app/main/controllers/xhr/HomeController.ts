@@ -1,8 +1,8 @@
+import BaseController from '@root/base/BaseController';
 import express from 'express';
-import BaseController from '../BaseController';
 
-interface HomeControllerInterface extends BaseControllerInterface {
-  index : Function
+export interface HomeControllerInterface extends BaseControllerInterface {
+  index ?: Function
 }
 
 const HomeController : HomeControllerInterface = BaseController.extend(<HomeControllerInterface>{
@@ -10,7 +10,7 @@ const HomeController : HomeControllerInterface = BaseController.extend(<HomeCont
     res.send({
       status : 'success',
       status_code : 200,
-      return : 'Welcome to artywiz broadcast api service!'
+      return : 'Welcome to Mas Broker api service!'
     });
   }
 });

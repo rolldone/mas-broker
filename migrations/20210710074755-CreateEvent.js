@@ -1,33 +1,36 @@
 'use strict';
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        await queryInterface.createTable('users', {
+        await queryInterface.createTable('events', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            first_name: {
-                type: Sequelize.STRING,
-                allowNull: false,
-            },
-            last_name: {
-                type: Sequelize.STRING,
-                allowNull: true
-            },
-            email: {
-                type: Sequelize.STRING,
+            user_id: {
+                type: Sequelize.INTEGER,
                 allowNull: false
             },
-            password: {
+            group_id: {
+                type: Sequelize.INTEGER,
+                allowNull: false
+            },
+            event_key: {
                 type: Sequelize.TEXT,
+                allowNull: false
+            },
+            description: {
+                type: Sequelize.TEXT,
+                allowNull: true
+            },
+            name: {
+                type: Sequelize.STRING,
                 allowNull: false
             },
             status: {
                 type: Sequelize.INTEGER(1),
-                allowNull: false,
-                defaultValue: 0
+                allowNull: false
             },
             createdAt: {
                 allowNull: false,
@@ -40,7 +43,7 @@ module.exports = {
         });
     },
     down: async (queryInterface, Sequelize) => {
-        await queryInterface.dropTable('users');
+        await queryInterface.dropTable('events');
     }
 };
-//# sourceMappingURL=20210708023223-create-user.js.map
+//# sourceMappingURL=20210710074755-CreateEvent.js.map

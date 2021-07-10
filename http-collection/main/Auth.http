@@ -1,0 +1,41 @@
+#@host=http://masbroker.lan
+###
+# @name authToken
+POST {{host}}/api/v1/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+email=donny.rolanda@gmail.com
+&password=43lw9rj2
+
+###
+@token = {{authToken.response.body.$.return.token}}
+
+###
+GET {{host}}/api/v1/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# @name selfUser
+GET {{host}}/api/v1/user/self
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+@user_id = {{selfUser.response.body.$.return.id}}
+@user_status = {{selfUser.response.body.$.return.status}}
+
+###
+POST {{host}}/api/v1/user/self/update
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+email=donny.rolanda@gmail.com
+&id={{user_id}}
+&password=43lw9rj2
+&password_confirm=43lw9rj2
+&first_name=donny
+&status={{user_status}}
+&last_name=rolanda
+
+
