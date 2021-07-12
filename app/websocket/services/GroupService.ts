@@ -6,6 +6,9 @@ import * as upath from 'upath';
 import EventModel, { EVENT_STATUS } from "../models/EventModel";
 import { GROUP_STATUS } from "../models/GroupModel";
 import { EventServiceInterface } from "./EventService";
+const WebSocketWrapper = require('ws-wrapper');
+import url from 'url';
+
 
 declare var masterData: MasterDataInterface;
 declare var WebSocket: any;
@@ -33,22 +36,50 @@ export default BaseService.extend<GroupServiceInterface>({
     this._eventService = eventService;
   },
   _defineOnConnection: function (pathGroup: string,events:Array<any>, ws: any, req: any) {
+    
+  
     console.log('req -> ', req.headers);
-    ws.on('message', (msg: any) => {
-      console.log('msg', msg);
+    let self = this;
+    var newWS = new WebSocketWrapper(ws);
+    let socketClients : { [key:string]:any} = masterData.getData('socket.clients', {}) as any;
+    const query : any = url.parse(req.url,true).query;
+    newWS.id = query.id;
+    console.log('vmdkfvmdfv',query.id);
+    socketClients[newWS.id]= newWS;
+    masterData.saveData('socket.clients',socketClients);
+
+    newWS.on('message', (msg: any) => {
+      /* This is native method result */
+      // console.log('global', msg);
     });
+    
     /** Define ws as wsCollections  */
     let wsCollections: {
       [key: string]: any
     } = masterData.getData('ws.collections', {}) as any;
-    if (wsCollections[pathGroup] == null) {
-      wsCollections[pathGroup] = ws;
+    // if (wsCollections[pathGroup] == null) {
+      wsCollections[pathGroup] = newWS;
       masterData.saveData('ws.collections', wsCollections);
-    }
-    /**
-     * After define ws.collections  
-     * Going to EventService@startSocketEvents  */
-    this._eventService.startSocketEvents(events);
+      newWS.on('join',function(options:any,props:any){
+        options.wsCollections[options.pathGroup+'_of'] = options.ws.of(props.channel);
+        masterData.saveData('ws.collections', options.wsCollections);
+        /**
+         * After define ws.collections  
+         * Going to EventService@startSocketEvents  */
+         self._eventService.startSocketEvents(options.events);
+         
+     }.bind(this,{
+       ws : newWS,
+       pathGroup : pathGroup,
+       wsCollections : wsCollections,
+       events: events
+     }));
+      /**
+       * After define ws.collections  
+       * Going to EventService@startSocketEvents  */
+      this._eventService.startSocketEvents(events);
+    // }
+    
   },
   _getSocketPath: function (group_key) {
     if (group_key == null) {
@@ -110,6 +141,9 @@ export default BaseService.extend<GroupServiceInterface>({
       }
       socketCollections[pathGroup] = new WebSocket.Server({ noServer: true });
       socketCollections[pathGroup].on('connection', this._defineOnConnection.bind(this, pathGroup, props.events));
+      socketCollections[pathGroup].on('close',function(){
+        console.log('cloooooooooooooooooo server');
+      })
       masterData.saveData('socket.collections', socketCollections);
     } catch (ex) {
       throw ex;
@@ -142,6 +176,7 @@ export default BaseService.extend<GroupServiceInterface>({
           as: 'events',
           required: false,
           where: {
+
             status: EVENT_STATUS.ON
           },
           include: [{
@@ -152,7 +187,8 @@ export default BaseService.extend<GroupServiceInterface>({
       });
       resData = groupModel.getJSON(resData);
       for (var a = 0; a < resData.length; a++) {
-        this.startSocketGroup(resData[a]);
+        this.startSocketGroup(resData[a])
+        
       }
     } catch (ex) {
       throw ex;
