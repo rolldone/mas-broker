@@ -4,13 +4,13 @@ import { Sequelize, Model, DataTypes } from "sequelize";
 const sequelize = new Sequelize(Database.main);
 
 class Event extends Model {
-  public id!: number; // Note that the `null assertion` `!` is required in strict mode.
-  public user_id : number
-  public group_id : number
-  public event_key : string
-  public description : string
-  public name : string
-  public status : number
+  // public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+  // public user_id : number
+  // public group_id : number
+  // public event_key : string
+  // public description : string
+  // public name : string
+  // public status : number
 }
 
 Event.init({
@@ -47,5 +47,6 @@ Event.init({
   tableName : 'events',
   sequelize
 });
+
 
 export default Event;

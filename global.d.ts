@@ -16,6 +16,8 @@ declare module NodeJS {
     serializeError : any,
     deserializeError : any,
     io : any,
+    scServer  : any,
+    WebSocket : any,
     node_identity : string
   }
   interface Process {

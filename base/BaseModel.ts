@@ -13,6 +13,7 @@ export interface BaseModelInterface extends BaseProtoInterface<BaseModelInterfac
   getNest?: { (): boolean }
   getIncludes?: { (includes?: Array<any>): void }
   getExcludes?: { (excludes?: Array<any>): void }
+  getJSON ?: {(props:any):Array<any>}
   save?: (...props : any)=> Promise<any>
   update?: (props: any)=> Promise<any>
   delete?:(props: any)=> Promise<any>
@@ -126,6 +127,9 @@ const BaseModel = BaseProto.extend<BaseModelInterface>({
     } catch (ex) {
       throw ex;
     }
+  },
+  getJSON : function(props){
+    return JSON.parse(JSON.stringify(props));
   },
   _removeSameString: function (fullPath, basePath) {
     return fullPath.replace(basePath, '');

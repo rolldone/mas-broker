@@ -1,6 +1,9 @@
 import BaseService from "@root/base/BaseService";
+import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import DataManipulate from "../compute/DataManipulate";
 import GroupModel, { GroupModelInterface } from "../models/GroupModel";
+
+declare var masterData : MasterDataInterface
 
 export interface GroupServiceInterface extends BaseServiceInterface {
   returnGroupModel ?: {():GroupModelInterface}
@@ -66,6 +69,7 @@ const GroupService = BaseService.extend<GroupServiceInterface>({
       let groupModel = this.returnGroupModel();
       props.group_key = DataManipulate.binding().generateMd5(props.id+'-'+props.name+"-"+new Date().getTime());
       let resData = await groupModel.save(props);
+      masterData.saveData('broker.group.generate',resData);
       return resData;
     } catch (ex) {
       throw ex;

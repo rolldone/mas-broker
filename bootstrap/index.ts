@@ -8,6 +8,8 @@ import StartRedisClient from '@root/bootstrap/StartRedisClient';
 import StartSerializeError from './StartSerializeError';
 import StartSocketIO from "./StartSocketIO";
 import StartNodeIdentity from "./StartNodeIdentity";
+import StartSocketCluster from "./StartSocketCluster";
+import StartWebSocket from "./StartWebSocket";
 
 const task = [
   StartNodeIdentity,
@@ -17,8 +19,10 @@ const task = [
   StartConfig,
   StartRedisPubSub,
   StartExpress,
-  StartSocketIO,
-  StartRedisClient
+  // StartSocketIO,
+  // StartSocketCluster,
+  StartRedisClient,
+  StartWebSocket
   /* Other bootstrap ? */
 ];
 

@@ -2,11 +2,11 @@ import BaseController from '@root/base/BaseController';
 import express from 'express';
 
 export interface HomeControllerInterface extends BaseControllerInterface {
-  index ?: Function
+  index ?: {(req : express.Request, res : express.Response):void}
 }
 
 const HomeController : HomeControllerInterface = BaseController.extend(<HomeControllerInterface>{
-  index(req : express.Request, res : express.Response){
+  index(req,res){
     res.send({
       status : 'success',
       status_code : 200,

@@ -8,7 +8,10 @@ export interface MasterDataInterface {
   resetListener : Function
   setOnListener : {(arg1 : any, arg2 ?: any, arg3 ?: any) : any}
   removeListener : {( listenerName : string, key : string) : void }
-  saveData : {(key : string, props : any, timeout ?: number) : void}
+  saveData : {(key : string, props : any, options ?: {
+    timeout ?: number,
+    is_debounce ?: boolean
+  }) : void}
   updateData : {(key : string, props : any, timeout ?: number) : void}
   getData : {(key : string, props : any) : void}
   run ?: Function
@@ -61,17 +64,22 @@ export default function(next : Function){
         }
       }
     },
-    saveData: function (key, props, timeout=0) {
+    saveData: function (key, props, options={
+      is_debounce : false,
+      timeout : 0
+    }) {
       if(props.browser == true){
         if(this.resetListener()==false) return;
       }
       this.vars[key] = props;
       if (this.pending[key] != null) {
-        this.pending[key].cancel();
+        if(options.is_debounce == true){
+          this.pending[key].cancel();
+        }
       }
       this.pending[key] = debounce(function (key, props) {
         global.pubsub.emit(key, props);
-      }, timeout);
+      }, options.timeout);
       this.pending[key](key, props);
     },
     updateData: function(key,props,timeout=0){

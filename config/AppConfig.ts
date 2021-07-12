@@ -11,6 +11,7 @@ export interface AppConfigInterface{
   WEB_APP_VER : String
   APP_THREAD_PROCESS : Number
   SOCKET_DOMAIN : String
+  BASE_SOCKET_PATH : string
 }
 
 export default ({
@@ -23,5 +24,6 @@ export default ({
   COOKIE_DOMAIN : DotEnv.COOKIE_DOMAIN,
   WEB_APP_VER : DotEnv.WEB_APP_VER,
   SOCKET_DOMAIN : DotEnv.SOCKET_DOMAIN,
-  APP_THREAD_PROCESS : Number(DotEnv.APP_THREAD_PROCESS)
+  APP_THREAD_PROCESS : Number(DotEnv.APP_THREAD_PROCESS),
+  BASE_SOCKET_PATH : DotEnv.BASE_SOCKET_PATH || 'socket'
 } as AppConfigInterface);

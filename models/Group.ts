@@ -1,15 +1,16 @@
 const Database = require('../sequelize/Database');
 import { Sequelize, Model, DataTypes } from "sequelize";
+import Event from "./Event";
 
 const sequelize = new Sequelize(Database.main);
 
 class Group extends Model {
-  public id!: number; // Note that the `null assertion` `!` is required in strict mode.
-  public user_id : number;
-  public group_key : string;
-  public name : string;
-  public description : string;
-  public status : number;
+  // public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+  // public user_id : number;
+  // public group_key : string;
+  // public name : string;
+  // public description : string;
+  // public status : number;
 }
 
 Group.init({

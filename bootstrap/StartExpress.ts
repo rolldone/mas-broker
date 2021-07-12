@@ -1,6 +1,6 @@
 import { AppConfig } from "@root/config";
 import { Express} from "../tool";
-
+import Http from 'http';
 var multer = require('multer');
 var upload = multer();
 var BodyParser = require("body-parser");
@@ -23,7 +23,7 @@ export default function(next : Function){
     /* Perbedaan antara  global.Server.listen dan global.app.Listen
      - global.Server.listen -> Ini bisa di integrasikan dengan modul lain seperti socket io
      - global.app.listen -> Ini hanya untuk express saja */
-    global.Server = require('http').createServer(app);
+    global.Server = Http.createServer(app);
     global.Server.listen(AppConfig.PORT, () => {
       console.log(`Example app listening}`)
     });

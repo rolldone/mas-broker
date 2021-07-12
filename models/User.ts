@@ -4,12 +4,12 @@ import { Sequelize, Model, DataTypes } from "sequelize";
 const sequelize = new Sequelize(Database.main);
 
 class User extends Model {
-  public id!: number; // Note that the `null assertion` `!` is required in strict mode.
-  public first_name!: string;
-  public last_name!: string | null; // for nullable fields
-  public password!: string
-  public email!: string
-  public status!: number
+  // public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+  // public first_name!: string;
+  // public last_name!: string | null; // for nullable fields
+  // public password!: string
+  // public email!: string
+  // public status!: number
 }
 
 User.init({
