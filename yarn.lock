@@ -1069,6 +1069,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/ws@^7.4.6":
+  version "7.4.6"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.4.6.tgz#c4320845e43d45a7129bb32905e28781c71c1fff"
+  integrity sha512-ijZ1vzRawI7QoWnTNL8KpHixd2b2XVb9I9HAqI3triPsh1EC0xH0Eg6w2O3TKbDCgiNNlJqfrof6j4T2I+l9vw==
+  dependencies:
+    "@types/node" "*"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -2344,6 +2351,11 @@ eventemitter2@^6.4.4:
   version "6.4.4"
   resolved "https://registry.yarnpkg.com/eventemitter2/-/eventemitter2-6.4.4.tgz#aa96e8275c4dbeb017a5d0e03780c65612a1202b"
   integrity sha512-HLU3NDY6wARrLCEwyGKRBvuWYyvW6mHYv72SJJAH3iJN3a6eVUvkjFkcxah1bcTgGVBBrFdIopBJPhCQFMLyXw==
+
+"eventemitter3@>=2 <4":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.2.tgz#2d3d48f9c346698fce83a85d7d664e98535df6e7"
+  integrity sha512-tvtQIeLVHjDkJYnzf2dgVMxfuSGJeM/7UCG17TT4EumTfNtF+0nebF/4zWOIkCreAbtNqhGEboB6BWrwqNaw4Q==
 
 execa@^1.0.0:
   version "1.0.0"
@@ -5366,6 +5378,13 @@ ws-multipath@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/ws-multipath/-/ws-multipath-0.1.0.tgz#7dbe18ee18ec3a5b4758060adc2148989660a944"
   integrity sha1-fb4Y7hjsOltHWAYK3CFImJZgqUQ=
+
+ws-wrapper@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/ws-wrapper/-/ws-wrapper-2.0.2.tgz#edada31dfb5bc5602f538891e27afb5106611d55"
+  integrity sha512-jMoPZ0UGdRXH9YPhtCPFXxwytJtanAJLkK+WuLwDVTQtJnqy0dSFEmHifvmqaLw5qUWY8NmMrMoc7v1usbS+uA==
+  dependencies:
+    eventemitter3 ">=2 <4"
 
 ws@^7.5.0, ws@^7.5.3:
   version "7.5.3"

@@ -8,6 +8,7 @@ import { GROUP_STATUS } from "../models/GroupModel";
 import { EventServiceInterface } from "./EventService";
 const WebSocketWrapper = require('ws-wrapper');
 import url from 'url';
+import { uniqueId } from "lodash";
 
 
 declare var masterData: MasterDataInterface;
@@ -36,15 +37,14 @@ export default BaseService.extend<GroupServiceInterface>({
     this._eventService = eventService;
   },
   _defineOnConnection: function (pathGroup: string,events:Array<any>, ws: any, req: any) {
-    
-  
-    console.log('req -> ', req.headers);
+    console.log('WebSocket headers => ');
+    console.log(req.headers);
     let self = this;
     var newWS = new WebSocketWrapper(ws);
     let socketClients : { [key:string]:any} = masterData.getData('socket.clients', {}) as any;
     const query : any = url.parse(req.url,true).query;
-    newWS.id = query.id;
-    console.log('vmdkfvmdfv',query.id);
+    /* Get unique id */
+    newWS.id = uniqueId('socket-client-');
     socketClients[newWS.id]= newWS;
     masterData.saveData('socket.clients',socketClients);
 
@@ -52,6 +52,14 @@ export default BaseService.extend<GroupServiceInterface>({
       /* This is native method result */
       // console.log('global', msg);
     });
+
+    newWS.on('close',()=>{
+      console.log('get disconect from :');
+      console.log(' ->',newWS.id);
+      var runSocketClients : { [key:string]:any} = masterData.getData('socket.clients', {}) as any;
+      delete runSocketClients[newWS.id];
+      masterData.saveData('socket.clients',runSocketClients);
+    })
     
     /** Define ws as wsCollections  */
     let wsCollections: {
@@ -141,9 +149,6 @@ export default BaseService.extend<GroupServiceInterface>({
       }
       socketCollections[pathGroup] = new WebSocket.Server({ noServer: true });
       socketCollections[pathGroup].on('connection', this._defineOnConnection.bind(this, pathGroup, props.events));
-      socketCollections[pathGroup].on('close',function(){
-        console.log('cloooooooooooooooooo server');
-      })
       masterData.saveData('socket.collections', socketCollections);
     } catch (ex) {
       throw ex;
@@ -176,7 +181,6 @@ export default BaseService.extend<GroupServiceInterface>({
           as: 'events',
           required: false,
           where: {
-
             status: EVENT_STATUS.ON
           },
           include: [{
@@ -188,7 +192,6 @@ export default BaseService.extend<GroupServiceInterface>({
       resData = groupModel.getJSON(resData);
       for (var a = 0; a < resData.length; a++) {
         this.startSocketGroup(resData[a])
-        
       }
     } catch (ex) {
       throw ex;

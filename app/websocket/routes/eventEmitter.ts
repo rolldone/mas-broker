@@ -17,6 +17,12 @@ export default BaseProto.extend<EventEmitterInterface>({
     masterData.setOnListener('broker.group.logs', GroupController.binding().logs);
     masterData.setOnListener('broker.group.start_groups', GroupController.binding().startAll);
     /* Manage event ws */
+    masterData.setOnListener('broker.event.generate', EventController.binding().generate);
     masterData.setOnListener('broker.event.start_events', EventController.binding().startAll);
+    masterData.setOnListener('broker.event.delete', EventController.binding().delete);
+    masterData.setOnListener('broker.event.start', EventController.binding().start);
+    masterData.setOnListener('broker.event.stop', EventController.binding().stop);
+    masterData.setOnListener('broker.event.logs', EventController.binding().logs);
+    masterData.setOnListener('broker.event.log', EventController.binding().log);
   }
 });

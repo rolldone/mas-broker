@@ -12,7 +12,6 @@ const HomeController = MainHomeController.extend<HomeControllerInterface>({
     
     client.on('open', function(){
       if(action == 'terima'){
-        console.log('aaaaaaaaaaa');
         client.on('test', function(props:any){
           console.log('test tanpa of -> ',props);
         });
