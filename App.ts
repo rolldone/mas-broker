@@ -33,8 +33,11 @@ multithread(() => {
       /* Server is ready! */
       /* You can create some programatic code here */
       /* Test nrp to socket */
-      /* Back start all websocket groups */
-      masterData.saveData('broker.group.start_groups',{});
+      
+      /* Load gate for client connect*/
+      masterData.saveData('websocket.group.start_groups',{});
+      /* Load adapter connect to outside broker service*/
+      masterData.saveData('broker.start_all',{});
       console.log('Done');
     }
   } as AppInterface);

@@ -4,36 +4,44 @@ import { Sequelize, Model, DataTypes } from "sequelize";
 const sequelize = new Sequelize(Database.main);
 
 class Broker extends Model {
-  
+
 }
 
 Broker.init({
-  id : {
+  id: {
     type: DataTypes.INTEGER.UNSIGNED,
     autoIncrement: true,
     primaryKey: true
   },
-  user_id : {
+  user_id: {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  group_id : {
+  group_id: {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  name : {
+  name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  broker_key : {
+  broker_key: {
     type: DataTypes.TEXT,
     allowNull: false
   },
-  description : {
+  description: {
     type: DataTypes.TEXT,
     allowNull: true
   },
-  status : {
+  access_name: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  config: {
+    type: DataTypes.JSON,
+    allowNull: false
+  },
+  status: {
     type: DataTypes.TINYINT,
     allowNull: false
   },

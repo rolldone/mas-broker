@@ -1,47 +1,67 @@
 import BaseController from "@root/base/BaseController";
-import { Request, Response } from 'express';
+import BrokerService, { BrokerServiceInterface } from "../services/BrokerService";
 export interface ManageBrokerControllerInterface extends BaseControllerInterface {
-  addBroker?: { (req: Request, res: Response): void }
-  updateBroker?: { (req: Request, res: Response): void }
-  deleteBroker?: { (req: Request, res: Response): void }
-  getBrokers?: { (req: Request, res: Response): void }
-  getBroker?: { (req: Request, res: Response): void }
+  returnBrokerService?: { (): BrokerServiceInterface }
+  installBroker?: { (props: any): Promise<any> }
+  updateBroker?: { (props: any): Promise<any> }
+  uninstallBroker?: { (props: any): Promise<any> }
+  getBrokers?: { (props: any): Promise<any> }
+  getBroker?: { (props: any): Promise<any> }
+  startAll?: { (): void }
 }
 
 export default BaseController.extend<ManageBrokerControllerInterface>({
-  addBroker: function (req, res) {
-    try {
-      
-    } catch (ex) {
-      return this.returnSimpleError(ex, res);
-    }
+  returnBrokerService: function () {
+    return BrokerService.create();
   },
-  updateBroker: function (req, res) {
+  installBroker: async function (props) {
     try {
+      let brokerService = this.returnBrokerService();
+      let resData = await brokerService.generateBroker(props);
 
     } catch (ex) {
-      return this.returnSimpleError(ex, res);
+      console.log('installBroker - ex ', ex);
     }
   },
-  deleteBroker: function (req, res) {
+  updateBroker: async function (props) {
     try {
+      let brokerService = this.returnBrokerService();
 
     } catch (ex) {
-      return this.returnSimpleError(ex, res);
+      console.log('updateBroker - ex ', ex);
     }
   },
-  getBrokers: function (req, res) {
+  uninstallBroker: async function (props) {
     try {
+      let brokerService = this.returnBrokerService();
 
     } catch (ex) {
-      return this.returnSimpleError(ex, res);
+      console.log('uninstallBroker - ex ', ex);
     }
   },
-  getBroker: function (req, res) {
+  getBrokers: async function (props) {
     try {
+      let brokerService = this.returnBrokerService();
 
     } catch (ex) {
-      return this.returnSimpleError(ex, res);
+      console.log('getBrokers - ex ', ex);
     }
   },
+  getBroker: async function (props) {
+    try {
+      let brokerService = this.returnBrokerService();
+
+    } catch (ex) {
+      console.log('getBroker - ex ', ex);
+    }
+  },
+  startAll: async function(){
+    try{
+      let brokerService = this.returnBrokerService();
+      let resData = await brokerService.generateAllBrokers();
+      return resData;
+    }catch(ex){
+      console.log('startAll - ex ',ex);
+    }
+  }
 });

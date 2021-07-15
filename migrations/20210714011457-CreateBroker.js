@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_id : {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false
       },
@@ -23,6 +23,14 @@ module.exports = {
       },
       broker_key: {
         type: Sequelize.TEXT,
+        allowNull: false
+      },
+      access_name: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      config: {
+        type: Sequelize.JSON,
         allowNull: false
       },
       description: {

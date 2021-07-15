@@ -1,6 +1,7 @@
 import BaseProto from "@root/base/BaseProto";
 import AuthController from "../controllers/xhr/AuthController";
 import HomeController from "../controllers/xhr/HomeController";
+import ManageBrokerController from "../controllers/xhr/ManageBrokerController";
 import ManageGroupController from "../controllers/xhr/ManageGroupController";
 import ManageEventController from "../controllers/xhr/ManagEventController";
 import UserController from "../controllers/xhr/UserController";
@@ -64,5 +65,17 @@ export default BaseProto.extend<ApiRouteInterface>({
       route.post('/update', 'event.update', [], ManageEventController.binding().updateEvent);
       route.post('/delete', 'event.delete', [], ManageEventController.binding().deleteEvent);
     });
+
+    /* Manage member broker */
+    self.use('/broker', [
+      SetAuthDriverMiddleware.binding('api').check,
+      AuthMiddleware.binding().check
+    ], function (route) {
+      route.post('/add','broker.add',[],ManageBrokerController.binding().addBroker);
+      route.post('/update','broker.update',[],ManageBrokerController.binding().updateBroker);
+      route.get('/brokers','broker.brokers',[],ManageBrokerController.binding().getBrokers);
+      route.get('/access-formats','broker.access_format',[],ManageBrokerController.binding().getAccessFormats);
+      route.get('/:id/view','broker.broker',[],ManageBrokerController.binding().getBroker);
+    })
   }
 });
