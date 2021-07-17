@@ -2,6 +2,7 @@ import BaseProto from "@root/base/BaseProto";
 import AuthController from "../controllers/xhr/AuthController";
 import HomeController from "../controllers/xhr/HomeController";
 import ManageBrokerController from "../controllers/xhr/ManageBrokerController";
+import ManageBrokerEventController from "../controllers/xhr/ManageBrokerEventController";
 import ManageGroupController from "../controllers/xhr/ManageGroupController";
 import ManageEventController from "../controllers/xhr/ManagEventController";
 import UserController from "../controllers/xhr/UserController";
@@ -71,11 +72,23 @@ export default BaseProto.extend<ApiRouteInterface>({
       SetAuthDriverMiddleware.binding('api').check,
       AuthMiddleware.binding().check
     ], function (route) {
-      route.post('/add','broker.add',[],ManageBrokerController.binding().addBroker);
-      route.post('/update','broker.update',[],ManageBrokerController.binding().updateBroker);
-      route.get('/brokers','broker.brokers',[],ManageBrokerController.binding().getBrokers);
-      route.get('/access-formats','broker.access_format',[],ManageBrokerController.binding().getAccessFormats);
-      route.get('/:id/view','broker.broker',[],ManageBrokerController.binding().getBroker);
+      route.post('/add', 'broker.add', [], ManageBrokerController.binding().addBroker);
+      route.post('/update', 'broker.update', [], ManageBrokerController.binding().updateBroker);
+      route.get('/brokers', 'broker.brokers', [], ManageBrokerController.binding().getBrokers);
+      route.get('/access-formats', 'broker.access_format', [], ManageBrokerController.binding().getAccessFormats);
+      route.get('/:id/view', 'broker.broker', [], ManageBrokerController.binding().getBroker);
+    })
+
+    /* Manage member broker event */
+    self.use('/broker/event', [
+      SetAuthDriverMiddleware.binding('api').check,
+      AuthMiddleware.binding().check
+    ], function (route) {
+      route.post('/add', 'broker.event.add', [], ManageBrokerEventController.binding().addEvent);
+      route.post('/update', 'broker.event.update', [], ManageBrokerEventController.binding().updateEvent);
+      route.post('/delete', 'broker.event.delete', [], ManageBrokerEventController.binding().deleteEvent);
+      route.get('/:id/view', 'broker.event.event', [], ManageBrokerEventController.binding().getEvent);
+      route.get('/events', 'broker.event.events', [], ManageBrokerEventController.binding().getEvents);
     })
   }
 });

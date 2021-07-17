@@ -3,6 +3,7 @@ import Crypto from 'crypto';
 
 export interface DataManipulateInterface extends BaseComputeInterface{
   generateMd5?:{(text:string):string}
+  getExistData ?: {(props:object):object};
 }
 
 export default BaseCompute.extend<DataManipulateInterface>({
@@ -13,6 +14,9 @@ export default BaseCompute.extend<DataManipulateInterface>({
     //Creating the hmac in the required format
     resData = (resData.digest('hex') as any);
     return resData+"";
+  },
+  getExistData : function(props){
+    return props;
   }
 });
 

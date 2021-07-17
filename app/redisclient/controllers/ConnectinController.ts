@@ -22,6 +22,7 @@ export default BaseController.extend<ConnectionControllerInterface>({
         password: props.config.password,
         no_ready_check: props.config.no_ready_check,
         db: props.config.db,
+        broker_events : props.broker_events
       });
     } catch (ex) {
       console.log('redisclient - connectionController - connect - ex : ');

@@ -1,5 +1,6 @@
 import BaseService from "@root/base/BaseService";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
+import { Broker, BrokerEvent } from "@root/models";
 import BrokerModel, { BrokerModelInterface, BROKER_STATUS } from "../models/BrokerModel";
 
 export interface BrokerServiceInterface extends BaseServiceInterface {
@@ -31,7 +32,6 @@ export default BaseService.extend<BrokerServiceInterface>({
         case validation.fails:
           throw global.CustomError('error.validation', validation.errors.errors);
       }
-
       masterData.saveData('adapter.connection.' + props.access_name.toLowerCase() + '.connect', props);
     } catch (ex) {
       throw ex;
@@ -43,7 +43,15 @@ export default BaseService.extend<BrokerServiceInterface>({
       let resData = await brokerModel.get({
         where: {
           status: BROKER_STATUS.ON
-        }
+        },
+        include : [{
+          model : BrokerEvent,
+          as : 'broker_events',
+          include : [{
+            model : Broker,
+            as : 'broker'
+          }]
+        }]
       });
       resData = brokerModel.getJSON(resData);
       for (var a = 0; a < resData.length; a++) {

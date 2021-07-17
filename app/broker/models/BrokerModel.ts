@@ -1,5 +1,5 @@
 import BaseModel, { BaseModelInterface } from "@root/base/BaseModel";
-import { Group, User } from "@root/models";
+import { BrokerEvent, Group, User } from "@root/models";
 import Broker from "@root/models/Broker";
 
 Broker.belongsTo(User,{
@@ -10,6 +10,11 @@ Broker.belongsTo(User,{
 Broker.belongsTo(Group,{
   foreignKey : 'group_id',
   as : 'group'
+})
+
+Broker.hasMany(BrokerEvent,{
+  foreignKey : 'broker_id',
+  as : 'broker_events'
 })
 
 export enum ACCESS_NAME {

@@ -1,4 +1,5 @@
 import BrokerModel, { ACCESS_NAME, ACCESS_CONFIG, BrokerModelInterface } from "@root/app/broker/models/BrokerModel";
+import { User } from "@root/models";
 import DataManipulate from "../compute/DataManipulate";
 import BaseService from "./BaseService";
 
@@ -88,7 +89,19 @@ export default BaseService.extend<BrokerServiceInterface>({
           throw global.CustomError('error.validation', validation.errors.errors);
       }
       let brokerModel = this.returnBrokerModel();
-      let resData = await brokerModel.get({});
+      let resData = await brokerModel.get({
+        where : {
+          user_id : props.user_id,
+          group_id : props.group_id
+        },
+        include : [{
+          model : User,
+          as : 'user',
+          attributes: {
+            exclude: ['password']
+          }
+        }]
+      });
       resData = brokerModel.getJSON(resData);
       return resData;
     } catch (ex) {

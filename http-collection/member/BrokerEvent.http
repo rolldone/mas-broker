@@ -1,0 +1,80 @@
+#@host=http://masbroker.lan
+###
+# @name authToken
+POST {{host}}/api/v1/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+email=donny.rolanda@gmail.com
+&password=43lw9rj2
+
+###
+@token = {{authToken.response.body.$.return.token}}
+
+###
+# @name userProfile
+GET {{host}}/api/v1/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+@user_id = {{userProfile.response.body.$.return.id}}
+@user_status = {{userProfile.response.body.$.return.status}}
+
+@group_id = 1
+
+###
+# @name getBrokers
+GET {{host}}/api/v1/broker/brokers?group_id={{group_id}}
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@broker_id = {{getBrokers.response.body.$.return[0].id}}
+
+###
+# @name addBrokerEvent
+POST {{host}}/api/v1/broker/event/add HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "broker_id" : "{{broker_id}}",
+  "group_id" : "{{group_id}}",
+  "name" : "First Broker",
+  "description" : "This is first broker",
+  "status" : 1,
+  "event_key" : "first.channel"
+}
+
+###
+@broker_Event_id = {{addBrokerEvent.response.body.$.return.id}}
+
+###
+# @name getBrokerEvent
+GET {{host}}/api/v1/broker/event/{{broker_Event_id}}/view
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+# @name updateBrokerEvent
+POST {{host}}/api/v1/broker/event/update
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "id" : "{{broker_Event_id}}",
+  "broker_id" : "{{broker_id}}",
+  "group_id" : "{{group_id}}",
+  "name" : "First Broker",
+  "description" : "This is first broker",
+  "status" : 1,
+  "event_key" : "first.channel"
+}
+
+###
+# @name getBrokerEvents
+GET {{host}}/api/v1/broker/event/events
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+

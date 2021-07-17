@@ -15,8 +15,9 @@ export default BaseProto.extend<EventEmitterInterface>({
     masterData.setOnListener('adapter.connection.redis.check',ConnectinController.binding().check);
 
     /* Manage Event */
-    masterData.setOnListener('adapter.redis_client.start',EventController.binding().add);
-    masterData.setOnListener('adapter.redis_client.delete',EventController.binding().delete);
-    masterData.setOnListener('adapter.redis_client.get',EventController.binding().get);
+    masterData.setOnListener('adapter.connection.redis.event.start',EventController.binding().add);
+    masterData.setOnListener('adapter.connection.redis.event.start_all',EventController.binding().addAll);
+    masterData.setOnListener('adapter.connection.redis.event.delete',EventController.binding().delete);
+    masterData.setOnListener('adapter.connection.redis.event.get',EventController.binding().get);
   }
 })

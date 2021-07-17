@@ -88,7 +88,10 @@ export default BaseService.extend<ConnectionServiceInterface>({
           return unsubscribe;
         }
       }
+      /* Save the redis connection */
       masterData.saveData('adapter.collection.redis_client', redis_client);
+      /* Go to create redis event listener */
+      masterData.saveData('adapter.connection.redis.event.start_all',props.broker_events);
     } catch (ex) {
       throw ex;
     }

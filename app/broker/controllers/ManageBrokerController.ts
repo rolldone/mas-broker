@@ -18,7 +18,7 @@ export default BaseController.extend<ManageBrokerControllerInterface>({
     try {
       let brokerService = this.returnBrokerService();
       let resData = await brokerService.generateBroker(props);
-
+      
     } catch (ex) {
       console.log('installBroker - ex ', ex);
     }
