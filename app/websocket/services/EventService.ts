@@ -3,15 +3,14 @@ import { GroupModelInterface } from "@root/app/member/models/GroupModel";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import EventModel, { EVENT_STATUS } from "../models/EventModel";
 import { GROUP_STATUS } from "../models/GroupModel";
-import GroupService, { GroupServiceInterface } from "./GroupService";
+import GroupService, { ConnectionServiceInterface } from "./ConnectionService";
 const WebSocketWrapper = require('ws-wrapper');
 
 declare var masterData: MasterDataInterface
 
-export interface EventServiceInterface extends Omit<GroupServiceInterface, 'create'> {
+export interface EventServiceInterface extends Omit<ConnectionServiceInterface, 'create'> {
   create?: (...props: any) => this
   returnEventModel?: { (): EventModelInterface }
-  returnGroupModel?: { (): GroupModelInterface }
   generateSocketEvent?: { (props: any): void }
   deleteSocketEvent?: { (props: any): void }
   startSocketEvents?: { (events?: Array<any>): void }
@@ -30,19 +29,28 @@ export default GroupService.extend<EventServiceInterface>({
       if (props.status == EVENT_STATUS.OFF) {
         return;
       }
-      let groupModel = this.returnGroupModel();
-      let resDataGroupModel = await groupModel.first({
+      let validation = this.returnValidator(props, {
+        adapter_id: 'required',
+        status: 'required'
+      });
+      switch (await validation.check()) {
+        case validation.fails:
+          throw global.CustomError('error.validation', validation.errors.errors);
+      }
+
+      let adapterModel = this.returnAdapterModel();
+      let resDataGroupModel = await adapterModel.first({
         where: {
-          id: props.group_id,
+          id: props.adapter_id,
           status: GROUP_STATUS.ON
         }
       })
-      let pathGroup = this._getSocketPath(resDataGroupModel.group_key);
+      let pathGroup = this._getSocketPath(resDataGroupModel.adapter_key);
       let wsCollections: {
         [key: string]: any
       } = masterData.getData('ws.collections', {}) as any;
       if (wsCollections[pathGroup] == null) {
-        throw global.CustomError('error.not_found', 'The socket with group_key ' + resDataGroupModel.group_key + ' is not found!');
+        throw global.CustomError('error.not_found', 'The ws with inside adapter_key ' + resDataGroupModel.adapter_key + ' is not found!');
       }
       if (wsCollections[pathGroup].wsFuncs == null) {
         wsCollections[pathGroup].wsFuncs = {} as any;
@@ -65,7 +73,7 @@ export default GroupService.extend<EventServiceInterface>({
     try {
       let validation = this.returnValidator(props, {
         id: 'required',
-        group_id: 'required',
+        adapter_id: 'required',
         user_id: 'required',
         status: 'required'
       });
@@ -76,26 +84,26 @@ export default GroupService.extend<EventServiceInterface>({
       if (props.status == EVENT_STATUS.OFF) {
         return;
       }
-      let groupModel = this.returnGroupModel();
-      let resDataGroupModel = await groupModel.first({
+      let adapterModel = this.returnAdapterModel();
+      let resDataGroupModel = await adapterModel.first({
         where: {
-          id: props.group_id,
+          id: props.adapter_id,
           user_id: props.user_id,
           status: props.status
         },
       })
-      resDataGroupModel = groupModel.getJSON(resDataGroupModel);
-      props.group = resDataGroupModel;
+      resDataGroupModel = adapterModel.getJSON(resDataGroupModel);
+      props.adapter = resDataGroupModel;
       let events = [props];
       for (var a = 0; a < events.length; a++) {
-        let group = events[a].group;
-        let pathGroup = this._getSocketPath(group.group_key);
+        let adapter = events[a].adapter;
+        let pathGroup = this._getSocketPath(adapter.adapter_key);
         let wsCollections: {
           [key: string]: any
         } = masterData.getData('ws.collections', {}) as any;
 
         if (wsCollections[pathGroup] == null) {
-          throw global.CustomError('error.ws.not_found', 'The socket with group_key ' + group.group_key + ' is not found!');
+          throw global.CustomError('error.ws.not_found', 'The socket with adapter_key ' + adapter.adapter_key + ' is not found!');
         }
 
         /** Basic ws remove listener */
@@ -118,7 +126,7 @@ export default GroupService.extend<EventServiceInterface>({
     try {
       let validation = this.returnValidator(props, {
         id: 'required',
-        group_id: 'required',
+        adapter_id: 'required',
         user_id: 'required',
         status: 'required'
       });
@@ -129,16 +137,16 @@ export default GroupService.extend<EventServiceInterface>({
       if (props.status == EVENT_STATUS.OFF) {
         return;
       }
-      let groupModel = this.returnGroupModel();
-      let resDataGroupModel = await groupModel.first({
+      let adapterModel = this.returnAdapterModel();
+      let resDataGroupModel = await adapterModel.first({
         where: {
-          id: props.group_id,
+          id: props.adapter_id,
           user_id: props.user_id,
           status: props.status
         },
       })
-      resDataGroupModel = groupModel.getJSON(resDataGroupModel);
-      props.group = resDataGroupModel;
+      resDataGroupModel = adapterModel.getJSON(resDataGroupModel);
+      props.adapter = resDataGroupModel;
       this.startSocketEvents([props]);
     } catch (ex) {
       throw ex;
@@ -149,15 +157,16 @@ export default GroupService.extend<EventServiceInterface>({
       if (events.length == 0) {
         return;
       }
+      console.log('oooooooooooooooooo',events);
       for (var a = 0; a < events.length; a++) {
-        let group = events[a].group;
-        let pathGroup = this._getSocketPath(group.group_key);
+        let adapter = events[a].adapter;
+        let pathGroup = this._getSocketPath(adapter.adapter_key);
         let wsCollections: {
           [key: string]: any
         } = masterData.getData('ws.collections', {}) as any;
 
         if (wsCollections[pathGroup] == null) {
-          throw global.CustomError('error.ws.not_found', 'The socket with group_key ' + group.group_key + ' is not found!');
+          throw global.CustomError('error.ws.not_found', 'The socket with adapter_key ' + adapter.adapter_key + ' is not found!');
         }
 
         if (wsCollections[pathGroup].wsFuncs == null) {
@@ -169,6 +178,7 @@ export default GroupService.extend<EventServiceInterface>({
           wsCollections[pathGroup].wsFuncs[events[a].event_key] = function (news_of: any, event_key: string, ...props: any) {
             /* You can log this area */
             // news_of.emit(event_key,'test');
+            console.log('props',props);
             let socketCollections: { [key: string]: any } = masterData.getData('socket.clients', {}) as any;
             for (var key in socketCollections) {
               socketCollections[key].emit(event_key, ...props);

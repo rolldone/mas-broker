@@ -7,6 +7,7 @@ export interface EventControllerInterface extends BaseControllerInterface {
   start?: { (props: any): void }
   stop?: { (props: any): void }
   delete?: { (props: any): void }
+  get?:{(props:any):void}
   logs?: { (props: any): void }
   log?: { (props: any): void }
   startAll?: { (props: Array<any>): void }
@@ -44,6 +45,14 @@ export default BaseController.extend<EventControllerInterface>({
     } catch (ex) {
       /* Log this error or do something here */
       console.log('EventController - delete - ex ', ex);
+    }
+  },
+  get : function(props){
+    try {
+
+    } catch (ex) {
+      /* Log this error or do something here */
+      console.log('EventController - get - ex ', ex);
     }
   },
   logs: function (props) {

@@ -1,4 +1,3 @@
-import GroupModel, { GroupModelInterface } from "@root/app/member/models/GroupModel";
 import BaseService from "@root/base/BaseService";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import { AppConfig } from "@root/config";
@@ -9,34 +8,34 @@ import { EventServiceInterface } from "./EventService";
 const WebSocketWrapper = require('ws-wrapper');
 import url from 'url';
 import { uniqueId } from "lodash";
+import AdapterModel, { AdapterModelInterface } from "@root/app/adapter/models/AdapterModel";
 
 
 declare var masterData: MasterDataInterface;
 declare var WebSocket: any;
 
-export interface GroupServiceInterface extends Omit<BaseServiceInterface,'create'> {
+export interface ConnectionServiceInterface extends Omit<BaseServiceInterface,'create'> {
   create ?: (props:EventServiceInterface)=>this
   construct ?: {(props:EventServiceInterface):void}
   _eventService ?: EventServiceInterface
-  returnGroupModel?: { (): GroupModelInterface }
-  generateSocketGroup?: { (props: any): void }
-  deleteSocketGroup?: { (props: any): void }
-  startSocketGroups?: { (): void }
-  stopSocketGroup?: { (props: any): void }
-  logSocketGroup?: { (props: any): void }
-  startSocketGroup?: { (props: any): void }
-  _defineOnConnection?: { (pathGroup: string, events: Array<any>, ws: any, req: any): void }
-  _getSocketPath?: { (group_key: string): string }
+  returnAdapterModel?: { (): AdapterModelInterface }
+  generateSocketConnection?: { (props: any): void }
+  deleteSocketConnection?: { (props: any): void }
+  stopSocketConnection?: { (props: any): void }
+  logSocketConnection?: { (props: any): void }
+  startSocketConnection?: { (props: any): void }
+  _defineOnConnection?: { (pathGroup: string, adapter_events: Array<any>, ws: any, req: any): void }
+  _getSocketPath?: { (adapter_key: string): string }
 }
 
-export default BaseService.extend<GroupServiceInterface>({
-  returnGroupModel: function () {
-    return GroupModel.create();
+export default BaseService.extend<ConnectionServiceInterface>({
+  returnAdapterModel: function () {
+    return AdapterModel.create();
   },
   construct : function(eventService){
     this._eventService = eventService;
   },
-  _defineOnConnection: function (pathGroup: string,events:Array<any>, ws: any, req: any) {
+  _defineOnConnection: function (pathGroup: string,adapter_events:Array<any>, ws: any, req: any) {
     console.log('WebSocket headers => ');
     console.log(req.headers);
     let self = this;
@@ -74,127 +73,99 @@ export default BaseService.extend<GroupServiceInterface>({
         /**
          * After define ws.collections  
          * Going to EventService@startSocketEvents  */
-         self._eventService.startSocketEvents(options.events);
+         self._eventService.startSocketEvents(options.adapter_events);
          
      }.bind(this,{
        ws : newWS,
        pathGroup : pathGroup,
        wsCollections : wsCollections,
-       events: events
+       adapter_events: adapter_events
      }));
       /**
        * After define ws.collections  
        * Going to EventService@startSocketEvents  */
-      this._eventService.startSocketEvents(events);
+      this._eventService.startSocketEvents(adapter_events);
     // }
     
   },
-  _getSocketPath: function (group_key) {
-    if (group_key == null) {
+  _getSocketPath: function (adapter_key) {
+    if (adapter_key == null) {
       throw global.CustomError('error.missing.socket_base_path', 'Socket base path is null');
     }
-    return upath.normalizeSafe('/' + AppConfig.BASE_SOCKET_PATH + '/' + group_key);
+    return upath.normalizeSafe('/' + AppConfig.BASE_SOCKET_PATH + '/' + adapter_key);
   },
-  generateSocketGroup: function (props) {
+  generateSocketConnection: function (props) {
     try {
       if (props.status == GROUP_STATUS.OFF) {
         return;
       }
-      let pathGroup = this._getSocketPath(props.group_key);
+      let pathGroup = this._getSocketPath(props.adapter_key);
       let socketCollections: {
         [key: string]: any
-      } = masterData.getData('socket.collections', {}) as any;
+      } = masterData.getData('websocket_server.collections', {}) as any;
       if (socketCollections[pathGroup] != null) {
         return;
       }
 
       socketCollections[pathGroup] = new WebSocket.Server({ noServer: true });
       socketCollections[pathGroup].on('connection', this._defineOnConnection.bind(this, pathGroup));
-      console.log('generateSocketGroup -> ', pathGroup);
-      masterData.saveData('socket.collections', socketCollections);
+      console.log('generateSocketConnection -> ', pathGroup);
+      masterData.saveData('websocket_server.collections', socketCollections);
     } catch (ex) {
       throw ex;
     }
   },
-  deleteSocketGroup: function (props) {
+  deleteSocketConnection: function (props) {
     try {
-      let pathGroup = this._getSocketPath(props.group_key);
+      let pathGroup = this._getSocketPath(props.adapter_key);
       let socketCollections: {
         [key: string]: any
-      } = masterData.getData('socket.collections', {}) as any;
+      } = masterData.getData('websocket_server.collections', {}) as any;
       if (socketCollections[pathGroup] != null) {
         return;
       }
       socketCollections[pathGroup].close();
       delete socketCollections[pathGroup];
-      console.log('stopSocketGroup -> ', pathGroup);
-      masterData.saveData('socket.collections', socketCollections);
+      console.log('stopSocketConnection -> ', pathGroup);
+      masterData.saveData('websocket_server.collections', socketCollections);
     } catch (ex) {
       throw ex;
     }
   },
   /** Need GroupModel on props */
-  stopSocketGroup: function (props) {
-    this.deleteSocketGroup(props);
+  stopSocketConnection: function (props) {
+    this.deleteSocketConnection(props);
   },
   /** Need GroupModel on props */
-  startSocketGroup: function (props) {
+  startSocketConnection: function (props) {
     try {
-      let pathGroup = this._getSocketPath(props.group_key);
+      let pathGroup = this._getSocketPath(props.adapter_key);
       let socketCollections: {
         [key: string]: any
-      } = masterData.getData('socket.collections', {}) as any;
+      } = masterData.getData('websocket_server.collections', {}) as any;
       if (socketCollections[pathGroup] != null) {
         return;
       }
       socketCollections[pathGroup] = new WebSocket.Server({ noServer: true });
-      socketCollections[pathGroup].on('connection', this._defineOnConnection.bind(this, pathGroup, props.events));
-      masterData.saveData('socket.collections', socketCollections);
+      socketCollections[pathGroup].on('connection', this._defineOnConnection.bind(this, pathGroup, props.adapter_events));
+      masterData.saveData('websocket_server.collections', socketCollections);
+      console.log('aaaaaaaaaaaaaaa',socketCollections);
     } catch (ex) {
       throw ex;
     }
   },
-  logSocketGroup: function (props) {
+  logSocketConnection: function (props) {
     try {
-      let pathGroup = this._getSocketPath(props.group_key);
+      let pathGroup = this._getSocketPath(props.adapter_key);
       let socketCollections: {
         [key: string]: any
-      } = masterData.getData('socket.collections', {}) as any;
+      } = masterData.getData('websocket_server.collections', {}) as any;
       if (socketCollections[pathGroup] != null) {
         return;
       }
-      socketCollections[pathGroup].on('connection', this._defineOnConnection.bind(this, pathGroup, props.events));
+      socketCollections[pathGroup].on('connection', this._defineOnConnection.bind(this, pathGroup, props.adapter_events));
     } catch (ex) {
       throw ex;
     }
-  },
-  startSocketGroups: async function () {
-    try {
-      let groupModel = this.returnGroupModel();
-      groupModel.nest = true;
-      let resData = await groupModel.get({
-        where: {
-          status: GROUP_STATUS.ON
-        },
-        include: [{
-          model: EventModel.model,
-          as: 'events',
-          required: false,
-          where: {
-            status: EVENT_STATUS.ON
-          },
-          include: [{
-            model: GroupModel.model,
-            as: 'group',
-          }]
-        }]
-      });
-      resData = groupModel.getJSON(resData);
-      for (var a = 0; a < resData.length; a++) {
-        this.startSocketGroup(resData[a])
-      }
-    } catch (ex) {
-      throw ex;
-    }
-  },
+  }
 });

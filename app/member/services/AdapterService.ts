@@ -110,11 +110,13 @@ export default BaseService.extend<AdapterServiceInterface>({
           throw global.CustomError('error.validation', validation.errors.errors);
       }
       let adapterModel = this.returnAdapterModel();
+      let where = adapterModel.getJSON({
+        user_id: props.user_id,
+        group_id: props.group_id,
+        adapter_type : props.adapter_type
+      });
       let resData = await adapterModel.get({
-        where: {
-          user_id: props.user_id,
-          group_id: props.group_id
-        },
+        where: where,
         include: [{
           model: User,
           as: 'user',

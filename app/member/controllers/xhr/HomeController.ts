@@ -5,11 +5,10 @@ const WebSocketWrapper = require('ws-wrapper');
 const HomeController = MainHomeController.extend<HomeControllerInterface>({
   index: function (req, res) {
     let action = req.query.action || 'terima';
-    const client = new WebSocketWrapper(new ws("ws://masadapter.lan/socket/9d8b8cdd937a943a2aec11549f68adc4?id=2", {}));
+    const client = new WebSocketWrapper(new ws("ws://masadapter.lan/socket/dd6e20928f15e3b43ebc7022549870e3", {}));
     client.of('foo').on('test', function(props:any){
       console.log('test -> ',props);
     });
-    
     client.on('open', function(){
       if(action == 'terima'){
         client.on('test', function(props:any){
@@ -23,8 +22,8 @@ const HomeController = MainHomeController.extend<HomeControllerInterface>({
         });
       },1000);
       var test = ()=>{
+        console.log('avvvvvvvvvvvvvvvvv');
         setTimeout(function(){
-          console.log('vmfdkvmfdv');
           
           // const array = new Float32Array(5);
     
@@ -33,7 +32,7 @@ const HomeController = MainHomeController.extend<HomeControllerInterface>({
           //   }
     
           //   client.send(array);
-          client.emit('test',{
+          client.emit('first.channel',{
             from : 'Donny',
             payload : 'vmdfkvmdkfvmkvm'
           });
@@ -52,7 +51,7 @@ const HomeController = MainHomeController.extend<HomeControllerInterface>({
     res.send({
       status: 'success',
       status_code: 200,
-      return: 'Welcome to Mas Adapter api service with test socketcluster!'
+      return: 'Welcome to Mas Adapter api service with test socketclusterrr!'
     });
   }
 });
