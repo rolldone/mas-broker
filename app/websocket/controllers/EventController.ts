@@ -2,41 +2,75 @@ import BaseController from "@root/base/BaseController";
 import EventService, { EventServiceInterface } from "../services/EventService";
 
 export interface EventControllerInterface extends BaseControllerInterface {
-  returnEventService ?: {():EventServiceInterface}
+  returnEventService?: { (): EventServiceInterface }
   generate?: { (props: any): void }
   start?: { (props: any): void }
   stop?: { (props: any): void }
   delete?: { (props: any): void }
   logs?: { (props: any): void }
-  startAll ?: {(props:Array<any>):void}
+  log?: { (props: any): void }
+  startAll?: { (props: Array<any>): void }
 }
 
 export default BaseController.extend<EventControllerInterface>({
-  returnEventService : function(){
+  returnEventService: function () {
     return EventService.create();
   },
   generate: function (props) {
-    console.log('generate',props);
+    console.log('generate', props);
   },
   start: function (props) {
-
+    try {
+      let eventService = this.returnEventService();
+      eventService.startSocketEvent(props);
+    } catch (ex) {
+      /* Log this error or do something here */
+      console.log('EventController - start - ex ', ex);
+    }
   },
   stop: function (props) {
-
+    try {
+      let eventService = this.returnEventService();
+      eventService.stopSocketEvent(props);
+    } catch (ex) {
+      /* Log this error or do something here */
+      console.log('EventController - stop - ex ', ex);
+    }
   },
   delete: function (props) {
-
+    try {
+      let eventService = this.returnEventService();
+      eventService.deleteSocketEvent(props);
+    } catch (ex) {
+      /* Log this error or do something here */
+      console.log('EventController - delete - ex ', ex);
+    }
   },
   logs: function (props) {
-
+    try {
+      let eventService = this.returnEventService();
+      eventService.logSocketEvents(props);
+    } catch (ex) {
+      /* Log this error or do something here */
+      console.log('EventController - delete - ex ', ex);
+    }
   },
-  startAll : function(props){
-    try{
+  log: function (props) {
+    try {
+      let eventService = this.returnEventService();
+      eventService.logSocketEvent(props);
+    } catch (ex) {
+      /* Log this error or do something here */
+      console.log('EventController - delete - ex ', ex);
+    }
+  },
+  startAll: function (props) {
+    try {
       let eventService = this.returnEventService();
       eventService.startSocketEvents(props);
-    }catch(ex){
+    } catch (ex) {
       /* Log this error or do something here */
-      console.log('GroupController - generate - ex ',ex);
+      console.log('GroupController - generate - ex ', ex);
     }
   }
 });

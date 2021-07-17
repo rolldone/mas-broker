@@ -2,14 +2,11 @@ import { EventModelInterface } from "@root/app/member/models/EventModel";
 import { GroupModelInterface } from "@root/app/member/models/GroupModel";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import EventModel, { EVENT_STATUS } from "../models/EventModel";
-import GroupModel, { GROUP_STATUS } from "../models/GroupModel";
+import { GROUP_STATUS } from "../models/GroupModel";
 import GroupService, { GroupServiceInterface } from "./GroupService";
 const WebSocketWrapper = require('ws-wrapper');
 
-
 declare var masterData: MasterDataInterface
-
-
 
 export interface EventServiceInterface extends Omit<GroupServiceInterface, 'create'> {
   create?: (...props: any) => this
@@ -20,14 +17,13 @@ export interface EventServiceInterface extends Omit<GroupServiceInterface, 'crea
   startSocketEvents?: { (events?: Array<any>): void }
   stopSocketEvent?: { (props: any): void }
   startSocketEvent?: { (props: any): void }
+  logSocketEvent?: { (props: any): void }
+  logSocketEvents?: { (props: any): void }
 }
 
 export default GroupService.extend<EventServiceInterface>({
   returnEventModel: function () {
     return EventModel.create();
-  },
-  returnGroupModel: function () {
-    return GroupModel.create();
   },
   generateSocketEvent: async function (props) {
     try {
@@ -58,29 +54,25 @@ export default GroupService.extend<EventServiceInterface>({
       }
       // wsCollections[pathGroup].removeEventListener(props.event_key, wsCollections[pathGroup].wsFuncs[props.event_key].bind(this, props.event_key));
       wsCollections[pathGroup].on(props.event_key, wsCollections[pathGroup].wsFuncs[props.event_key].bind(this, props.event_key));
-      wsCollections[pathGroup].on('test',function(props:any){
-        console.log('test from server -> ',props);
+      wsCollections[pathGroup].on('test', function (props: any) {
+        console.log('test from server -> ', props);
       })
     } catch (ex) {
       throw ex;
     }
   },
-  deleteSocketEvent: function (props) {
+  deleteSocketEvent: async function (props) {
     try {
-
-    } catch (ex) {
-      throw ex;
-    }
-  },
-  stopSocketEvent: function (props) {
-    try {
-
-    } catch (ex) {
-      throw ex;
-    }
-  },
-  startSocketEvent: async function (props) {
-    try {
+      let validation = this.returnValidator(props, {
+        id: 'required',
+        group_id: 'required',
+        user_id: 'required',
+        status: 'required'
+      });
+      switch (await validation.check()) {
+        case validation.fails:
+          throw global.CustomError('error.validation', validation.errors.errors);
+      }
       if (props.status == EVENT_STATUS.OFF) {
         return;
       }
@@ -88,10 +80,66 @@ export default GroupService.extend<EventServiceInterface>({
       let resDataGroupModel = await groupModel.first({
         where: {
           id: props.group_id,
-          status: GROUP_STATUS.ON
-        }
+          user_id: props.user_id,
+          status: props.status
+        },
       })
+      resDataGroupModel = groupModel.getJSON(resDataGroupModel);
+      props.group = resDataGroupModel;
+      let events = [props];
+      for (var a = 0; a < events.length; a++) {
+        let group = events[a].group;
+        let pathGroup = this._getSocketPath(group.group_key);
+        let wsCollections: {
+          [key: string]: any
+        } = masterData.getData('ws.collections', {}) as any;
 
+        if (wsCollections[pathGroup] == null) {
+          throw global.CustomError('error.ws.not_found', 'The socket with group_key ' + group.group_key + ' is not found!');
+        }
+
+        /** Basic ws remove listener */
+        // wsCollections[pathGroup].removeEventListener('message', wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, events[a].event_key));
+        /** Modern ws with websocket wrapper method listener */
+        wsCollections[pathGroup].removeListener(events[a].event_key, wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, wsCollections[pathGroup], events[a].event_key));
+        /* With channel */
+        if (wsCollections[pathGroup + '_of'] != null) {
+          wsCollections[pathGroup + '_of'].removeListener(events[a].event_key, wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, wsCollections[pathGroup + '_of'], events[a].event_key));
+        }
+      }
+    } catch (ex) {
+      throw ex;
+    }
+  },
+  stopSocketEvent: function (props) {
+    return this.deleteSocketEvent(props);
+  },
+  startSocketEvent: async function (props) {
+    try {
+      let validation = this.returnValidator(props, {
+        id: 'required',
+        group_id: 'required',
+        user_id: 'required',
+        status: 'required'
+      });
+      switch (await validation.check()) {
+        case validation.fails:
+          throw global.CustomError('error.validation', validation.errors.errors);
+      }
+      if (props.status == EVENT_STATUS.OFF) {
+        return;
+      }
+      let groupModel = this.returnGroupModel();
+      let resDataGroupModel = await groupModel.first({
+        where: {
+          id: props.group_id,
+          user_id: props.user_id,
+          status: props.status
+        },
+      })
+      resDataGroupModel = groupModel.getJSON(resDataGroupModel);
+      props.group = resDataGroupModel;
+      this.startSocketEvents([props]);
     } catch (ex) {
       throw ex;
     }
@@ -111,46 +159,46 @@ export default GroupService.extend<EventServiceInterface>({
         if (wsCollections[pathGroup] == null) {
           throw global.CustomError('error.ws.not_found', 'The socket with group_key ' + group.group_key + ' is not found!');
         }
-        
+
         if (wsCollections[pathGroup].wsFuncs == null) {
           wsCollections[pathGroup].wsFuncs = {} as any;
         }
 
         /** Listen all event from channel or public */
         if (wsCollections[pathGroup].wsFuncs[events[a].event_key] == null) {
-          wsCollections[pathGroup].wsFuncs[events[a].event_key] = function (news_of:any,event_key: string, ...props:any) {
-            // console.log('vmfkdmvfv',event_key,props)
-            /* You can log this session */
-            // console.log('vdmfkvfv',event_key);
-            // news_of.emit(event_key,'aaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-            let socketCollections : {[key:string]:any} = masterData.getData('socket.clients',{}) as any;
-            for(var key in socketCollections){
-              console.log('keyyyyyyyyyyyyyy',key);
-              socketCollections[key].emit(event_key,'vmadfkvmdfkvmdkvmdkvm')
+          wsCollections[pathGroup].wsFuncs[events[a].event_key] = function (news_of: any, event_key: string, ...props: any) {
+            /* You can log this area */
+            // news_of.emit(event_key,'test');
+            let socketCollections: { [key: string]: any } = masterData.getData('socket.clients', {}) as any;
+            for (var key in socketCollections) {
+              socketCollections[key].emit(event_key, ...props);
             }
-          
           }
         }
 
         /** Basic ws remove listener */
         // wsCollections[pathGroup].removeEventListener('message', wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, events[a].event_key));
         /** Modern ws with websocket wrapper method listener */
-        wsCollections[pathGroup].removeListener(events[a].event_key, wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, wsCollections[pathGroup],events[a].event_key));
+        wsCollections[pathGroup].removeListener(events[a].event_key, wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, wsCollections[pathGroup], events[a].event_key));
         /** Basic ws method */
         // wsCollections[pathGroup].on('message', wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, events[a].event_key));
         /** This method WRapped by websocketwrapper */
-        wsCollections[pathGroup].on(events[a].event_key,wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, wsCollections[pathGroup],events[a].event_key));
-        
+        wsCollections[pathGroup].on(events[a].event_key, wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, wsCollections[pathGroup], events[a].event_key));
+
         /* With channel */
-        if(wsCollections[pathGroup+'_of'] != null){
-          wsCollections[pathGroup+'_of'].removeListener(events[a].event_key, wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, wsCollections[pathGroup+'_of'],events[a].event_key));
-          wsCollections[pathGroup+'_of'].on(events[a].event_key,wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, wsCollections[pathGroup+'_of'],events[a].event_key));
+        if (wsCollections[pathGroup + '_of'] != null) {
+          wsCollections[pathGroup + '_of'].removeListener(events[a].event_key, wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, wsCollections[pathGroup + '_of'], events[a].event_key));
+          wsCollections[pathGroup + '_of'].on(events[a].event_key, wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, wsCollections[pathGroup + '_of'], events[a].event_key));
         }
-        // console.log('pathGroup',wsCollections[pathGroup]);
-       
       }
     } catch (ex) {
       throw ex;
     }
   },
+  logSocketEvent: function (props) {
+
+  },
+  logSocketEvents: function (props) {
+
+  }
 });

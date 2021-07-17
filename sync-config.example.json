@@ -40,6 +40,14 @@
             {
                 "access_name": "Login to mas_broker docker",
                 "command": "ssh mas_broker_virtualbox -o RemoteCommand=none -t docker exec -it mas_broker_mas_broker_1 bash"
+            },
+            {
+                "access_name": "Display junk files",
+                "command": "ssh mas_broker_virtualbox -o RemoteCommand=none -t cd /root/workspaces/mas_broker && git clean -nd"
+            },
+            {
+                "access_name": "Clean file target",
+                "command": "ssh mas_broker_virtualbox -o RemoteCommand=none -t cd /root/workspaces/mas_broker && git clean -fd"
             }
         ]
     },

@@ -4,10 +4,11 @@ interface ValidatorInterface {
   check : {():Promise<unknown>}
   passes : boolean
   fails : boolean,
-  errors : any
+  errors : any,
 }
 
 interface RedisPubSubListener {
   emit : {(whatKey : String, whatObject : object) : void }
   on : {(whatKey : string, callback : Function) : void }
+  end ?: {(whatKey:string):void}
 }
