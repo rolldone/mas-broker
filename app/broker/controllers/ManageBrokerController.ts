@@ -18,25 +18,32 @@ export default BaseController.extend<ManageBrokerControllerInterface>({
     try {
       let brokerService = this.returnBrokerService();
       let resData = await brokerService.generateBroker(props);
-      
+      /* Create response via master data here */
     } catch (ex) {
-      console.log('installBroker - ex ', ex);
+      console.log('Broker - ManageBrokerController - installBroker - ex :');
+      console.log(' ', ex);
     }
   },
   updateBroker: async function (props) {
     try {
       let brokerService = this.returnBrokerService();
-
+      let resData = await brokerService.removeBroker(props);
+      setTimeout(async ()=>{
+        await brokerService.generateBroker(props);
+      },2000);
+      /* Create response via master data here */
     } catch (ex) {
-      console.log('updateBroker - ex ', ex);
+      console.log('Broker - ManageBrokerController - updateBroker - ex :');
+      console.log(' ', ex);
     }
   },
   uninstallBroker: async function (props) {
     try {
       let brokerService = this.returnBrokerService();
-
+      let resData = await brokerService.removeBroker(props);
     } catch (ex) {
-      console.log('uninstallBroker - ex ', ex);
+      console.log('Broker - ManageBrokerController - uninstallBroker - ex :');
+      console.log(' ', ex);
     }
   },
   getBrokers: async function (props) {
@@ -44,7 +51,8 @@ export default BaseController.extend<ManageBrokerControllerInterface>({
       let brokerService = this.returnBrokerService();
 
     } catch (ex) {
-      console.log('getBrokers - ex ', ex);
+      console.log('Broker - ManageBrokerController - getBrokers - ex :');
+      console.log(' ', ex);
     }
   },
   getBroker: async function (props) {
@@ -52,16 +60,18 @@ export default BaseController.extend<ManageBrokerControllerInterface>({
       let brokerService = this.returnBrokerService();
 
     } catch (ex) {
-      console.log('getBroker - ex ', ex);
+      console.log('Broker - ManageBrokerController - getBroker - ex :');
+      console.log(' ', ex);
     }
   },
-  startAll: async function(){
-    try{
+  startAll: async function () {
+    try {
       let brokerService = this.returnBrokerService();
       let resData = await brokerService.generateAllBrokers();
       return resData;
-    }catch(ex){
-      console.log('startAll - ex ',ex);
+    } catch (ex) {
+      console.log('Broker - ManageBrokerController - startAll - ex :');
+      console.log(' ', ex);
     }
   }
 });

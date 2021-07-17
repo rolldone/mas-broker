@@ -31,10 +31,10 @@ export default BaseController.extend<ConnectionControllerInterface>({
   },
   disconect: async function (props) {
     try {
-      console.log('redis ->');
+      console.log('redis disconect ->');
       console.log(' ', props);
       let connectionService = this.returnConnectionService();
-      let resData = await connectionService.connect(props);
+      let resData = await connectionService.disconect(props);
     } catch (ex) {
       console.log('redisclient - connectionController - disconect - ex : ');
       console.log(' ', ex);

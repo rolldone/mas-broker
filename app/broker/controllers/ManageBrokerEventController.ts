@@ -1,6 +1,8 @@
 import BaseController from "@root/base/BaseController";
+import BrokerEventService, { BrokerEventServiceInterface } from "../services/BrokerEventService";
 
 export interface ManageBrokerEventController extends BaseControllerInterface {
+  returnBrokerEventService ?: {():BrokerEventServiceInterface}
   generate?: { (props: any): void }
   delete?: { (props: any): void }
   get?: { (props: any): void }
@@ -8,16 +10,23 @@ export interface ManageBrokerEventController extends BaseControllerInterface {
 }
 
 export default BaseController.extend<ManageBrokerEventController>({
-  generate: function (props) {
+  returnBrokerEventService : function(){
+    return BrokerEventService.create();
+  },
+  generate: async function (props) {
     try{
       console.log('props',props);
+      let brokerEventService = this.returnBrokerEventService();
+      await brokerEventService.addBrokerEvent(props);
     }catch(ex){
       console.log('Broker - ManageBrokerEventController - generate - ex');
     }
   },
-  delete: function (props) {
+  delete: async function (props) {
     try{
-
+      console.log('props',props);
+      let brokerEventService = this.returnBrokerEventService();
+      await brokerEventService.deleteBrokerEvent(props);
     }catch(ex){
       console.log('Broker - ManageBrokerEventController - delete - ex');
     }

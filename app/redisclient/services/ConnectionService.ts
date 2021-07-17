@@ -5,6 +5,7 @@ import Redis from 'redis';
 
 export interface ConnectionServiceInterface extends BaseServiceInterface {
   connect?: { (props: any): Promise<any> }
+  disconect?: { (props: any): Promise<any> }
   handleResponse: { (action: string, broker_key: string, err: any): void }
 }
 
@@ -16,12 +17,12 @@ export default BaseService.extend<ConnectionServiceInterface>({
       case 'REDIS_AUTH_ERROR':
         console.log('Redisclient - ConnectionService - handleResponse - ex ');
         console.log(' ', err);
-        let redis_client = masterData.getData('adapter.collection.redis_client',{}) as any;
-        if(redis_client[broker_key] == null){
+        let redis_client = masterData.getData('adapter.collection.redis_client', {}) as any;
+        if (redis_client[broker_key] == null) {
           return;
         }
         delete redis_client[broker_key];
-        masterData.saveData('adapter.collection.redis_client',redis_client);
+        masterData.saveData('adapter.collection.redis_client', redis_client);
         break;
     }
   },
@@ -86,12 +87,38 @@ export default BaseService.extend<ConnectionServiceInterface>({
             callback(testError, null);
           });
           return unsubscribe;
+        },
+        end : function(whatKey:string){
+          nrp.end();
         }
       }
       /* Save the redis connection */
       masterData.saveData('adapter.collection.redis_client', redis_client);
       /* Go to create redis event listener */
-      masterData.saveData('adapter.connection.redis.event.start_all',props.broker_events);
+      if (props.broker_events != null) {
+        masterData.saveData('adapter.connection.redis.event.start_all', props.broker_events);
+      }
+    } catch (ex) {
+      throw ex;
+    }
+  },
+  disconect: async function (props) {
+    try {
+      let validation = this.returnValidator(props, {
+        broker_key: 'required'
+      });
+      switch (await validation.check()) {
+        case validation.fails:
+          throw global.CustomError('error.validation', JSON.stringify(validation.errors.errors));
+      }
+      let config = props;
+      let redis_client = masterData.getData('adapter.collection.redis_client', {}) as any;
+      if (redis_client[config.broker_key] == null) {
+        throw global.CustomError('error.adapter_exist', 'Adapter is not exist');
+      }
+      redis_client[config.broker_key].end();
+      delete redis_client[config.broker_key];
+      masterData.saveData('adapter.collection.redis_client', redis_client);
     } catch (ex) {
       throw ex;
     }

@@ -60,8 +60,7 @@ Content-Type: application/json
     "host" : "172.17.0.1",
     "no_ready_check" : false,
     "db" : 1
-  },
-  "broker_key" : "first.channel"
+  }
 }
 
 ###
@@ -74,7 +73,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/x-www-form-urlencoded
 
 ###
-@broker_id = {{getBroker.response.body.$.return.id}}
+@getBroker_broker_id = {{getBroker.response.body.$.return.id}}
 
 ###
 # @name updateBroker
@@ -83,7 +82,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "id" : "{{broker_id}}",
+  "id" : "{{getBroker_broker_id}}",
   "group_id" : "{{group_id}}",
   "user_id" : "{{user_id}}",
   "name" : "First Broker",
@@ -91,12 +90,12 @@ Content-Type: application/json
   "status" : 1,
   "access_name" : "REDIS",
   "config" : {
-    "username" : "admin",
     "password" : "",
     "port" : 6379,
-    "host" : "http://artywiz.lan"
-  },
-  "broker_key" : "first.channel"
+    "host" : "172.17.0.1",
+    "no_ready_check" : false,
+    "db" : 2
+  }
 }
 
 

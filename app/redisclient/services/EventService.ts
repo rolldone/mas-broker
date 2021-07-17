@@ -39,10 +39,16 @@ export default BaseService.extend<EventServiceInterface>({
       if (redis_client[broker.broker_key]['event_key'] == null) {
         redis_client[broker.broker_key]['event_key'] = {};
       }
+      if (redis_client[broker.broker_key]['event_key_function'] == null) {
+        redis_client[broker.broker_key]['event_key_function'] = {};
+      }
       let eventListener = this.handleSubscribeEvent.bind(this, props.event_key);
       redis_client[broker.broker_key]['event_key'][props.event_key] = redis_client[broker.broker_key].on(props.event_key, eventListener);
       redis_client[broker.broker_key]['event_key_function'][props.event_key] = eventListener;
       masterData.saveData('adapter.collection.redis_client', redis_client);
+      setTimeout(()=>{
+        redis_client[broker.broker_key].emit(props.event_key,'Test pubsub');
+      },2000);
     } catch (ex) {
       throw ex;
     }

@@ -18,24 +18,59 @@ export default BaseService.extend<BrokerServiceInterface>({
   returnBrokerModel: function () {
     return BrokerModel.create();
   },
-  generateBroker: async function (props) {
-    try {
-      let validation = this.returnValidator(props, {
-        user_id: 'required',
-        group_id: "required",
-        id: 'required',
-        broker_key: 'required',
-        config: 'required',
-        access_name: 'required'
-      });
-      switch (await validation.check()) {
-        case validation.fails:
-          throw global.CustomError('error.validation', validation.errors.errors);
+  generateBroker: function (props) {
+    return new Promise(async (resolve: Function, reject: Function) => {
+      try {
+        let validation = this.returnValidator(props, {
+          user_id: 'required',
+          group_id: "required",
+          id: 'required',
+          broker_key: 'required',
+          config: 'required',
+          access_name: 'required'
+        });
+        switch (await validation.check()) {
+          case validation.fails:
+            throw global.CustomError('error.validation', JSON.stringify(validation.errors.errors));
+        }
+        masterData.saveData('adapter.connection.' + props.access_name.toLowerCase() + '.connect', props);
+        masterData.setOnListener('adapter.connection.' + props.access_name.toLowerCase() + '.connect.response', function (err: any) {
+          if (err != null) {
+            return reject(err);
+          }
+          resolve(props);
+        })
+      } catch (ex) {
+        reject(ex);
       }
-      masterData.saveData('adapter.connection.' + props.access_name.toLowerCase() + '.connect', props);
-    } catch (ex) {
-      throw ex;
-    }
+    })
+  },
+  removeBroker: function (props) {
+    return new Promise(async (resolve: Function, reject: Function) => {
+      try {
+        let validation = this.returnValidator(props, {
+          user_id: 'required',
+          group_id: "required",
+          id: 'required',
+          broker_key: 'required',
+          config: 'required',
+          access_name: 'required'
+        });
+        switch (await validation.check()) {
+          case validation.fails:
+            throw global.CustomError('error.validation', validation.errors.errors);
+        }
+        masterData.saveData('adapter.connection.' + props.access_name.toLowerCase() + '.disconect', props);
+        masterData.setOnListener('adapter.connection.' + props.access_name.toLowerCase() + '.disconect.response', function (err: any) {
+          if (err != null) {
+            return reject(err);
+          }
+          resolve(props);
+        })
+      } catch (ex) {
+        reject(ex);
+      }
+    });
   },
   generateAllBrokers: async function () {
     try {
@@ -44,18 +79,18 @@ export default BaseService.extend<BrokerServiceInterface>({
         where: {
           status: BROKER_STATUS.ON
         },
-        include : [{
-          model : BrokerEvent,
-          as : 'broker_events',
-          include : [{
-            model : Broker,
-            as : 'broker'
+        include: [{
+          model: BrokerEvent,
+          as: 'broker_events',
+          include: [{
+            model: Broker,
+            as: 'broker'
           }]
         }]
       });
       resData = brokerModel.getJSON(resData);
       for (var a = 0; a < resData.length; a++) {
-        masterData.saveData('adapter.connection.'+resData[a].access_name.toLowerCase()+'.connect',resData[a]);
+        masterData.saveData('adapter.connection.' + resData[a].access_name.toLowerCase() + '.connect', resData[a]);
       }
     } catch (ex) {
       throw ex;
