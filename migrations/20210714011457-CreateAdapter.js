@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('broker_events', {
+    await queryInterface.createTable('adapters', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -17,16 +17,20 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      broker_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      event_key: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
       name: {
         type: Sequelize.STRING,
+        allowNull: false
+      },
+      adapter_key: {
+        type: Sequelize.TEXT,
+        allowNull: false
+      },
+      access_name: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      config: {
+        type: Sequelize.JSON,
         allowNull: false
       },
       description: {
@@ -34,6 +38,10 @@ module.exports = {
         allowNull: true
       },
       status: {
+        type: Sequelize.INTEGER(1),
+        allowNull: false
+      },
+      adapter_type: {
         type: Sequelize.INTEGER(1),
         allowNull: false
       },
@@ -49,6 +57,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('broker_events');
+    await queryInterface.dropTable('adapters');
   }
 };

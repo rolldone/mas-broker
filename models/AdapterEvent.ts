@@ -3,11 +3,11 @@ import { Sequelize, Model, DataTypes } from "sequelize";
 
 const sequelize = new Sequelize(Database.main);
 
-class Broker extends Model {
+class AdapterEvent extends Model {
 
 }
 
-Broker.init({
+AdapterEvent.init({
   id: {
     type: DataTypes.INTEGER.UNSIGNED,
     autoIncrement: true,
@@ -21,33 +21,29 @@ Broker.init({
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  name: {
+  adapter_id: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false
+  },
+  event_key: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  broker_key: {
-    type: DataTypes.TEXT,
+  name: {
+    type: DataTypes.STRING,
     allowNull: false
   },
   description: {
     type: DataTypes.TEXT,
     allowNull: true
   },
-  access_name: {
-    type: DataTypes.TEXT,
-    allowNull: false
-  },
-  config: {
-    type: DataTypes.JSON,
-    allowNull: false
-  },
   status: {
     type: DataTypes.TINYINT,
     allowNull: false
   },
 }, {
-  tableName: 'brokers',
+  tableName: 'adapter_events',
   sequelize
 });
 
-export default Broker;
+export default AdapterEvent;

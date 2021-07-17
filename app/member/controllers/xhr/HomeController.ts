@@ -5,7 +5,7 @@ const WebSocketWrapper = require('ws-wrapper');
 const HomeController = MainHomeController.extend<HomeControllerInterface>({
   index: function (req, res) {
     let action = req.query.action || 'terima';
-    const client = new WebSocketWrapper(new ws("ws://masbroker.lan/socket/9d8b8cdd937a943a2aec11549f68adc4?id=2", {}));
+    const client = new WebSocketWrapper(new ws("ws://masadapter.lan/socket/9d8b8cdd937a943a2aec11549f68adc4?id=2", {}));
     client.of('foo').on('test', function(props:any){
       console.log('test -> ',props);
     });
@@ -52,7 +52,7 @@ const HomeController = MainHomeController.extend<HomeControllerInterface>({
     res.send({
       status: 'success',
       status_code: 200,
-      return: 'Welcome to Mas Broker api service with test socketcluster!'
+      return: 'Welcome to Mas Adapter api service with test socketcluster!'
     });
   }
 });

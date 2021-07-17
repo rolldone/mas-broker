@@ -1,31 +1,31 @@
 import BaseService from "@root/base/BaseService";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
-import { Broker, BrokerEvent } from "@root/models";
-import BrokerModel, { BrokerModelInterface, BROKER_STATUS } from "../models/BrokerModel";
+import { Adapter, AdapterEvent } from "@root/models";
+import AdapterModel, { AdapterModelInterface, BROKER_STATUS } from "../models/AdapterModel";
 
-export interface BrokerServiceInterface extends BaseServiceInterface {
-  returnBrokerModel?: { (): BrokerModelInterface }
-  generateBroker?: { (props: any): Promise<any> }
-  generateAllBrokers?: { (): Promise<any> }
-  removeBroker?: { (props: any): Promise<any> }
-  getBrokers?: { (props: any): Promise<any> }
-  getBroker?: { (props: any): Promise<any> }
+export interface AdapterServiceInterface extends BaseServiceInterface {
+  returnAdapterModel?: { (): AdapterModelInterface }
+  generateAdapter?: { (props: any): Promise<any> }
+  generateAllAdapters?: { (): Promise<any> }
+  removeAdapter?: { (props: any): Promise<any> }
+  getAdapters?: { (props: any): Promise<any> }
+  getAdapter?: { (props: any): Promise<any> }
 }
 
 declare var masterData: MasterDataInterface
 
-export default BaseService.extend<BrokerServiceInterface>({
-  returnBrokerModel: function () {
-    return BrokerModel.create();
+export default BaseService.extend<AdapterServiceInterface>({
+  returnAdapterModel: function () {
+    return AdapterModel.create();
   },
-  generateBroker: function (props) {
+  generateAdapter: function (props) {
     return new Promise(async (resolve: Function, reject: Function) => {
       try {
         let validation = this.returnValidator(props, {
           user_id: 'required',
           group_id: "required",
           id: 'required',
-          broker_key: 'required',
+          adapter_key: 'required',
           config: 'required',
           access_name: 'required'
         });
@@ -45,14 +45,14 @@ export default BaseService.extend<BrokerServiceInterface>({
       }
     })
   },
-  removeBroker: function (props) {
+  removeAdapter: function (props) {
     return new Promise(async (resolve: Function, reject: Function) => {
       try {
         let validation = this.returnValidator(props, {
           user_id: 'required',
           group_id: "required",
           id: 'required',
-          broker_key: 'required',
+          adapter_key: 'required',
           config: 'required',
           access_name: 'required'
         });
@@ -72,23 +72,23 @@ export default BaseService.extend<BrokerServiceInterface>({
       }
     });
   },
-  generateAllBrokers: async function () {
+  generateAllAdapters: async function () {
     try {
-      let brokerModel = this.returnBrokerModel();
-      let resData = await brokerModel.get({
+      let adapterModel = this.returnAdapterModel();
+      let resData = await adapterModel.get({
         where: {
           status: BROKER_STATUS.ON
         },
         include: [{
-          model: BrokerEvent,
-          as: 'broker_events',
+          model: AdapterEvent,
+          as: 'adapter_events',
           include: [{
-            model: Broker,
-            as: 'broker'
+            model: Adapter,
+            as: 'adapter'
           }]
         }]
       });
-      resData = brokerModel.getJSON(resData);
+      resData = adapterModel.getJSON(resData);
       for (var a = 0; a < resData.length; a++) {
         masterData.saveData('adapter.connection.' + resData[a].access_name.toLowerCase() + '.connect', resData[a]);
       }

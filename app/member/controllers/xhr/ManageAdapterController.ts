@@ -1,28 +1,28 @@
 import { AuthInterface } from "@root/app/main/compute/Auth";
 import BaseController from "@root/base/BaseController";
 import { Request, Response } from 'express';
-import BrokerService, { BrokerServiceInterface } from "../../services/BrokerService";
-export interface ManageBrokerControllerInterface extends BaseControllerInterface {
-  returnBrokerService?: { (): BrokerServiceInterface }
-  addBroker?: { (req: Request, res: Response): Promise<any> }
-  updateBroker?: { (req: Request, res: Response): Promise<any> }
-  deleteBroker?: { (req: Request, res: Response): Promise<any> }
-  getBrokers?: { (req: Request, res: Response): Promise<any> }
-  getBroker?: { (req: Request, res: Response): Promise<any> }
+import AdapterService, { AdapterServiceInterface } from "../../services/AdapterService";
+export interface ManageAdapterControllerInterface extends BaseControllerInterface {
+  returnAdapterService?: { (): AdapterServiceInterface }
+  addAdapter?: { (req: Request, res: Response): Promise<any> }
+  updateAdapter?: { (req: Request, res: Response): Promise<any> }
+  deleteAdapter?: { (req: Request, res: Response): Promise<any> }
+  getAdapters?: { (req: Request, res: Response): Promise<any> }
+  getAdapter?: { (req: Request, res: Response): Promise<any> }
   getAccessFormats?: { (req: Request, res: Response): Promise<any> }
 }
 
 declare var Auth : AuthInterface
 
-export default BaseController.extend<ManageBrokerControllerInterface>({
-  returnBrokerService: function () {
-    return BrokerService.create();
+export default BaseController.extend<ManageAdapterControllerInterface>({
+  returnAdapterService: function () {
+    return AdapterService.create();
   },
-  addBroker: async function (req, res) {
+  addAdapter: async function (req, res) {
     try {
       let props = req.body;
-      let brokerService = this.returnBrokerService();
-      let resData = await brokerService.addBroker(props) as any;
+      let eventService = this.returnAdapterService();
+      let resData = await eventService.addAdapter(props) as any;
       resData = {
         status: 'success',
         status_code: 200,
@@ -33,11 +33,11 @@ export default BaseController.extend<ManageBrokerControllerInterface>({
       return this.returnSimpleError(ex, res);
     }
   },
-  updateBroker: async function (req, res) {
+  updateAdapter: async function (req, res) {
     try {
       let props = req.body;
-      let brokerService = this.returnBrokerService();
-      let resData = await brokerService.updateBroker(props) as any;
+      let eventService = this.returnAdapterService();
+      let resData = await eventService.updateAdapter(props) as any;
       resData = {
         status: 'success',
         status_code: 200,
@@ -48,11 +48,11 @@ export default BaseController.extend<ManageBrokerControllerInterface>({
       return this.returnSimpleError(ex, res);
     }
   },
-  deleteBroker: async function (req, res) {
+  deleteAdapter: async function (req, res) {
     try {
       let props = req.body;
-      let brokerService = this.returnBrokerService();
-      let resData = brokerService.deleteBroker(props) as any;
+      let eventService = this.returnAdapterService();
+      let resData = eventService.deleteAdapter(props) as any;
       resData = {
         status: 'success',
         status_code: 200,
@@ -63,13 +63,13 @@ export default BaseController.extend<ManageBrokerControllerInterface>({
       return this.returnSimpleError(ex, res);
     }
   },
-  getBrokers: async function (req, res) {
+  getAdapters: async function (req, res) {
     try {
       let props = this.getBaseQuery(req, {});
       let user = await Auth.getAuth() as any;
       props.user_id = user.id;
-      let brokerService = this.returnBrokerService();
-      let resData = await brokerService.getBrokers(props) as any;
+      let eventService = this.returnAdapterService();
+      let resData = await eventService.getAdapters(props) as any;
       resData = {
         status: 'success',
         status_code: 200,
@@ -80,15 +80,15 @@ export default BaseController.extend<ManageBrokerControllerInterface>({
       return this.returnSimpleError(ex, res);
     }
   },
-  getBroker: async function (req, res) {
+  getAdapter: async function (req, res) {
     try {
       let props = this.getBaseQuery(req, {
         id : req.params.id
       });
       let user = await Auth.getAuth() as any;
       props.user_id = user.id;
-      let brokerService = this.returnBrokerService();
-      let resData = await brokerService.getBroker(props) as any;
+      let eventService = this.returnAdapterService();
+      let resData = await eventService.getAdapter(props) as any;
       resData = {
         status: 'success',
         status_code: 200,
@@ -102,8 +102,8 @@ export default BaseController.extend<ManageBrokerControllerInterface>({
   getAccessFormats: async function (req, res) {
     try {
       let props = this.getBaseQuery(req, {});
-      let brokerService = this.returnBrokerService();
-      let resData = await brokerService.getAccessFormats() as any;
+      let eventService = this.returnAdapterService();
+      let resData = await eventService.getAccessFormats() as any;
       resData = {
         status: 'success',
         status_code: 200,

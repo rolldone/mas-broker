@@ -1,13 +1,13 @@
 import Group from "./Group";
 import Event from "./Event";
 import User from "./User";
-import Broker from "./Broker";
-import BrokerEvent from "./BrokerEvent";
+import Adapter from "./Adapter";
+import AdapterEvent from "./AdapterEvent";
 
 export {
   Group,
   Event,
   User,
-  Broker,
-  BrokerEvent
+  Adapter,
+  AdapterEvent
 }

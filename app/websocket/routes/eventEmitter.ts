@@ -24,5 +24,7 @@ export default BaseProto.extend<EventEmitterInterface>({
     masterData.setOnListener('websocket.event.stop', EventController.binding().stop);
     masterData.setOnListener('websocket.event.logs', EventController.binding().logs);
     masterData.setOnListener('websocket.event.log', EventController.binding().log);
+    /* Manage adapter websocket */
+    masterData.setOnListener('adapter.connection.websocket.generate',GroupController.binding().generate);
   }
 });

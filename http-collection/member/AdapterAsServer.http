@@ -1,4 +1,4 @@
-#@host=http://masbroker.lan
+#@host=http://masadapter.lan
 ###
 # @name authToken
 POST {{host}}/api/v1/auth/login
@@ -23,7 +23,7 @@ Authorization: Bearer {{token}}
 
 ###
 # @name getAccessName
-GET {{host}}/api/v1/broker/access-formats
+GET {{host}}/api/v1/adapter/access-formats
 Authorization: Bearer {{token}}
 Content-Type: application/x-www-form-urlencoded
 
@@ -37,65 +37,53 @@ Content-Type: application/x-www-form-urlencoded
 @group_id = {{getGroup.response.body.$.return.id}}
 
 ###
-GET {{host}}/api/v1/broker/brokers?group_id={{group_id}}
+GET {{host}}/api/v1/adapter/adapters?group_id={{group_id}}
 Authorization: Bearer {{token}}
 Content-Type: application/x-www-form-urlencoded
 
 ###
-# @name addBroker
-POST {{host}}/api/v1/broker/add HTTP/1.1
+# @name addAdapter
+POST {{host}}/api/v1/adapter/add HTTP/1.1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "group_id" : "{{group_id}}",
   "user_id" : "{{user_id}}",
-  "name" : "First Broker",
-  "description" : "This is first broker",
+  "name" : "Web Socket Adapter",
+  "description" : "This is first websocket server adapter",
   "status" : 1,
-  "access_name" : "REDIS",
-  "config" : {
-    "password" : "",
-    "port" : 6379,
-    "host" : "172.17.0.1",
-    "no_ready_check" : false,
-    "db" : 1
-  }
+  "access_name" : "WEB_SOCKET_SERVER",
+  "config" : {}
 }
 
 ###
-@broker_id = {{addBroker.response.body.$.return.id}}
+@adapter_id = {{addAdapter.response.body.$.return.id}}
 
 ###
-# @name getBroker
-GET {{host}}/api/v1/broker/{{broker_id}}/view
+# @name getAdapter
+GET {{host}}/api/v1/adapter/{{adapter_id}}/view
 Authorization: Bearer {{token}}
 Content-Type: application/x-www-form-urlencoded
 
 ###
-@getBroker_broker_id = {{getBroker.response.body.$.return.id}}
+@getAdapter_adapter_id = {{getAdapter.response.body.$.return.id}}
 
 ###
-# @name updateBroker
-POST {{host}}/api/v1/broker/update HTTP/1.1
+# @name updateAdapter
+POST {{host}}/api/v1/adapter/update HTTP/1.1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "id" : "{{getBroker_broker_id}}",
+  "id" : "{{getAdapter_adapter_id}}",
   "group_id" : "{{group_id}}",
   "user_id" : "{{user_id}}",
-  "name" : "First Broker",
-  "description" : "This is first broker",
+  "name" : "Web Socket Adapter",
+  "description" : "This is first websocket server adapter",
   "status" : 1,
-  "access_name" : "REDIS",
-  "config" : {
-    "password" : "",
-    "port" : 6379,
-    "host" : "172.17.0.1",
-    "no_ready_check" : false,
-    "db" : 2
-  }
+  "access_name" : "WEB_SOCKET_SERVER",
+  "config" : {}
 }
 
 

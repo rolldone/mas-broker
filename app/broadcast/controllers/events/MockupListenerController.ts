@@ -17,7 +17,7 @@ const MockupListenerController = BaseController.extend<MockupListenerInterface>(
   returnSocketClient : function(){
     return SocketClient.create();
   },
-  /* You are the broker */
+  /* You are the adapter */
   returnIoSocket : function(){
     return global.io;
   },

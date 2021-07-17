@@ -1,4 +1,4 @@
-#@host=http://masbroker.lan
+#@host=http://masadapter.lan
 ###
 # @name authToken
 POST {{host}}/api/v1/auth/login
@@ -23,68 +23,68 @@ Authorization: Bearer {{token}}
 @group_id = 1
 
 ###
-# @name getBrokers
-GET {{host}}/api/v1/broker/brokers?group_id={{group_id}}
+# @name getAdapters
+GET {{host}}/api/v1/adapter/adapters?group_id={{group_id}}
 Authorization: Bearer {{token}}
 Content-Type: application/x-www-form-urlencoded
 
 ###
-@broker_id = {{getBrokers.response.body.$.return[0].id}}
+@adapter_id = {{getAdapters.response.body.$.return[0].id}}
 
 ###
-# @name addBrokerEvent
-POST {{host}}/api/v1/broker/event/add HTTP/1.1
+# @name addAdapterEvent
+POST {{host}}/api/v1/adapter/event/add HTTP/1.1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "broker_id" : "{{broker_id}}",
+  "adapter_id" : "{{adapter_id}}",
   "group_id" : "{{group_id}}",
-  "name" : "First Broker",
-  "description" : "This is first broker",
+  "name" : "First Adapter",
+  "description" : "This is first adapter",
   "status" : 1,
   "event_key" : "first.channel"
 }
 
 ###
-@broker_Event_id = {{addBrokerEvent.response.body.$.return.id}}
+@adapter_Event_id = {{addAdapterEvent.response.body.$.return.id}}
 
 ###
-# @name getBrokerEvent
-GET {{host}}/api/v1/broker/event/{{broker_Event_id}}/view
+# @name getAdapterEvent
+GET {{host}}/api/v1/adapter/event/{{adapter_Event_id}}/view
 Authorization: Bearer {{token}}
 Content-Type: application/x-www-form-urlencoded
 
 ###
-# @name updateBrokerEvent
-POST {{host}}/api/v1/broker/event/update
+# @name updateAdapterEvent
+POST {{host}}/api/v1/adapter/event/update
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "id" : "{{broker_Event_id}}",
-  "broker_id" : "{{broker_id}}",
+  "id" : "{{adapter_Event_id}}",
+  "adapter_id" : "{{adapter_id}}",
   "group_id" : "{{group_id}}",
-  "name" : "First Broker",
-  "description" : "This is first broker",
+  "name" : "First Adapter",
+  "description" : "This is first adapter",
   "status" : 1,
   "event_key" : "first.channel"
 }
 
 ###
-# @name getBrokerEvents
-GET {{host}}/api/v1/broker/event/events
+# @name getAdapterEvents
+GET {{host}}/api/v1/adapter/event/events
 Authorization: Bearer {{token}}
 Content-Type: application/x-www-form-urlencoded
 
 
 ###
-# @name deleteBrokerEvent
-POST {{host}}/api/v1/broker/event/delete
+# @name deleteAdapterEvent
+POST {{host}}/api/v1/adapter/event/delete
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "ids" : "[{{broker_Event_id}}]"
+  "ids" : "[{{adapter_Event_id}}]"
 }
 

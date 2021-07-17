@@ -16,13 +16,13 @@ export default BaseController.extend<ConnectionControllerInterface>({
     try {
       let connectionService = this.returnConnectionService();
       let resData = await connectionService.connect({
-        broker_key: props.broker_key,
+        adapter_key: props.adapter_key,
         port: props.config.port,
         host: props.config.host,
         password: props.config.password,
         no_ready_check: props.config.no_ready_check,
         db: props.config.db,
-        broker_events : props.broker_events
+        adapter_events : props.adapter_events
       });
     } catch (ex) {
       console.log('redisclient - connectionController - connect - ex : ');

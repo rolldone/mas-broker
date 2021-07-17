@@ -69,7 +69,7 @@ const GroupService = BaseService.extend<GroupServiceInterface>({
       let groupModel = this.returnGroupModel();
       props.group_key = DataManipulate.binding().generateMd5(props.id+'-'+props.name+"-"+new Date().getTime());
       let resData = await groupModel.save(props);
-      masterData.saveData('broker.group.generate',resData);
+      masterData.saveData('adapter.group.generate',resData);
       return resData;
     } catch (ex) {
       throw ex;

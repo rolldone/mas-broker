@@ -1,26 +1,26 @@
-import BrokerModel, { ACCESS_NAME, ACCESS_CONFIG, BrokerModelInterface, BROKER_STATUS } from "@root/app/broker/models/BrokerModel";
+import AdapterModel, { ACCESS_NAME, ACCESS_CONFIG, AdapterModelInterface, BROKER_STATUS } from "@root/app/adapter/models/AdapterModel";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import { User } from "@root/models";
 import DataManipulate from "../compute/DataManipulate";
 import BaseService from "./BaseService";
 
-export interface BrokerServiceInterface extends BaseServiceInterface {
-  returnBrokerModel?: { (): BrokerModelInterface }
-  addBroker?: { (props: any): Promise<any> }
-  updateBroker?: { (props: any): Promise<any> }
-  deleteBroker?: { (props: any): Promise<any> }
-  getBrokers?: { (props: any): Promise<any> }
-  getBroker?: { (props: any): Promise<any> }
+export interface AdapterServiceInterface extends BaseServiceInterface {
+  returnAdapterModel?: { (): AdapterModelInterface }
+  addAdapter?: { (props: any): Promise<any> }
+  updateAdapter?: { (props: any): Promise<any> }
+  deleteAdapter?: { (props: any): Promise<any> }
+  getAdapters?: { (props: any): Promise<any> }
+  getAdapter?: { (props: any): Promise<any> }
   getAccessFormats?: { (): Promise<any> }
 }
 
 declare var masterData: MasterDataInterface
 
-export default BaseService.extend<BrokerServiceInterface>({
-  returnBrokerModel: function () {
-    return BrokerModel.create();
+export default BaseService.extend<AdapterServiceInterface>({
+  returnAdapterModel: function () {
+    return AdapterModel.create();
   },
-  addBroker: async function (props) {
+  addAdapter: async function (props) {
     try {
       let validation = this.returnValidator(props, {
         user_id: 'required',
@@ -33,18 +33,18 @@ export default BaseService.extend<BrokerServiceInterface>({
         case validation.fails:
           throw global.CustomError('error.validation', validation.errors.errors);
       }
-      props.broker_key = DataManipulate.generateMd5(props.user_id + ' ' + props.name + ' ' + new Date().getUTCMilliseconds());
-      let brokerModel = this.returnBrokerModel();
-      let resData = await brokerModel.save(props);
-      resData = brokerModel.getJSON(resData);
-      /* Go to broker module to install new broker */
-      masterData.saveData('broker.install', resData);
+      props.adapter_key = DataManipulate.generateMd5(props.user_id + ' ' + props.name + ' ' + new Date().getUTCMilliseconds());
+      let adapterModel = this.returnAdapterModel();
+      let resData = await adapterModel.save(props);
+      resData = adapterModel.getJSON(resData);
+      /* Go to adapter module to install new adapter */
+      masterData.saveData('adapter.install', resData);
       return resData;
     } catch (ex) {
       throw ex;
     }
   },
-  updateBroker: async function (props) {
+  updateAdapter: async function (props) {
     try {
       let validation = this.returnValidator(props, {
         user_id: 'required',
@@ -58,19 +58,19 @@ export default BaseService.extend<BrokerServiceInterface>({
           throw global.CustomError('error.validation', validation.errors.errors);
       }
       /* Block data strict to update */
-      let brokerModel = this.returnBrokerModel();
-      let resData = await brokerModel.update(props);
-      resData = await this.getBroker({
+      let adapterModel = this.returnAdapterModel();
+      let resData = await adapterModel.update(props);
+      resData = await this.getAdapter({
         id : resData.id,
         user_id : resData.user_id
       });
-      /* Go to broker module to install new broker */
+      /* Go to adapter module to install new adapter */
       if (resData.status == BROKER_STATUS.OFF) {
-        masterData.saveData('broker.uninstall', resData);
+        masterData.saveData('adapter.uninstall', resData);
       } else {
-        masterData.saveData('broker.uninstall', resData);
+        masterData.saveData('adapter.uninstall', resData);
         setTimeout(() => {
-          masterData.saveData('broker.install', resData);
+          masterData.saveData('adapter.install', resData);
         }, 2000);
       }
       return resData;
@@ -78,11 +78,11 @@ export default BaseService.extend<BrokerServiceInterface>({
       throw ex;
     }
   },
-  deleteBroker: async function (props) {
+  deleteAdapter: async function (props) {
     try {
       let validation = this.returnValidator(props, {
         user_id: 'required',
-        broker_key: 'required',
+        adapter_key: 'required',
         name: 'required',
         status: 'required',
         access_name: 'required'
@@ -96,7 +96,7 @@ export default BaseService.extend<BrokerServiceInterface>({
       throw ex;
     }
   },
-  getBrokers: async function (props) {
+  getAdapters: async function (props) {
     try {
       let validation = this.returnValidator(props, {
         user_id: 'required',
@@ -106,8 +106,8 @@ export default BaseService.extend<BrokerServiceInterface>({
         case validation.fails:
           throw global.CustomError('error.validation', validation.errors.errors);
       }
-      let brokerModel = this.returnBrokerModel();
-      let resData = await brokerModel.get({
+      let adapterModel = this.returnAdapterModel();
+      let resData = await adapterModel.get({
         where: {
           user_id: props.user_id,
           group_id: props.group_id
@@ -120,13 +120,13 @@ export default BaseService.extend<BrokerServiceInterface>({
           }
         }]
       });
-      resData = brokerModel.getJSON(resData);
+      resData = adapterModel.getJSON(resData);
       return resData;
     } catch (ex) {
       throw ex;
     }
   },
-  getBroker: async function (props) {
+  getAdapter: async function (props) {
     try {
       let validation = this.returnValidator(props, {
         id: 'required',
@@ -136,15 +136,15 @@ export default BaseService.extend<BrokerServiceInterface>({
         case validation.fails:
           throw global.CustomError('error.validation', validation.errors.errors);
       }
-      let brokerModel = this.returnBrokerModel();
-      brokerModel.nest = true;
-      let resData = await brokerModel.first({
+      let adapterModel = this.returnAdapterModel();
+      adapterModel.nest = true;
+      let resData = await adapterModel.first({
         where: {
           id: props.id,
           user_id: props.user_id
         }
       });
-      resData = brokerModel.getJSON(resData);
+      resData = adapterModel.getJSON(resData);
       return resData;
     } catch (ex) {
       throw ex;

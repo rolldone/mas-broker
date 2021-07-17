@@ -35,9 +35,9 @@ multithread(() => {
       /* Test nrp to socket */
       
       /* Load gate for client connect*/
-      masterData.saveData('websocket.group.start_groups',{});
-      /* Load adapter connect to outside broker service*/
-      masterData.saveData('broker.start_all',{});
+      // masterData.saveData('websocket.group.start_groups',{});
+      /* Load adapter connect to outside adapter service*/
+      masterData.saveData('adapter.start_all',{});
       console.log('Done');
     }
   } as AppInterface);

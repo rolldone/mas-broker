@@ -73,7 +73,7 @@ const EventService = BaseService.extend<EventServiceInterface>({
       }
       let eventModel = this.returnEventModel();
       let resData = await eventModel.save(props);
-      masterData.saveData('broker.event.generate', resData);
+      masterData.saveData('adapter.event.generate', resData);
       return resData;
     } catch (ex) {
       throw ex;
@@ -97,9 +97,9 @@ const EventService = BaseService.extend<EventServiceInterface>({
       let eventModel = this.returnEventModel();
       let resData = await eventModel.update(props);
       if (props.status == 0) {
-        masterData.saveData('broker.event.stop', resData);
+        masterData.saveData('adapter.event.stop', resData);
       } else {
-        masterData.saveData('broker.event.start', resData);
+        masterData.saveData('adapter.event.start', resData);
       }
       return resData;
     } catch (ex) {
@@ -113,7 +113,7 @@ const EventService = BaseService.extend<EventServiceInterface>({
         case validation.fails:
           throw global.CustomError('error.validation', validation.errors.errors);
       }
-      masterData.saveData('broker.event.delete', props);
+      masterData.saveData('adapter.event.delete', props);
       return props;
     } catch (ex) {
       throw ex;

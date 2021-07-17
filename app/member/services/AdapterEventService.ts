@@ -1,11 +1,11 @@
-import { BROKER_EVENT_STATUS } from "@root/app/broker/models/BrokerEventModel";
+import { BROKER_EVENT_STATUS } from "@root/app/adapter/models/AdapterEventModel";
 import BaseService from "@root/base/BaseService";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
-import { Broker, Group, User } from "@root/models";
-import BrokerEventModel, { BrokerEventModelInterface } from "../models/BrokerEventModel";
+import { Adapter, Group, User } from "@root/models";
+import AdapterEventModel, { AdapterEventModelInterface } from "../models/AdapterEventModel";
 
-export interface BrokerEventServiceInterface extends BaseServiceInterface {
-  returnBrokerEventModel?: { (): BrokerEventModelInterface }
+export interface AdapterEventServiceInterface extends BaseServiceInterface {
+  returnAdapterEventModel?: { (): AdapterEventModelInterface }
   addEvent?: { (props: any): Promise<any> }
   updateEvent?: { (props: any): Promise<any> }
   deleteEvent?: { (props: any): Promise<any> }
@@ -15,9 +15,9 @@ export interface BrokerEventServiceInterface extends BaseServiceInterface {
 
 declare var masterData: MasterDataInterface
 
-export default BaseService.extend<BrokerEventServiceInterface>({
-  returnBrokerEventModel: function () {
-    return BrokerEventModel.create();
+export default BaseService.extend<AdapterEventServiceInterface>({
+  returnAdapterEventModel: function () {
+    return AdapterEventModel.create();
   },
   addEvent: async function (props) {
     try {
@@ -26,11 +26,11 @@ export default BaseService.extend<BrokerEventServiceInterface>({
         case validation.fails:
           throw global.CustomError('error.validation', validation.errors.errors);
       }
-      let brokerEventModel = this.returnBrokerEventModel();
-      let resData = await brokerEventModel.save(props);
-      resData = brokerEventModel.getJSON(resData);
+      let adapterEventModel = this.returnAdapterEventModel();
+      let resData = await adapterEventModel.save(props);
+      resData = adapterEventModel.getJSON(resData);
       resData = await this.getEvent(resData) as any;
-      masterData.saveData('broker.event.generate', resData);
+      masterData.saveData('adapter.event.generate', resData);
       return resData;
     } catch (ex) {
       throw ex;
@@ -44,20 +44,20 @@ export default BaseService.extend<BrokerEventServiceInterface>({
           case validation.fails:
             throw global.CustomError('error.validation', validation.errors.errors);
         }
-        let brokerEventModel = this.returnBrokerEventModel();
-        let brokerEvent = await this.getEvent(props);
-        if (brokerEvent == null) {
-          throw global.CustomError('error.not_found', 'Broker event is not found!');
+        let adapterEventModel = this.returnAdapterEventModel();
+        let adapterEvent = await this.getEvent(props);
+        if (adapterEvent == null) {
+          throw global.CustomError('error.not_found', 'Adapter event is not found!');
         }
-        masterData.saveData('broker.event.delete', brokerEvent);
+        masterData.saveData('adapter.event.delete', adapterEvent);
         setTimeout(async () => {
-          let resData = await brokerEventModel.update(props);
-          resData = brokerEventModel.getJSON(resData);
+          let resData = await adapterEventModel.update(props);
+          resData = adapterEventModel.getJSON(resData);
           resData = await this.getEvent(resData) as any;
           if (resData.status == BROKER_EVENT_STATUS.OFF) {
             return resolve(resData);
           }
-          masterData.saveData('broker.event.generate', resData);
+          masterData.saveData('adapter.event.generate', resData);
           resolve(resData);
         }, 2000);
       } catch (ex) {
@@ -77,16 +77,16 @@ export default BaseService.extend<BrokerEventServiceInterface>({
       }
       let ids = JSON.parse(props.ids);
       for (var a = 0; a < ids.length; a++) {
-        let brokerEventItem = await this.getEvent({
+        let adapterEventItem = await this.getEvent({
           id: ids[a],
           user_id: props.user_id
         }) as any;
-        if(brokerEventItem != null){
-          masterData.saveData('broker.event.delete', brokerEventItem);
+        if(adapterEventItem != null){
+          masterData.saveData('adapter.event.delete', adapterEventItem);
         }
       }
-      let brokerEventModel = this.returnBrokerEventModel();
-      let resData = await brokerEventModel.delete({
+      let adapterEventModel = this.returnAdapterEventModel();
+      let resData = await adapterEventModel.delete({
         where: {
           id: ids,
           user_id : props.user_id
@@ -108,15 +108,15 @@ export default BaseService.extend<BrokerEventServiceInterface>({
         case validation.fails:
           throw global.CustomError('error.validation', validation.errors.errors);
       }
-      let brokerEventModel = this.returnBrokerEventModel();
+      let adapterEventModel = this.returnAdapterEventModel();
 
-      let where = brokerEventModel.getJSON({
+      let where = adapterEventModel.getJSON({
         id: props.id,
         user_id: props.user_id,
-        broker_id: props.broker_id,
+        adapter_id: props.adapter_id,
         group_id: props.group_id
       });
-      let resData = await brokerEventModel.first({
+      let resData = await adapterEventModel.first({
         where: where,
         include: [
           {
@@ -127,8 +127,8 @@ export default BaseService.extend<BrokerEventServiceInterface>({
             }
           },
           {
-            model: Broker,
-            as: 'broker'
+            model: Adapter,
+            as: 'adapter'
           },
           {
             model: Group,
@@ -136,7 +136,7 @@ export default BaseService.extend<BrokerEventServiceInterface>({
           }
         ]
       })
-      resData = brokerEventModel.getJSON(resData);
+      resData = adapterEventModel.getJSON(resData);
       return resData;
     } catch (ex) {
       throw ex;
@@ -151,18 +151,18 @@ export default BaseService.extend<BrokerEventServiceInterface>({
         case validation.fails:
           throw global.CustomError('error.validation', validation.errors.errors);
       }
-      let brokerEventModel = this.returnBrokerEventModel();
-      let where = brokerEventModel.getJSON({
+      let adapterEventModel = this.returnAdapterEventModel();
+      let where = adapterEventModel.getJSON({
         user_id: props.user_id,
         group_id: props.group_id,
-        broker_id: props.broker_id
+        adapter_id: props.adapter_id
       });
 
-      let resData = await brokerEventModel.get({
+      let resData = await adapterEventModel.get({
         where: where,
         include: [{
-          model: Broker,
-          as: 'broker'
+          model: Adapter,
+          as: 'adapter'
         }, {
           model: Group,
           as: 'group'
@@ -171,7 +171,7 @@ export default BaseService.extend<BrokerEventServiceInterface>({
           as: 'user'
         }]
       });
-      resData = brokerEventModel.getJSON(resData);
+      resData = adapterEventModel.getJSON(resData);
       return resData;
     } catch (ex) {
       throw ex;

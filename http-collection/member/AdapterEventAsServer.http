@@ -1,0 +1,90 @@
+#@host=http://masadapter.lan
+###
+# @name authToken
+POST {{host}}/api/v1/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+email=donny.rolanda@gmail.com
+&password=43lw9rj2
+
+###
+@token = {{authToken.response.body.$.return.token}}
+
+###
+# @name userProfile
+GET {{host}}/api/v1/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+@user_id = {{userProfile.response.body.$.return.id}}
+@user_status = {{userProfile.response.body.$.return.status}}
+
+@group_id = 1
+
+###
+# @name getAdapters
+GET {{host}}/api/v1/adapter/adapters?group_id={{group_id}}
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@adapter_id = {{getAdapters.response.body.$.return[0].id}}
+
+###
+# @name addAdapterEvent
+POST {{host}}/api/v1/adapter/event/add HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "adapter_id" : "{{adapter_id}}",
+  "group_id" : "{{group_id}}",
+  "name" : "First Adapter",
+  "description" : "This is first adapter",
+  "status" : 1,
+  "event_key" : "first.channel"
+}
+
+###
+@adapter_Event_id = {{addAdapterEvent.response.body.$.return.id}}
+
+###
+# @name getAdapterEvent
+GET {{host}}/api/v1/adapter/event/{{adapter_Event_id}}/view
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+# @name updateAdapterEvent
+POST {{host}}/api/v1/adapter/event/update
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "id" : "{{adapter_Event_id}}",
+  "adapter_id" : "{{adapter_id}}",
+  "group_id" : "{{group_id}}",
+  "name" : "First Adapter",
+  "description" : "This is first adapter",
+  "status" : 1,
+  "event_key" : "first.channel"
+}
+
+###
+# @name getAdapterEvents
+GET {{host}}/api/v1/adapter/event/events
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+
+###
+# @name deleteAdapterEvent
+POST {{host}}/api/v1/adapter/event/delete
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "ids" : "[{{adapter_Event_id}}]"
+}
+

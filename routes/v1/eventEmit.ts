@@ -1,4 +1,4 @@
-import BrokerEventEmitter from "@root/app/broker/routes/eventEmitter";
+import AdapterEventEmitter from "@root/app/adapter/routes/eventEmitter";
 import RedisEventEmitter from "@root/app/redisclient/routes/eventEmitter";
 import WebSocketEventEmit from "@root/app/websocket/routes/eventEmitter";
 import BaseRoute from "@root/base/BaseRoute";
@@ -9,9 +9,9 @@ declare var masterData : MasterDataInterface
 export default BaseRoute.extend<BaseRouteInterface>({
   baseRoute : '',
   onready(){
-    /* Register broker event emitter route */
+    /* Register adapter event emitter route */
     WebSocketEventEmit.create(this);
-    BrokerEventEmitter.create(this);
+    AdapterEventEmitter.create(this);
     RedisEventEmitter.create(this);
   }
 });

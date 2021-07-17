@@ -1,10 +1,10 @@
 import { AuthInterface } from "@root/app/main/compute/Auth";
 import BaseController from "@root/base/BaseController";
 import { Request, Response } from 'express';
-import BrokerEventService, { BrokerEventServiceInterface } from "../../services/BrokerEventService";
+import AdapterEventService, { AdapterEventServiceInterface } from "../../services/AdapterEventService";
 
-export interface ManageBrokerEventControllerInterface extends BaseControllerInterface {
-  returnBrokerEventService?: { (): BrokerEventServiceInterface }
+export interface ManageAdapterEventControllerInterface extends BaseControllerInterface {
+  returnAdapterEventService?: { (): AdapterEventServiceInterface }
   addEvent?: { (req: Request, res: Response): Promise<any> }
   updateEvent?: { (req: Request, res: Response): Promise<any> }
   deleteEvent?: { (req: Request, res: Response): Promise<any> }
@@ -14,17 +14,17 @@ export interface ManageBrokerEventControllerInterface extends BaseControllerInte
 
 declare var Auth: AuthInterface
 
-export default BaseController.extend<ManageBrokerEventControllerInterface>({
-  returnBrokerEventService: function () {
-    return BrokerEventService.create();
+export default BaseController.extend<ManageAdapterEventControllerInterface>({
+  returnAdapterEventService: function () {
+    return AdapterEventService.create();
   },
   addEvent: async function (req, res) {
     try {
       let props = req.body;
-      let brokerEventService = this.returnBrokerEventService();
+      let adapterEventService = this.returnAdapterEventService();
       let user = await Auth.getAuth() as any;
       props.user_id = user.id;
-      let resData = await brokerEventService.addEvent(props);
+      let resData = await adapterEventService.addEvent(props);
       resData = {
         status: 'success',
         status_code: 200,
@@ -38,10 +38,10 @@ export default BaseController.extend<ManageBrokerEventControllerInterface>({
   updateEvent: async function (req, res) {
     try {
       let props = req.body;
-      let brokerEventService = this.returnBrokerEventService();
+      let adapterEventService = this.returnAdapterEventService();
       let user = await Auth.getAuth() as any;
       props.user_id = user.id;
-      let resData = await brokerEventService.updateEvent(props);
+      let resData = await adapterEventService.updateEvent(props);
       resData = {
         status: 'success',
         status_code: 200,
@@ -55,10 +55,10 @@ export default BaseController.extend<ManageBrokerEventControllerInterface>({
   deleteEvent: async function (req, res) {
     try {
       let props = req.body;
-      let brokerEventService = this.returnBrokerEventService();
+      let adapterEventService = this.returnAdapterEventService();
       let user = await Auth.getAuth() as any;
       props.user_id = user.id;
-      let resData = await brokerEventService.deleteEvent(props);
+      let resData = await adapterEventService.deleteEvent(props);
       resData = {
         status: 'success',
         status_code: 200,
@@ -76,8 +76,8 @@ export default BaseController.extend<ManageBrokerEventControllerInterface>({
       });
       let user = await Auth.getAuth() as any;
       props.user_id = user.id;
-      let brokerEventService = this.returnBrokerEventService();
-      let resData = await brokerEventService.getEvent(props);
+      let adapterEventService = this.returnAdapterEventService();
+      let resData = await adapterEventService.getEvent(props);
       resData = {
         status: 'success',
         status_code: 200,
@@ -93,8 +93,8 @@ export default BaseController.extend<ManageBrokerEventControllerInterface>({
       let props = this.getBaseQuery(req, {});
       let user = await Auth.getAuth() as any;
       props.user_id = user.id;
-      let brokerEventService = this.returnBrokerEventService();
-      let resData = await brokerEventService.getEvents(props);
+      let adapterEventService = this.returnAdapterEventService();
+      let resData = await adapterEventService.getEvents(props);
       resData = {
         status: 'success',
         status_code: 200,

@@ -19,7 +19,7 @@ const PreRegisterListenerController = BaseController.extend<PreRegisterListenerI
   returnSocketClient: function () {
     return SocketClient.create();
   },
-  /* You are the broker */
+  /* You are the adapter */
   returnIoSocket: function () {
     return global.io;
   },
