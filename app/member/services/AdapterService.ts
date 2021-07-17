@@ -1,4 +1,4 @@
-import AdapterModel, { ACCESS_NAME, ACCESS_CONFIG, AdapterModelInterface, BROKER_STATUS } from "@root/app/adapter/models/AdapterModel";
+import AdapterModel, { ACCESS_NAME, ACCESS_CONFIG, AdapterModelInterface, BROKER_STATUS, ADAPTER_TYPE } from "@root/app/adapter/models/AdapterModel";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import { User } from "@root/models";
 import DataManipulate from "../compute/DataManipulate";
@@ -27,13 +27,14 @@ export default BaseService.extend<AdapterServiceInterface>({
         name: 'required',
         status: 'required',
         access_name: 'required',
-        config: 'required'
+        config: 'required',
       });
       switch (await validation.check()) {
         case validation.fails:
           throw global.CustomError('error.validation', validation.errors.errors);
       }
-      props.adapter_key = DataManipulate.generateMd5(props.user_id + ' ' + props.name + ' ' + new Date().getUTCMilliseconds());
+      props.adapter_key = DataManipulate.generateMd5(props.user_id + ' ' + props.name + ' ' + props.adapter_type + ' ' + new Date().getUTCMilliseconds());
+      props.adapter_type = ADAPTER_TYPE[props.access_name];
       let adapterModel = this.returnAdapterModel();
       let resData = await adapterModel.save(props);
       resData = adapterModel.getJSON(resData);
@@ -59,10 +60,11 @@ export default BaseService.extend<AdapterServiceInterface>({
       }
       /* Block data strict to update */
       let adapterModel = this.returnAdapterModel();
+      props.adapter_type = ADAPTER_TYPE[props.access_name];
       let resData = await adapterModel.update(props);
       resData = await this.getAdapter({
-        id : resData.id,
-        user_id : resData.user_id
+        id: resData.id,
+        user_id: resData.user_id
       });
       /* Go to adapter module to install new adapter */
       if (resData.status == BROKER_STATUS.OFF) {
@@ -85,7 +87,8 @@ export default BaseService.extend<AdapterServiceInterface>({
         adapter_key: 'required',
         name: 'required',
         status: 'required',
-        access_name: 'required'
+        access_name: 'required',
+        adapter_type: 'required'
       });
       switch (await validation.check()) {
         case validation.fails:
@@ -100,7 +103,7 @@ export default BaseService.extend<AdapterServiceInterface>({
     try {
       let validation = this.returnValidator(props, {
         user_id: 'required',
-        group_id: 'required'
+        group_id: 'required',
       });
       switch (await validation.check()) {
         case validation.fails:

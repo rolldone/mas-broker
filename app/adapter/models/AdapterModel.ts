@@ -17,11 +17,27 @@ Adapter.hasMany(AdapterEvent, {
   as: 'adapter_events'
 })
 
+export const ADAPTER_AS_CLIENT = 1 
+export const ADAPTER_AS_SERVER = 2
+
+export enum ADAPTER_TYPE {
+  /* As Client */
+  REDIS = ADAPTER_AS_CLIENT,
+  RABBITMQ = ADAPTER_AS_CLIENT,
+  MQTT = ADAPTER_AS_CLIENT,
+  SOCKET_IO = ADAPTER_AS_CLIENT,
+  /* As server */
+  SOCKET_IO_SERVER = ADAPTER_AS_SERVER,
+  WEB_SOCKET_SERVER = ADAPTER_AS_SERVER
+}
+
 export enum ACCESS_NAME {
   REDIS = 'REDIS',
   RABBITMQ = 'RABBITMQ',
   MQTT = 'MQTT',
-  SOCKET_IO = 'SOCKET_IO'
+  SOCKET_IO = 'SOCKET_IO',
+  SOCKET_IO_SERVER = 'SOCKET_IO_SERVER',
+  WEB_SOCKET_SERVER = 'WEB_SOCKET_SERVER'
 }
 
 export const ACCESS_CONFIG = {

@@ -1,4 +1,17 @@
-#@host=http://masadapter.lan
+#@@host=http://masadapter.lan
+
+###
+POST {{host}}/api/v1/auth/register
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+email=donny.rolanda@gmail.com
+&password=43lw9rj2
+&password_confirm=43lw9rj2
+&first_name=donny
+&status=1
+&last_name=rolanda
+
 ###
 # @name authToken
 POST {{host}}/api/v1/auth/login

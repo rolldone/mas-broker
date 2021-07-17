@@ -36,7 +36,13 @@ export default BaseController.extend<EventControllerInterface>({
     }
   },
   delete : async function(props){
-
+    try{
+      let eventService = this.returnEventService();
+      await eventService.delete(props);
+    }catch(ex){
+      console.log('RedisClient - EventController - add - ex => ');
+      console.log(' ',ex);
+    }
   },
   get : async function(props){
 

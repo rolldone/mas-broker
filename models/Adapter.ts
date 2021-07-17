@@ -45,6 +45,10 @@ Adapter.init({
     type: DataTypes.TINYINT,
     allowNull: false
   },
+  adapter_type : {
+    type : DataTypes.TINYINT.UNSIGNED,
+    allowNull: false
+  }
 }, {
   tableName: 'adapters',
   sequelize
