@@ -6,13 +6,14 @@ const HomeController = MainHomeController.extend<HomeControllerInterface>({
   index: function (req, res) {
     let action = req.query.action || 'terima';
     const client = new WebSocketWrapper(new ws("ws://masadapter.lan/socket/dd6e20928f15e3b43ebc7022549870e3", {}));
-    client.of('foo').on('test', function(props:any){
-      console.log('test -> ',props);
-    });
+    
     client.on('open', function(){
       if(action == 'terima'){
-        client.on('test', function(props:any){
+        client.on('first.channel', function(props:any){
           console.log('test tanpa of -> ',props);
+        });
+        client.of('foo').on('first.channel', function(props:any){
+          console.log('test -> ',props);
         });
       }
       setTimeout(()=>{
@@ -32,9 +33,9 @@ const HomeController = MainHomeController.extend<HomeControllerInterface>({
           //   }
     
           //   client.send(array);
-          client.emit('first.channel',{
-            from : 'Donny',
-            payload : 'vmdfkvmdkfvmkvm'
+          client.of('foo').emit('first.channel',{
+            name : "Donny rolanda",
+            email : 'donny.rolanda@gmail.com'
           });
           test();
         },5000);
