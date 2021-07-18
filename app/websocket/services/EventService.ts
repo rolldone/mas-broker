@@ -12,7 +12,6 @@ export interface EventServiceInterface extends Omit<ConnectionServiceInterface, 
   create?: (...props: any) => this
   returnGatewayModel?: { (): GatewayModelInterface }
   getGateways?: { (sender_id: number, props: any): Promise<any> }
-  generateSocketEvent?: { (props: any): void }
   deleteSocketEvent?: { (props: any): void }
   startSocketEvents?: { (ws: any, events?: Array<any>): void }
   stopSocketEvent?: { (props: any): void }
@@ -28,6 +27,7 @@ export default ConnectionService.extend<EventServiceInterface>({
   },
   getGateways: async function (receiver_id, props) {
     try {
+      /* Store in cache later if have get data from query */
       let gatewayModel = this.returnGatewayModel();
       let resGatewayDatas = await gatewayModel.get({
         where: {
@@ -42,58 +42,14 @@ export default ConnectionService.extend<EventServiceInterface>({
         }]
       });
       resGatewayDatas = gatewayModel.getJSON(resGatewayDatas) as Array<any>;
-      // console.log('resGatewayDatas -> ', resGatewayDatas);
+
+      /* Loop the process emit with many event with same receiver */
       for (var a = 0; a < resGatewayDatas.length; a++) {
         masterData.saveData('adapter.connection.' + resGatewayDatas[a].sender.adapter.access_name.toLowerCase() + '.event.emit', {
           gateway: resGatewayDatas[a],
           value: props
         });
       }
-    } catch (ex) {
-      throw ex;
-    }
-  },
-  generateSocketEvent: async function (props) {
-    try {
-      if (props.status == ADAPTER_EVENT_STATUS.OFF) {
-        return;
-      }
-      let validation = this.returnValidator(props, {
-        adapter_id: 'required',
-        status: 'required'
-      });
-      switch (await validation.check()) {
-        case validation.fails:
-          throw global.CustomError('error.validation', validation.errors.errors);
-      }
-
-      let adapterModel = this.returnAdapterModel();
-      let resDataGroupModel = await adapterModel.first({
-        where: {
-          id: props.adapter_id,
-          status: GROUP_STATUS.ON
-        }
-      })
-      let pathGroup = this._getSocketPath(resDataGroupModel.adapter_key);
-      let wsCollections: {
-        [key: string]: any
-      } = masterData.getData('ws.collections', {}) as any;
-      if (wsCollections[pathGroup] == null) {
-        throw global.CustomError('error.not_found', 'The ws with inside adapter_key ' + resDataGroupModel.adapter_key + ' is not found!');
-      }
-      if (wsCollections[pathGroup].wsFuncs == null) {
-        wsCollections[pathGroup].wsFuncs = {} as any;
-      }
-      if (wsCollections[pathGroup].wsFuncs[props.event_key] == null) {
-        wsCollections[pathGroup].wsFuncs[props.event_key] = function (event_key: string, props: any) {
-          console.log('wsCollections function -> ', event_key, props);
-        }
-      }
-      // wsCollections[pathGroup].removeEventListener(props.event_key, wsCollections[pathGroup].wsFuncs[props.event_key].bind(this, props.event_key));
-      wsCollections[pathGroup].on(props.event_key, wsCollections[pathGroup].wsFuncs[props.event_key].bind(this, props.event_key));
-      wsCollections[pathGroup].on('test', function (props: any) {
-        console.log('test from server -> ', props);
-      })
     } catch (ex) {
       throw ex;
     }
@@ -149,6 +105,7 @@ export default ConnectionService.extend<EventServiceInterface>({
   stopSocketEvent: function (props) {
     return this.deleteSocketEvent(props);
   },
+  /** Add new socket event */
   startSocketEvent: async function (props) {
     try {
       let validation = this.returnValidator(props, {
@@ -208,17 +165,17 @@ export default ConnectionService.extend<EventServiceInterface>({
             // console.log('news_of',news_of.name);
             // console.log('propsssssssssssssssssss', props);
             this.getGateways(adapter_event.id, {
-              to : news_of.name,
-              payload : props
+              to: news_of.name,
+              payload: props
             });
           }
         }
 
-
-        /** Basic ws remove listener */
+        /** Remove the listener first before create new if exist */
         ws.removeListener(events[a].event_key, ws.wsFuncs[events[a].event_key].bind(this, pathGroup, ws, events[a]))
         /** Basic ws method */
         ws.on(events[a].event_key, ws.wsFuncs[events[a].event_key].bind(this, pathGroup, ws, events[a]));
+
       }
     } catch (ex) {
       throw ex;

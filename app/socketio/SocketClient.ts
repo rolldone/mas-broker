@@ -1,6 +1,5 @@
 import BaseProto from '@root/base/BaseProto';
 import { AppConfig } from '@root/config';
-import debounce from 'lodash/debounce';
 
 export interface SocketClientInterface extends BaseProtoInterface<SocketClientInterface>{
   call : {(token : String) : Promise<SocketClientInterface> }
