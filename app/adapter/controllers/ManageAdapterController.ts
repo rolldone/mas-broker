@@ -28,9 +28,9 @@ export default BaseController.extend<ManageAdapterControllerInterface>({
     try {
       let adapterService = this.returnAdapterService();
       let resData = await adapterService.removeAdapter(props);
-      setTimeout(async ()=>{
+      setTimeout(async () => {
         await adapterService.generateAdapter(props);
-      },2000);
+      }, 2000);
       /* Create response via master data here */
     } catch (ex) {
       console.log('Adapter - ManageAdapterController - updateAdapter - ex :');
@@ -43,24 +43,6 @@ export default BaseController.extend<ManageAdapterControllerInterface>({
       let resData = await adapterService.removeAdapter(props);
     } catch (ex) {
       console.log('Adapter - ManageAdapterController - uninstallAdapter - ex :');
-      console.log(' ', ex);
-    }
-  },
-  getAdapters: async function (props) {
-    try {
-      let adapterService = this.returnAdapterService();
-
-    } catch (ex) {
-      console.log('Adapter - ManageAdapterController - getAdapters - ex :');
-      console.log(' ', ex);
-    }
-  },
-  getAdapter: async function (props) {
-    try {
-      let adapterService = this.returnAdapterService();
-
-    } catch (ex) {
-      console.log('Adapter - ManageAdapterController - getAdapter - ex :');
       console.log(' ', ex);
     }
   },

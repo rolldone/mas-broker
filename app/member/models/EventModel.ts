@@ -1,10 +1,7 @@
 import BaseModel, { BaseModelInterface } from "@root/base/BaseModel";
 import { Event, Group } from "@root/models";
 
-
-export interface EventModelInterface extends BaseModelInterface{
-
-}
+export interface EventModelInterface extends BaseModelInterface{}
 
 Event.belongsTo(Group,{
   foreignKey : 'group_id',

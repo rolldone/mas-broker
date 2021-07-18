@@ -125,7 +125,10 @@ export default BaseService.extend<GatewayServiceInterface>({
           throw global.CustomError('error.validation', validation.errors.errors);
       }
       let gatewayModel = this.returnGatewayModel();
-      let where = gatewayModel.getJSON(props);
+      let where = gatewayModel.getJSON({
+        user_id : props.user_id,
+        id : props.id
+      });
       let resData = await gatewayModel.first({
         where: where,
         include: [{
@@ -141,5 +144,5 @@ export default BaseService.extend<GatewayServiceInterface>({
     } catch (ex) {
       throw ex;
     }
-  },
+  }
 });

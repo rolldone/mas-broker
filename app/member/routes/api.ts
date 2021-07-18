@@ -3,6 +3,7 @@ import AuthController from "../controllers/xhr/AuthController";
 import HomeController from "../controllers/xhr/HomeController";
 import ManageAdapterController from "../controllers/xhr/ManageAdapterController";
 import ManageAdapterEventController from "../controllers/xhr/ManageAdapterEventController";
+import ManageGatewayController from "../controllers/xhr/ManageGatewayController";
 import ManageGroupController from "../controllers/xhr/ManageGroupController";
 import ManageEventController from "../controllers/xhr/ManagEventController";
 import UserController from "../controllers/xhr/UserController";
@@ -89,6 +90,18 @@ export default BaseProto.extend<ApiRouteInterface>({
       route.post('/delete', 'adapter.event.delete', [], ManageAdapterEventController.binding().deleteEvent);
       route.get('/:id/view', 'adapter.event.event', [], ManageAdapterEventController.binding().getEvent);
       route.get('/events', 'adapter.event.events', [], ManageAdapterEventController.binding().getEvents);
+    })
+
+    /* Manage member gateway */
+    self.use('/gateway', [
+      SetAuthDriverMiddleware.binding('api').check,
+      AuthMiddleware.binding().check
+    ], function (route) {
+      route.post('/add', 'gateway.add', [], ManageGatewayController.binding().addGateway);
+      route.post('/update', 'gateway.update', [], ManageGatewayController.binding().updateGateway);
+      route.post('/delete', 'gateway.delete', [], ManageGatewayController.binding().deleteGateway);
+      route.get('/:id/view', 'gateway.view', [], ManageGatewayController.binding().getGateway);
+      route.get('/gateways', 'gateway.gateways', [], ManageGatewayController.binding().getGateways);
     })
   }
 });

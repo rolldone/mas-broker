@@ -30,19 +30,5 @@ export default BaseController.extend<ManageAdapterEventController>({
     }catch(ex){
       console.log('Adapter - ManageAdapterEventController - delete - ex');
     }
-  },
-  get: function (props) {
-    try{
-
-    }catch(ex){
-      console.log('Adapter - ManageAdapterEventController - get - ex');
-    }
-  },
-  gets: function (props) {
-    try{
-
-    }catch(ex){
-      console.log('Adapter - ManageAdapterEventController - gets - ex');
-    }
-  },
+  }
 });
