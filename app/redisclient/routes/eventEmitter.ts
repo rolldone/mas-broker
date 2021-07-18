@@ -19,5 +19,6 @@ export default BaseProto.extend<EventEmitterInterface>({
     masterData.setOnListener('adapter.connection.redis.event.start_all',EventController.binding().addAll);
     masterData.setOnListener('adapter.connection.redis.event.delete',EventController.binding().delete);
     masterData.setOnListener('adapter.connection.redis.event.get',EventController.binding().get);
+    masterData.setOnListener('adapter.connection.redis.event.emit',EventController.binding().emit);
   }
 })

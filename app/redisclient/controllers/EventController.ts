@@ -7,6 +7,7 @@ export interface EventControllerInterface extends BaseControllerInterface{
   add ?: {(props:any):Promise<any>}
   delete ?: {(props:any):Promise<any>}
   get ?: {(props:any):Promise<any>}
+  emit ?: {(props:any):Promise<any>}
 }
 
 export default BaseController.extend<EventControllerInterface>({
@@ -47,4 +48,12 @@ export default BaseController.extend<EventControllerInterface>({
   get : async function(props){
 
   },
+  emit : async function(props){
+    try{
+      let eventService = this.returnEventService();
+      eventService.emit(props);
+    }catch(ex){
+      console.log('EventController - emit - ex ', ex);
+    }
+  }
 });

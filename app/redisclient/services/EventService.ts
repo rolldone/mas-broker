@@ -11,6 +11,7 @@ export interface EventServiceInterface extends BaseServiceInterface {
   add?: { (props: any): void }
   delete?: { (props: any): void }
   get?: { (props: any): void }
+  emit?: { (props: any): void }
 }
 
 declare var masterData: MasterDataInterface;
@@ -123,5 +124,16 @@ export default BaseService.extend<EventServiceInterface>({
   },
   get: function (props) {
 
+  },
+  emit: function (props) {
+    let value = props.value;
+    let gateway = props.gateway;
+    let sender = gateway.sender;
+    let sender_adapter = sender.adapter;
+    let redis_client = masterData.getData('adapter.collection.redis_client', {}) as any;
+    if (redis_client[sender_adapter.adapter_key] == null) {
+      return;
+    }
+    redis_client[sender_adapter.adapter_key].emit(sender.event_key, value);
   }
 });
