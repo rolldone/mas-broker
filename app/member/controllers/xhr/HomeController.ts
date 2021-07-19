@@ -1,14 +1,14 @@
 import MainHomeController, { HomeControllerInterface } from "@root/app/main/controllers/xhr/HomeController";
 import ws from 'ws';
 const WebSocketWrapper = require('ws-wrapper');
-import socketIoClient from 'socket.io-client';
+import {io} from 'socket.io-client';
 
 const HomeController = MainHomeController.extend<HomeControllerInterface>({
   index: function (req, res) {
     let action = req.query.action || 'terima';
-    let gg = socketIoClient('ws://masadapter.lan',{
+    let gg = io('ws://masadapter.lan',{
       path : '/socket-io/9e3ddb8ec284dbad4b0c44746d436e0d'
-    })
+    });
     const client = new WebSocketWrapper(new ws("ws://masadapter.lan/socket/dd6e20928f15e3b43ebc7022549870e3", {}));
     
     client.on('open', function(){

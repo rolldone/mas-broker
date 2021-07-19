@@ -79,7 +79,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
       /* Create new websocket connection and create connection listener for listen new incoming request from user */
       socketioCollections[pathGroup] = io(Server, {
         path: pathGroup,
-        // transports : ['websocket']
+        transports : ['websocket']
       });
       socketioCollections[pathGroup].on('connection', this._defineOnConnection.bind(this, pathGroup, props.adapter_events));
 
