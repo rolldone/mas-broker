@@ -1,7 +1,7 @@
 import BaseService from "@root/base/BaseService";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import { Adapter, AdapterEvent } from "@root/models";
-import AdapterModel, { AdapterModelInterface, BROKER_STATUS } from "../models/AdapterModel";
+import AdapterModel, { AdapterModelInterface, ADAPTER_STATUS } from "../models/AdapterModel";
 
 export interface AdapterServiceInterface extends BaseServiceInterface {
   returnAdapterModel?: { (): AdapterModelInterface }
@@ -77,7 +77,7 @@ export default BaseService.extend<AdapterServiceInterface>({
       let adapterModel = this.returnAdapterModel();
       let resData = await adapterModel.get({
         where: {
-          status: BROKER_STATUS.ON
+          status: ADAPTER_STATUS.ON
         },
         include: [{
           model: AdapterEvent,

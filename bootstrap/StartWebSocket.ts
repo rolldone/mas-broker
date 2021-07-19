@@ -9,6 +9,7 @@ declare var Server: ServerInterface;
 export default function StartWebSocket(next: Function) {
   // const server = new MultipathServer({ port : 3000 });
   Server.on('upgrade', function (req: any, socket: any, head: any) {
+    console.log('vmdkfvmfkdvfdv');
     const pathname = url.parse(req.url).pathname;
     let socketCollections: {
       [key: string]: any

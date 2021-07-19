@@ -19,7 +19,7 @@ const task = [
   StartConfig,
   StartRedisPubSub,
   StartExpress,
-  // StartSocketIO,
+  StartSocketIO,
   // StartSocketCluster,
   StartRedisClient,
   StartWebSocket

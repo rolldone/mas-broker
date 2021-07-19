@@ -2,7 +2,6 @@ import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import { AdapterEvent } from "@root/models";
 import { ADAPTER_EVENT_STATUS } from "../models/AdapterEventModel";
 import GatewayModel, { GatewayModelInterface } from "../models/GatewayModel";
-import { GROUP_STATUS } from "../models/GroupModel";
 import ConnectionService, { ConnectionServiceInterface } from "./ConnectionService";
 const WebSocketWrapper = require('ws-wrapper');
 

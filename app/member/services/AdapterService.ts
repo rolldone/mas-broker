@@ -1,4 +1,4 @@
-import AdapterModel, { ACCESS_NAME, ACCESS_CONFIG, AdapterModelInterface, BROKER_STATUS, ADAPTER_TYPE } from "@root/app/adapter/models/AdapterModel";
+import AdapterModel, { ACCESS_NAME, ACCESS_CONFIG, AdapterModelInterface, ADAPTER_STATUS, ADAPTER_TYPE } from "@root/app/adapter/models/AdapterModel";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import { User } from "@root/models";
 import DataManipulate from "../compute/DataManipulate";
@@ -67,7 +67,7 @@ export default BaseService.extend<AdapterServiceInterface>({
         user_id: resData.user_id
       });
       /* Go to adapter module to install new adapter */
-      if (resData.status == BROKER_STATUS.OFF) {
+      if (resData.status == ADAPTER_STATUS.OFF) {
         masterData.saveData('adapter.uninstall', resData);
       } else {
         masterData.saveData('adapter.uninstall', resData);

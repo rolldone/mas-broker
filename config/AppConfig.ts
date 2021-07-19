@@ -12,6 +12,7 @@ export interface AppConfigInterface{
   APP_THREAD_PROCESS : Number
   SOCKET_DOMAIN : String
   BASE_SOCKET_PATH : string
+  BASE_SOCKET_IO_PATH : string
 }
 
 export default ({
@@ -25,5 +26,6 @@ export default ({
   WEB_APP_VER : DotEnv.WEB_APP_VER,
   SOCKET_DOMAIN : DotEnv.SOCKET_DOMAIN,
   APP_THREAD_PROCESS : Number(DotEnv.APP_THREAD_PROCESS),
-  BASE_SOCKET_PATH : DotEnv.BASE_SOCKET_PATH || 'socket'
+  BASE_SOCKET_PATH : DotEnv.BASE_SOCKET_PATH || 'socket',
+  BASE_SOCKET_IO_PATH : DotEnv.BASE_SOCKET_IO_PATH || 'socket-io'
 } as AppConfigInterface);

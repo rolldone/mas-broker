@@ -79,10 +79,10 @@ Content-Type: application/json
   "id" : "{{getAdapter_adapter_id}}",
   "group_id" : "{{group_id}}",
   "user_id" : "{{user_id}}",
-  "name" : "Web Socket Adapter",
-  "description" : "This is first websocket server adapter",
+  "name" : "Socket io Adapter",
+  "description" : "This is first socketio server adapter",
   "status" : 1,
-  "access_name" : "WEB_SOCKET_SERVER",
+  "access_name" : "SOCKET_IO_SERVER",
   "config" : {}
 }
 

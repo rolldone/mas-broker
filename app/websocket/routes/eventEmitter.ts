@@ -11,7 +11,7 @@ export default BaseProto.extend<EventEmitterInterface>({
   construct(route: BaseRouteInterface) {
     /* Manage adapter websocket */
     masterData.setOnListener('adapter.connection.web_socket_server.connect', ConnectionController.binding().start);
-    masterData.setOnListener('adapter.connection.web_socket_server.disconect', ConnectionController.binding().start);
+    masterData.setOnListener('adapter.connection.web_socket_server.disconect', ConnectionController.binding().stop);
     masterData.setOnListener('adapter.connection.web_socket_server.check', ConnectionController.binding().logs);
     /* Manage event ws */
     masterData.setOnListener('adapter.connection.web_socket_server.event.start', EventController.binding().start);

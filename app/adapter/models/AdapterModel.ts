@@ -67,7 +67,7 @@ export const ACCESS_CONFIG = {
   WEB_SOCKET_SERVER: {}
 }
 
-export const BROKER_STATUS = {
+export const ADAPTER_STATUS = {
   ON: 1,
   OFF: 0
 }
