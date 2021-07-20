@@ -2,12 +2,11 @@ import BaseService from "@root/base/BaseService";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import { AppConfig } from "@root/config";
 import * as upath from 'upath';
-import { GROUP_STATUS } from "../models/GroupModel";
 import { EventServiceInterface } from "./EventService";
 const WebSocketWrapper = require('ws-wrapper');
 import url from 'url';
 import { uniqueId } from "lodash";
-import AdapterModel, { AdapterModelInterface } from "@root/app/adapter/models/AdapterModel";
+import AdapterModel, { AdapterModelInterface, ADAPTER_STATUS } from "@root/app/adapter/models/AdapterModel";
 
 
 declare var masterData: MasterDataInterface;
@@ -51,9 +50,9 @@ export default BaseService.extend<ConnectionServiceInterface>({
     /* Get unique id */
     newWS.id = uniqueId('socket-client-');
 
-    if(socketClients[pathGroup] == null){
+    if (socketClients[pathGroup] == null) {
       socketClients[pathGroup] = {}
-      socketClients[pathGroup+'_of'] = {};
+      socketClients[pathGroup + '_of'] = {};
     }
 
     /* Define wrap websocket to socketClients with unique id */
@@ -75,17 +74,6 @@ export default BaseService.extend<ConnectionServiceInterface>({
       masterData.saveData('socket.clients', runSocketClients);
     })
 
-    /** Define ws as wsCollections  */
-    // let wsCollections: {
-    //   [key: string]: any
-    // } = masterData.getData('ws.collections', {}) as any;
-
-    /* This is just replace from old wsCollection before if exist why?
-       Because we have collecting socket.clients for emit on listen msg
-     */
-    // wsCollections[pathGroup] = newWS;
-    // masterData.saveData('ws.collections', wsCollections);
-
     /**
      * Listen user emit join 
      * Is used for group or private channel message */
@@ -94,12 +82,13 @@ export default BaseService.extend<ConnectionServiceInterface>({
        * After define ws.collections  
        * Going to EventService@startSocketEvents  */
       let ws = options.ws.of(props.channel);
-      
+
       /* Just for clue if want delete the event of this channel */
-      socketClients[pathGroup+'_of'][ws.id] = ws;
+      socketClients[pathGroup + '_of'][ws.id] = ws;
       masterData.saveData('socket.clients', socketClients);
 
-      self._eventService.startSocketEvents(ws,options.adapter_events);
+      /* Continue as use channel */
+      self._eventService.startSocketEvents(ws, options.adapter_events);
 
     }.bind(this, {
       ws: newWS,
@@ -110,7 +99,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
     /**
      * After define ws.collections  
      * Going to EventService@startSocketEvents  */
-    this._eventService.startSocketEvents(newWS,adapter_events);
+    this._eventService.startSocketEvents(newWS, adapter_events);
   },
 
   /** Convert string to pathGroup */
@@ -126,7 +115,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
     try {
 
       /* If group status is off just prevent it */
-      if (props.status == GROUP_STATUS.OFF) {
+      if (props.status == ADAPTER_STATUS.OFF) {
         return;
       }
 
@@ -184,7 +173,8 @@ export default BaseService.extend<ConnectionServiceInterface>({
   /** Need AdapterModel on props */
   startSocketConnection: function (props) {
     try {
-
+      this.generateSocketConnection(props);
+      return;
       /* Define pathGroup from adapter_key like this -> /socket/29mdfmvkfdv934mvakdfmvakdfvmkfdv */
       let pathGroup = this._getSocketPath(props.adapter_key);
       let socketCollections: {

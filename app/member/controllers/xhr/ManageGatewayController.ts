@@ -10,6 +10,7 @@ export interface ManageGatewayControllerInterface extends BaseControllerInterfac
   getGateway?: { (req: Request, res: Response): Promise<any> }
   getGateways?: { (req: Request, res: Response): Promise<any> }
   deleteGateway?: { (req: Request, res: Response): Promise<any> }
+  getMiddlewareCollections?: { (req: Request, res: Response): Promise<any> }
 }
 
 declare var Auth: AuthInterface
@@ -17,6 +18,26 @@ declare var Auth: AuthInterface
 export default BaseController.extend<ManageGatewayControllerInterface>({
   returnGatewayService: function () {
     return GatewayService.create();
+  },
+  getMiddlewareCollections: async function (req, res) {
+    try {
+      let props = this.getBaseQuery(req, {
+        type: req.query.type,
+        access_name: req.query.access_name
+      });
+      let gatewayService = this.returnGatewayService();
+      let resData = await gatewayService.getMiddlewareCollections(props);
+      resData = {
+        status: 'success',
+        status_code: 200,
+        return: resData
+      }
+      return res.status(resData.status_code).json(resData);
+    } catch (ex) {
+      console.log('Member - ManageGatewayController - addGateway - ex => ')
+      console.log(' ', ex);
+      return this.returnSimpleError(ex, res);
+    }
   },
   addGateway: async function (req, res) {
     try {
@@ -34,6 +55,7 @@ export default BaseController.extend<ManageGatewayControllerInterface>({
     } catch (ex) {
       console.log('Member - ManageGatewayController - addGateway - ex => ')
       console.log(' ', ex);
+      return this.returnSimpleError(ex, res);
     }
   },
   updateGateway: async function (req, res) {
@@ -52,6 +74,7 @@ export default BaseController.extend<ManageGatewayControllerInterface>({
     } catch (ex) {
       console.log('Member - ManageGatewayController - updateGateway - ex => ')
       console.log(' ', ex);
+      return this.returnSimpleError(ex, res);
     }
   },
   getGateway: async function (req, res) {
@@ -90,6 +113,7 @@ export default BaseController.extend<ManageGatewayControllerInterface>({
     } catch (ex) {
       console.log('Member - ManageGatewayController - getGateways - ex => ')
       console.log(' ', ex);
+      return this.returnSimpleError(ex, res);
     }
   },
   deleteGateway: async function (req, res) {
@@ -108,6 +132,7 @@ export default BaseController.extend<ManageGatewayControllerInterface>({
     } catch (ex) {
       console.log('Member - ManageGatewayController - updateGateway - ex => ')
       console.log(' ', ex);
+      return this.returnSimpleError(ex, res);
     }
   },
 });

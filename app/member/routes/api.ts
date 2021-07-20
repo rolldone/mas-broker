@@ -102,6 +102,7 @@ export default BaseProto.extend<ApiRouteInterface>({
       route.post('/delete', 'gateway.delete', [], ManageGatewayController.binding().deleteGateway);
       route.get('/:id/view', 'gateway.view', [], ManageGatewayController.binding().getGateway);
       route.get('/gateways', 'gateway.gateways', [], ManageGatewayController.binding().getGateways);
+      route.get('/middleware-collections', 'gateway.middleware_collections', [], ManageGatewayController.binding().getMiddlewareCollections);
     })
   }
 });

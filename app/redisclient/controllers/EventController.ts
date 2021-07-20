@@ -51,7 +51,7 @@ export default BaseController.extend<EventControllerInterface>({
   emit: async function (props) {
     try {
       let eventService = this.returnEventService();
-      eventService.emit(props);
+      eventService.emit(props,null);
     } catch (ex) {
       console.log('EventController - emit - ex ', ex);
     }

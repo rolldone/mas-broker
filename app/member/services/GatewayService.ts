@@ -1,4 +1,5 @@
 import BaseService from "@root/base/BaseService";
+import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import { AdapterEvent, Group, User } from "@root/models";
 import GatewayModel, { GatewayModelInterface } from "../models/GatewayModel";
 
@@ -8,25 +9,66 @@ export interface GatewayServiceInterface extends BaseServiceInterface {
   updateGateway?: { (props: any): Promise<any> }
   deleteGateway?: { (props: any): Promise<any> }
   getGateways?: { (props: any): Promise<any> }
-  getTypeGateway ?: {():void}
-  getTypeListGateway ?: {(props:any):void}
+  getTypeGateway?: { (): void }
+  getTypeListGateway?: { (props: any): void }
   getGateway?: { (props: any): Promise<any> }
+  getMiddlewareCollections?: { (props: any): Promise<any> }
 }
+
+declare var masterData: MasterDataInterface;
 
 export default BaseService.extend<GatewayServiceInterface>({
   returnGatewayModel: function () {
     return GatewayModel.create();
   },
+  getMiddlewareCollections: async function (props) {
+    try {
+      let validation = this.returnValidator(props, {
+        type: 'required',
+        access_name: 'required'
+      })
+      switch (await validation.check()) {
+        case validation.fails:
+          throw global.CustomError('error.validation', validation.errors.errors);
+      }
+      let middleware: { [key: string]: any } = {};
+      let middlewareName = [];
+      switch (props.type) {
+        case 'sender':
+          middleware = masterData.getData('gateway.middleware.senders', {}) as any;
+          for (var key in middleware) {
+            if (key == props.access_name) {
+              for (var key2 in middleware[key]) {
+                middlewareName.push(key2);
+              }
+            }
+          }
+          return middlewareName;
+        case 'receiver':
+          middleware = masterData.getData('gateway.middleware.receivers', {}) as any;
+          for (var key in middleware) {
+            if (key == props.access_name) {
+              for (var key2 in middleware[key]) {
+                middlewareName.push(key2);
+              }
+            }
+          }
+          return middlewareName;
+      }
+    } catch (ex) {
+      throw ex;
+    }
+  },
   addGateway: async function (props) {
     try {
       let validation = this.returnValidator(props, {
-        user_id : 'required',
-        group_id : 'required',
-        sender_id : 'required',
-        receiver_id : 'required',
-        sender_name : 'required',
-        receiver_name : 'required',
-        status : 'required'
+        user_id: 'required',
+        group_id: 'required',
+        sender_id: 'required',
+        receiver_id: 'required',
+        sender_name: 'required',
+        receiver_name: 'required',
+        status: 'required'
       });
       switch (await validation.check()) {
         case validation.fails:
@@ -80,11 +122,11 @@ export default BaseService.extend<GatewayServiceInterface>({
       throw ex;
     }
   },
-  getTypeGateway : async function(){
-    return [AdapterEvent.name,Event.name];
+  getTypeGateway: async function () {
+    return [AdapterEvent.name, Event.name];
   },
-  getTypeListGateway : async function(props){
-    
+  getTypeListGateway: async function (props) {
+
   },
   getGateways: async function (props) {
     try {
@@ -126,8 +168,8 @@ export default BaseService.extend<GatewayServiceInterface>({
       }
       let gatewayModel = this.returnGatewayModel();
       let where = gatewayModel.getJSON({
-        user_id : props.user_id,
-        id : props.id
+        user_id: props.user_id,
+        id: props.id
       });
       let resData = await gatewayModel.first({
         where: where,

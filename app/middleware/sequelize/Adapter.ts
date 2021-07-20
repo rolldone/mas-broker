@@ -1,56 +1,57 @@
-
 import DatabaseConfig from "@root/config/DatabaseConfig";
 import { Sequelize, Model, DataTypes } from "sequelize";
 
 const sequelize = new Sequelize(DatabaseConfig);
 
-class Gateway extends Model {}
+class Adapter extends Model {
 
-Gateway.init({
-  id : {
+}
+
+Adapter.init({
+  id: {
     type: DataTypes.INTEGER.UNSIGNED,
     autoIncrement: true,
     primaryKey: true
   },
-  user_id : {
+  user_id: {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  group_id : {
+  group_id: {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  sender_id : {
-    type: DataTypes.INTEGER.UNSIGNED,
-    allowNull: false
-  },
-  receiver_id : {
-    type: DataTypes.INTEGER.UNSIGNED,
-    allowNull: false
-  },
-  sender_name : {
+  name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  receiver_name : {
-    type: DataTypes.STRING,
+  adapter_key: {
+    type: DataTypes.TEXT,
     allowNull: false
   },
-  status : {
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  access_name: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  config: {
+    type: DataTypes.JSON,
+    allowNull: false
+  },
+  status: {
     type: DataTypes.TINYINT,
     allowNull: false
   },
-  middleware_receiver:{
-    type: DataTypes.JSON,
-    allowNull: true
-  },
-  middleware_sender:{
-    type: DataTypes.JSON,
-    allowNull: true
+  adapter_type : {
+    type : DataTypes.TINYINT.UNSIGNED,
+    allowNull: false
   }
 }, {
-  tableName: 'gateways',
+  tableName: 'adapters',
   sequelize
 });
 
-export default Gateway;
+export default Adapter;

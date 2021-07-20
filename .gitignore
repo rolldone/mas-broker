@@ -1,5 +1,5 @@
 dist/
 node_modules/
 .env
-sync-config.yaml
+sync-config.json
 .sync_temp/

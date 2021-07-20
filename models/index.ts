@@ -1,8 +1,8 @@
 import Group from "./Group";
 import Event from "./Event";
-import User from "./User";
 import Adapter from "./Adapter";
 import AdapterEvent from "./AdapterEvent";
+import User from "./User";
 
 export {
   Group,

@@ -1,5 +1,6 @@
 import BaseModel, { BaseModelInterface } from "@root/base/BaseModel";
-import User from "@root/models/User";
+import { User } from "@root/models";
+
 
 export interface UserModelInterface extends BaseModelInterface {
   password?: string

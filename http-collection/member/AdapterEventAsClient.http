@@ -41,9 +41,9 @@ Content-Type: application/json
   "adapter_id" : "{{adapter_id}}",
   "group_id" : "{{group_id}}",
   "name" : "First Adapter",
-  "description" : "This is first adapter",
+  "description" : "This is first redis outgoing adapter",
   "status" : 1,
-  "event_key" : "first.channel"
+  "event_key" : "first.outgoing.channel"
 }
 
 ###

@@ -98,6 +98,13 @@ export default BaseService.extend<ConnectionServiceInterface>({
       if (props.adapter_events != null) {
         masterData.saveData('adapter.connection.redis.event.start_all', props.adapter_events);
       }
+      /* Test the redisPubsub first maybe. Remember setTimeout*/
+      setTimeout(function(){
+        redis_client[config.adapter_key].emit('first.channel',{
+          "from" : "test",
+          "value": "vmdfkvmkfdvm"
+        })
+      },2000);
     } catch (ex) {
       throw ex;
     }

@@ -1,6 +1,7 @@
 import BaseProto from "@root/base/BaseProto";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import ConnectionController from "../controllers/ConnectionController";
+import EventController from "../controllers/EventController";
 
 declare var masterData: MasterDataInterface
 
@@ -13,11 +14,11 @@ export default BaseProto.extend<EventEmitterInterface>({
     masterData.setOnListener('adapter.connection.socket_io_server.disconect', ConnectionController.binding().stop);
     masterData.setOnListener('adapter.connection.socket_io_server.check', ConnectionController.binding().logs);
 
-    /* Manage Event */
-    // masterData.setOnListener('adapter.connection.redis.event.start',EventController.binding().add);
-    // masterData.setOnListener('adapter.connection.redis.event.start_all',EventController.binding().addAll);
-    // masterData.setOnListener('adapter.connection.redis.event.delete',EventController.binding().delete);
-    // masterData.setOnListener('adapter.connection.redis.event.get',EventController.binding().get);
-    // masterData.setOnListener('adapter.connection.redis.event.emit',EventController.binding().emit);
+    /* Manage event socketio */
+    masterData.setOnListener('adapter.connection.socket_io_server.event.start', EventController.binding().start);
+    masterData.setOnListener('adapter.connection.socket_io_server.event.start_all', EventController.binding().startAll);
+    masterData.setOnListener('adapter.connection.socket_io_server.event.delete', EventController.binding().delete);
+    masterData.setOnListener('adapter.connection.socket_io_server.event.get', EventController.binding().get);
+    masterData.setOnListener('adapter.connection.socket_io_server.event.emit', EventController.binding().emit);
   }
 })

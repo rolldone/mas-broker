@@ -4,50 +4,52 @@ import { Sequelize, Model, DataTypes } from "sequelize";
 
 const sequelize = new Sequelize(DatabaseConfig);
 
-class Gateway extends Model {}
+class Gateway extends Model {
+
+}
 
 Gateway.init({
-  id : {
+  id: {
     type: DataTypes.INTEGER.UNSIGNED,
     autoIncrement: true,
     primaryKey: true
   },
-  user_id : {
+  user_id: {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  group_id : {
+  group_id: {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  sender_id : {
+  sender_id: {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  receiver_id : {
+  receiver_id: {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  sender_name : {
+  sender_name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  receiver_name : {
+  receiver_name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  status : {
+  middleware_sender: {
+    type: DataTypes.JSON,
+    allowNull: true
+  },
+  middleware_receiver: {
+    type: DataTypes.JSON,
+    allowNull: true
+  },
+  status: {
     type: DataTypes.TINYINT,
     allowNull: false
   },
-  middleware_receiver:{
-    type: DataTypes.JSON,
-    allowNull: true
-  },
-  middleware_sender:{
-    type: DataTypes.JSON,
-    allowNull: true
-  }
 }, {
   tableName: 'gateways',
   sequelize

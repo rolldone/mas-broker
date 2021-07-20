@@ -12,6 +12,11 @@ Gateway.belongsTo(AdapterEvent,{
   as : 'receiver'
 });
 
+export const GATEWAY_STATUS ={
+  ON : 1,
+  OFF : 0
+}
+
 export interface GatewayModelInterface extends MemberGatewayModelInterface {}
 export default GatewayModel.extend<GatewayModelInterface>({
   model : Gateway

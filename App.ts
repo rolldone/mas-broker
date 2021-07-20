@@ -6,6 +6,7 @@ import bootstrap from './bootstrap';
 import { Web, Api, Socket, Redis, EventEmit } from '@root/routes/v1/index';
 import { AppConfig } from './config';
 import { MasterDataInterface } from './bootstrap/StartMasterData';
+import middleware from './app/middleware';
 
 declare var masterData : MasterDataInterface
 
@@ -28,7 +29,8 @@ multithread(() => {
           // Socket.create(global.app);
           // Redis.create(global.app);
           callback(null);
-      }],
+      },
+      middleware],
     run : async function(){
       /* Server is ready! */
       /* You can create some programatic code here */

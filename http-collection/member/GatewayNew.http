@@ -37,7 +37,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/x-www-form-urlencoded
 
 ###
-@incoming_adapter_event_id = {{getAdaptersEventIncoming.response.body.$.return[0].id}}
+@incoming_adapter_event_id = {{getAdaptersEventIncoming.response.body.$.return[1].id}}
 @incoming_adapter_event_adapter_access_name = {{getAdaptersEventIncoming.response.body.$.return[0].adapter.access_name}}
 
 ###
@@ -47,7 +47,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/x-www-form-urlencoded
 
 ###
-@outgoing_adapter_id = {{getAdaptersIncoming.response.body.$.return[1].id}}
+@outgoing_adapter_id = {{getAdaptersIncoming.response.body.$.return[2].id}}
 
 ###
 # @name getAdaptersEventOutgoing
@@ -58,6 +58,26 @@ Content-Type: application/x-www-form-urlencoded
 ###
 @outgoing_adapter_event_id = {{getAdaptersEventOutgoing.response.body.$.return[0].id}}
 @outgoing_adapter_event_adapter_access_name = {{getAdaptersEventOutgoing.response.body.$.return[0].adapter.access_name}}
+
+
+###
+# @name getMiddlewareCollectionsReceiver
+GET {{host}}/api/v1/gateway/middleware-collections?access_name={{incoming_adapter_event_adapter_access_name}}&type=receiver
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@middleware_receiver = {{getMiddlewareCollectionsReceiver.response.body.$.return[0]}}
+
+###
+# @name getMiddlewareCollectionsSender
+GET {{host}}/api/v1/gateway/middleware-collections?access_name={{outgoing_adapter_event_adapter_access_name}}&type=sender
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@middleware_sender = {{getMiddlewareCollectionsSender.response.body.$.return[0]}}
+
 
 ###
 # @name addGateway
@@ -71,6 +91,8 @@ Content-Type: application/json
   "receiver_name" : "{{incoming_adapter_event_adapter_access_name}}",
   "sender_id" : "{{outgoing_adapter_event_id}}",
   "sender_name" : "{{outgoing_adapter_event_adapter_access_name}}",
+  "middleware_receiver" : ["{{middleware_receiver}}"],
+  "middleware_sender" : ["{{middleware_sender}}"],
   "status" : 1
 }
 

@@ -3,6 +3,7 @@ import { AdapterEvent } from "@root/models";
 import { ADAPTER_EVENT_STATUS } from "../models/AdapterEventModel";
 import GatewayModel, { GatewayModelInterface } from "../models/GatewayModel";
 import ConnectionService, { ConnectionServiceInterface } from "./ConnectionService";
+import RedisEventService from "./RedisEventService";
 const WebSocketWrapper = require('ws-wrapper');
 
 declare var masterData: MasterDataInterface
@@ -17,7 +18,7 @@ export interface EventServiceInterface extends Omit<ConnectionServiceInterface, 
   startSocketEvent?: { (props: any): void }
   logSocketEvent?: { (props: any): void }
   logSocketEvents?: { (props: any): void }
-  emit: { (props: any): void }
+  emit: { (props: any, callback?:Function): void }
 }
 
 export default ConnectionService.extend<EventServiceInterface>({
@@ -25,33 +26,7 @@ export default ConnectionService.extend<EventServiceInterface>({
     return GatewayModel.create();
   },
   getGateways: async function (receiver_id, props) {
-    try {
-      /* Store in cache later if have get data from query */
-      let gatewayModel = this.returnGatewayModel();
-      let resGatewayDatas = await gatewayModel.get({
-        where: {
-          receiver_id: receiver_id
-        },
-        include: [{
-          model: AdapterEvent,
-          as: 'sender'
-        }, {
-          model: AdapterEvent,
-          as: 'receiver'
-        }]
-      });
-      resGatewayDatas = gatewayModel.getJSON(resGatewayDatas) as Array<any>;
-
-      /* Loop the process emit with many event with same receiver */
-      for (var a = 0; a < resGatewayDatas.length; a++) {
-        masterData.saveData('adapter.connection.' + resGatewayDatas[a].sender.adapter.access_name.toLowerCase() + '.event.emit', {
-          gateway: resGatewayDatas[a],
-          value: props
-        });
-      }
-    } catch (ex) {
-      throw ex;
-    }
+    return RedisEventService.binding().getGateways(receiver_id,props);
   },
   deleteSocketEvent: async function (props) {
     try {
@@ -186,30 +161,36 @@ export default ConnectionService.extend<EventServiceInterface>({
   logSocketEvents: function (props) {
 
   },
-  emit: async function (props) {
-    let socketCollections: { [key: string]: any } = masterData.getData('socket.clients', {}) as any;
-    let value = props.value;
-    let gateway = props.gateway;
-    let sender = gateway.sender;
-    let sender_adapter = sender.adapter;
-    let pathGroup = this._getSocketPath(sender_adapter.adapter_key);
-    if (socketCollections[pathGroup] == null) {
-      return;
-    }
-    let prepareToEmit = {} as any;
-    for (var key in socketCollections[pathGroup]) {
-      let theSocket = socketCollections[pathGroup][key];
-      if (typeof value == 'object') {
-        prepareToEmit.payload = value.payload;
-        if (value.to != null) {
-          prepareToEmit.to = value.to;
-          theSocket.of(prepareToEmit.to).emit(sender.event_key, prepareToEmit.payload);
-          return;
-        }
-        theSocket.emit(sender.event_key, prepareToEmit.payload);
+  emit: async function (props,callback=null) {
+    return RedisEventService.binding().emit(props,(props:any)=>{
+      /* Is it happen when middleware set done(null) */
+      if (props == null) {
         return;
       }
-      theSocket.emit(sender.event_key, value);
-    }
+      let socketCollections: { [key: string]: any } = masterData.getData('socket.clients', {}) as any;
+      let value = props.value;
+      let gateway = props.gateway;
+      let sender = gateway.sender;
+      let sender_adapter = sender.adapter;
+      let pathGroup = this._getSocketPath(sender_adapter.adapter_key);
+      if (socketCollections[pathGroup] == null) {
+        return;
+      }
+      let prepareToEmit = {} as any;
+      for (var key in socketCollections[pathGroup]) {
+        let theSocket = socketCollections[pathGroup][key];
+        if (typeof value == 'object') {
+          prepareToEmit.payload = value.payload;
+          if (value.to != null) {
+            prepareToEmit.to = value.to;
+            theSocket.of(prepareToEmit.to).emit(sender.event_key, prepareToEmit.payload);
+            return;
+          }
+          theSocket.emit(sender.event_key, prepareToEmit.payload);
+          return;
+        }
+        theSocket.emit(sender.event_key, value);
+      }
+    })
   }
 });

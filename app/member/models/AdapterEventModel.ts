@@ -2,7 +2,10 @@ import AdapterEventModel, { AdapterEventModelInterface as AdapterAdapterEventMod
 import { AdapterEvent } from "@root/models";
 
 export interface AdapterEventModelInterface extends AdapterAdapterEventModelInterface{}
-
+export const ADAPTER_EVENT_STATUS = {
+  OFF: 0,
+  ON: 1
+} 
 export default AdapterEventModel.extend<AdapterEventModelInterface>({
   model : AdapterEvent
 });
