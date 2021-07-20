@@ -65,7 +65,8 @@ export default BaseService.extend<ConnectionServiceInterface>({
       console.log('get disconect from :');
       console.log(' ->', newWS.id);
       var runSocketClients: { [key: string]: any } = masterData.getData('socketio.clients', {}) as any;
-      delete runSocketClients[newWS.id];
+      delete runSocketClients[pathGroup][newWS.id];
+      delete runSocketClients[pathGroup+'_of'][newWS.id];
       masterData.saveData('socket.clients', runSocketClients);
     })
 
@@ -87,10 +88,10 @@ export default BaseService.extend<ConnectionServiceInterface>({
 
       /* Continue as use channel */
       self._eventService.startSocketEvents(ws, options.adapter_events);
-      setTimeout(() => {
-        console.log('callback');
-        options.ioServer.to(props.channel).emit('gagaga', 'aaaaaaaaaaaaaaaaaaaaaa')
-      }, 5000);
+      // setTimeout(() => {
+      //   console.log('callback');
+      //   options.ioServer.to(props.channel).emit('gagaga', 'test emit')
+      // }, 5000);
     }.bind(this, {
       ioServer: ioServer,
       ws: newWS,

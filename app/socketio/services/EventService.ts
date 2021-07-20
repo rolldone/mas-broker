@@ -1,13 +1,15 @@
+import BaseService from "@root/base/BaseService";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import { ADAPTER_EVENT_STATUS } from "../models/AdapterEventModel";
+import { AdapterModelInterface } from "../models/AdapterModel";
 import GatewayModel, { GatewayModelInterface } from "../models/GatewayModel";
-import ConnectionService, { ConnectionServiceInterface } from "./ConnectionService";
+import ConnectionService from "./ConnectionService";
 import RedisEventService from "./RedisEventService";
 
 declare var masterData: MasterDataInterface
 
-export interface EventServiceInterface extends Omit<ConnectionServiceInterface, 'create'> {
-  create?: (...props: any) => this
+export interface EventServiceInterface extends BaseServiceInterface {
+  returnAdapterModel: { (): AdapterModelInterface }
   returnGatewayModel?: { (): GatewayModelInterface }
   getGateways?: { (sender_id: number, props: any): Promise<any> }
   deleteSocketEvent?: { (props: any): void }
@@ -17,18 +19,63 @@ export interface EventServiceInterface extends Omit<ConnectionServiceInterface, 
   logSocketEvent?: { (props: any): void }
   logSocketEvents?: { (props: any): void }
   emit: { (props: any): void }
+  _getSocketPath: { (adapter_key: string): string }
 }
 
-export default ConnectionService.extend<EventServiceInterface>({
+export default BaseService.mixin<EventServiceInterface>({
+  returnAdapterModel: ConnectionService.returnAdapterModel,
   returnGatewayModel: function () {
     return GatewayModel.create();
   },
-  getGateways: async function (receiver_id, props) {
-    /* As the principle is same with Redis event service */
-    RedisEventService.binding().getGateways(receiver_id, props);
-  },
+  _getSocketPath: ConnectionService._getSocketPath,
+  getGateways: RedisEventService.getGateways,
   deleteSocketEvent: async function (props) {
-
+    try {
+      let validation = this.returnValidator(props, {
+        id: 'required',
+        adapter_id: 'required',
+        user_id: 'required',
+        status: 'required'
+      });
+      switch (await validation.check()) {
+        case validation.fails:
+          throw global.CustomError('error.validation', validation.errors.errors);
+      }
+      if (props.status == ADAPTER_EVENT_STATUS.OFF) {
+        return;
+      }
+      let adapterModel = this.returnAdapterModel();
+      let resDataGroupModel = await adapterModel.first({
+        where: {
+          id: props.adapter_id,
+          user_id: props.user_id,
+          status: props.status
+        },
+      })
+      resDataGroupModel = adapterModel.getJSON(resDataGroupModel);
+      props.adapter = resDataGroupModel;
+      let events = [props];
+      for (var a = 0; a < events.length; a++) {
+        let adapter = events[a].adapter;
+        let pathGroup = this._getSocketPath(adapter.adapter_key);
+        let socketCollections: { [key: string]: any } = masterData.getData('socketio.clients', {}) as any;
+        if (socketCollections[pathGroup] == null) {
+          throw global.CustomError('error.ws.not_found', 'The socket with adapter_key ' + adapter.adapter_key + ' is not found!');
+        }
+        for (var key in socketCollections[pathGroup]) {
+          /** Basic ws remove listener */
+          // wsCollections[pathGroup].removeEventListener('message', wsCollections[pathGroup].wsFuncs[events[a].event_key].bind(this, events[a].event_key));
+          /** Modern ws with websocket wrapper method listener */
+          socketCollections[pathGroup][key].off(events[a].event_key, socketCollections[pathGroup][key].wsFuncs[events[a].event_key].bind(this, socketCollections[pathGroup][key], events[a].event_key));
+          /* With channel */
+          if (socketCollections[pathGroup + '_of'][key] != null) {
+            socketCollections[pathGroup + '_of'][key].off(events[a].event_key, socketCollections[pathGroup + '_of'][key].wsFuncs[events[a].event_key].bind(this, socketCollections[pathGroup + '_of'][key], events[a].event_key));
+          }
+        }
+      }
+    } catch (ex) {
+      throw ex;
+    }
   },
   stopSocketEvent: function (props) {
     return this.deleteSocketEvent(props);

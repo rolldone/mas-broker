@@ -70,7 +70,8 @@ export default BaseService.extend<ConnectionServiceInterface>({
       console.log('get disconect from :');
       console.log(' ->', newWS.id);
       var runSocketClients: { [key: string]: any } = masterData.getData('socket.clients', {}) as any;
-      delete runSocketClients[newWS.id];
+      delete runSocketClients[pathGroup][newWS.id];
+      delete runSocketClients[pathGroup+'_of'][newWS.id];
       masterData.saveData('socket.clients', runSocketClients);
     })
 
