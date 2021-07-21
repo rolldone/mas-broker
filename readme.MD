@@ -1,43 +1,47 @@
 # Base information
-Artywiz Broadcast service untuk handle long process yang enggak bisa di tunggu lama
+Untuk menghubungkan data antar pesan aplikasi seperti redis, websocket, socketio
 
-# Spesifikasi Minimal "Local"
-Processor : 1 core
-Ram : 256MB
+Untuk lainnya sedang di kerjakan seperti:
+- rabbitmq
+- mqtt
 
-# Spesifikasi Production
-Processor : 2 core -> "Ekslusif"
-Ram : 512MB
 
-# Langkah install 
-- Desktop
-  - yarn install
-  - ubah env port 3000 -> "Sesuaikan"
-  - npm run dev -> "Compile"
-  - npm run start-dev -> "Running"
+## Spesifikasi Minimal "Local"
+- Processor : 1 core
+- Ram : 256MB
+
+## Spesifikasi Production
+- Processor : 2 core -> "Ekslusif"
+- Ram : 512MB
 
 - Docker
   ```
-  database:
-  ... config
-  app: 
-  ...config
-  # Gabung config ini ke docker-compose artywiz
-  broadcast_service:
-    image : artywiz_broadcast_service
-    build: ../artywiz_broadcast_service/image_node
-    working_dir : '/opt/app'
-    command: >
-      bash -c "
-        tail -f > /dev/null"
-    deploy:
-      resources:
-        limits:
-          cpus: 2
-          memory: 256M
-    #expose: [3001]
-    ports: 
-      - "3002:3001"
-    volumes:
-      - "../artywiz_broadcast_service:/opt/app"
+  services:
+    mas_adapter:
+      deploy:
+        replicas: 1
+        resources:
+          limits:
+            cpus: '1'
+            memory: '128MB'
+      command: >
+        bash -c "
+            tail -f > /dev/null
+        "
+      expose:
+      - 3000
+      build: ./image_node
+      labels:
+        generated: by 8gwifi.org
+      volumes:
+      - .:/opt/app
+      working_dir: /opt/app
+      networks: 
+        default:
+          ipv4_address: 172.18.0.3
+          version: '3'
+  networks:
+    default:
+      name: main_network
+      external: true
   ```
