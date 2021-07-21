@@ -7,8 +7,8 @@ interface BaseProtoInterface<T extends BaseProtoInterface<T>> {
    * Arrow Function
    * Direct to be this
    */
-  binding?: (...props ?: any) => this
-  create?: (...props ?: any) => this
+  binding?: (...props?: any) => this
+  create?: (...props?: any) => this
   _super?: Function
   /**
    * Use this method
@@ -18,11 +18,12 @@ interface BaseProtoInterface<T extends BaseProtoInterface<T>> {
    * const example : exampInterface = Test.extend(<exampInterface>) -> bad
    */
   extend?: { <I>(i: I): I }
+  mixin?: { <I>(i: I): I }
   __init?: string
   construct?: any
-  _replaceAt ?: {(input : string, search : string, replace : string, start : number, end : number) : string}
-  _getStatInfo ?: {(permission:number,passTypeData?:string):boolean|string}
-  _waitingTimeout ?: {(timeoutNumber):Promise}
+  _replaceAt?: { (input: string, search: string, replace: string, start: number, end: number): string }
+  _getStatInfo?: { (permission: number, passTypeData?: string): boolean | string }
+  _waitingTimeout?: { (timeoutNumber): Promise }
 }
 
 
@@ -66,7 +67,7 @@ interface BaseQueueInterface extends BaseProtoInterface<BaseQueueInterface> {
 interface BaseServiceInterface extends BaseProtoInterface<BaseServiceInterface> {
   returnValidator?: { (props: object, filter: object): ValidatorInterface }
   returnMoment?: { (): Function }
-  _removeDuplicate ?: { (x: string, theChar: string): string }
+  _removeDuplicate?: { (x: string, theChar: string): string }
 }
 
 interface BaseComputeInterface extends BaseServiceInterface {
@@ -81,7 +82,7 @@ interface BaseRouteInterface extends BaseProtoInterface<BaseRouteInterface> {
   _path?: string
   _middleware?: Array<any>
   set?: Function
-  use?: { (path: string, middleware: Array<any>, callbackRouter: {(route:BaseRouteInterface):void}): void }
+  use?: { (path: string, middleware: Array<any>, callbackRouter: { (route: BaseRouteInterface): void }): void }
   get?: Function
   post?: Function
   baseRoute?: string
@@ -94,6 +95,6 @@ interface BaseRouteInterface extends BaseProtoInterface<BaseRouteInterface> {
   removeDuplicate?: { (x: string, theChar: string): void }
 }
 
-interface BaseRouteRedisPubSubInteface extends BaseRouteInterface{
-  
+interface BaseRouteRedisPubSubInteface extends BaseRouteInterface {
+
 }

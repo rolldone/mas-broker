@@ -1,0 +1,116 @@
+#@host=http://masadapter.lan
+###
+# @name authToken
+POST {{host}}/api/v1/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+email=donny.rolanda@gmail.com
+&password=43lw9rj2
+
+###
+@token = {{authToken.response.body.$.return.token}}
+
+###
+# @name userProfile
+GET {{host}}/api/v1/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+@user_id = {{userProfile.response.body.$.return.id}}
+@user_status = {{userProfile.response.body.$.return.status}}
+@group_id = 1
+
+###
+# @name getAdaptersIncoming
+GET {{host}}/api/v1/adapter/adapters?group_id={{group_id}}
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@incoming_adapter_id = {{getAdaptersIncoming.response.body.$.return[0].id}}
+
+###
+# @name getAdaptersEventIncoming
+GET {{host}}/api/v1/adapter/event/events?adapter_id={{incoming_adapter_id}}
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@incoming_adapter_event_id = {{getAdaptersEventIncoming.response.body.$.return[0].id}}
+@incoming_adapter_event_adapter_access_name = {{getAdaptersEventIncoming.response.body.$.return[0].adapter.access_name}}
+###
+# @name getAdaptersOutgoing
+GET {{host}}/api/v1/adapter/adapters?group_id={{group_id}}
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@outgoing_adapter_id = {{getAdaptersIncoming.response.body.$.return[1].id}}
+
+###
+# @name getAdaptersEventOutgoing
+GET {{host}}/api/v1/adapter/event/events?adapter_id={{outgoing_adapter_id}}
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@outgoing_adapter_event_id = {{getAdaptersEventOutgoing.response.body.$.return[0].id}}
+@outgoing_adapter_event_adapter_access_name = {{getAdaptersEventOutgoing.response.body.$.return[0].adapter.access_name}}
+
+###
+# @name getGateway
+GET {{host}}/api/v1/gateway/1/view
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@gateway_id = {{getGateway.response.body.$.return.id}}
+
+
+###
+# @name getMiddlewareCollectionsReceiver
+GET {{host}}/api/v1/gateway/middleware-collections?access_name={{incoming_adapter_event_adapter_access_name}}&type=receiver
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@middleware_receiver = {{getMiddlewareCollectionsReceiver.response.body.$.return[0]}}
+
+###
+# @name getMiddlewareCollectionsSender
+GET {{host}}/api/v1/gateway/middleware-collections?access_name={{outgoing_adapter_event_adapter_access_name}}&type=sender
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@middleware_sender = {{getMiddlewareCollectionsSender.response.body.$.return[0]}}
+
+
+###
+# @name updateGateway
+POST {{host}}/api/v1/gateway/update
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "id" : "{{gateway_id}}",
+  "group_id" : "{{group_id}}",
+  "receiver_id" : "{{incoming_adapter_event_id}}",
+  "receiver_name" : "{{incoming_adapter_event_adapter_access_name}}",
+  "sender_id" : "{{outgoing_adapter_event_id}}",
+  "sender_name" : "{{outgoing_adapter_event_adapter_access_name}}",
+  "middleware_receiver" : ["{{middleware_receiver}}"],
+  "middleware_sender" : ["{{middleware_sender}}"],
+  "status" : 1
+}
+
+###
+# @name deleteGateway
+POST {{host}}/api/v1/gateway/delete
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "ids" : "[{{gateway_id}}]"
+}

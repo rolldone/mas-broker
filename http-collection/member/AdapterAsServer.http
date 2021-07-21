@@ -1,0 +1,89 @@
+#@host=http://masadapter.lan
+###
+# @name authToken
+POST {{host}}/api/v1/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+email=donny.rolanda@gmail.com
+&password=43lw9rj2
+
+###
+@token = {{authToken.response.body.$.return.token}}
+
+###
+# @name userProfile
+GET {{host}}/api/v1/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+@user_id = {{userProfile.response.body.$.return.id}}
+@user_status = {{userProfile.response.body.$.return.status}}
+@group_id = 1
+
+###
+# @name getAccessName
+GET {{host}}/api/v1/adapter/access-formats
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+# @name getGroup
+GET {{host}}/api/v1/group/{{group_id}}/view
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@group_id = {{getGroup.response.body.$.return.id}}
+
+###
+GET {{host}}/api/v1/adapter/adapters?group_id={{group_id}}
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+# @name addAdapter
+POST {{host}}/api/v1/adapter/add HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "group_id" : "{{group_id}}",
+  "user_id" : "{{user_id}}",
+  "name" : "Web Socket Adapter",
+  "description" : "This is first websocket server adapter",
+  "status" : 1,
+  "access_name" : "WEB_SOCKET_SERVER",
+  "config" : {}
+}
+
+###
+@adapter_id = {{addAdapter.response.body.$.return.id}}
+
+###
+# @name getAdapter
+GET {{host}}/api/v1/adapter/{{adapter_id}}/view
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+###
+@getAdapter_adapter_id = {{getAdapter.response.body.$.return.id}}
+
+###
+# @name updateAdapter
+POST {{host}}/api/v1/adapter/update HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "id" : "{{getAdapter_adapter_id}}",
+  "group_id" : "{{group_id}}",
+  "user_id" : "{{user_id}}",
+  "name" : "Socket io Adapter",
+  "description" : "This is first socketio server adapter",
+  "status" : 1,
+  "access_name" : "SOCKET_IO_SERVER",
+  "config" : {}
+}
+
+

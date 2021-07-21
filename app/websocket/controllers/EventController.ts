@@ -7,9 +7,11 @@ export interface EventControllerInterface extends BaseControllerInterface {
   start?: { (props: any): void }
   stop?: { (props: any): void }
   delete?: { (props: any): void }
+  get?:{(props:any):void}
   logs?: { (props: any): void }
   log?: { (props: any): void }
   startAll?: { (props: Array<any>): void }
+  emit ?: {(props:any):void}
 }
 
 export default BaseController.extend<EventControllerInterface>({
@@ -46,6 +48,14 @@ export default BaseController.extend<EventControllerInterface>({
       console.log('EventController - delete - ex ', ex);
     }
   },
+  get : function(props){
+    try {
+
+    } catch (ex) {
+      /* Log this error or do something here */
+      console.log('EventController - get - ex ', ex);
+    }
+  },
   logs: function (props) {
     try {
       let eventService = this.returnEventService();
@@ -70,7 +80,15 @@ export default BaseController.extend<EventControllerInterface>({
       eventService.startSocketEvents(props);
     } catch (ex) {
       /* Log this error or do something here */
-      console.log('GroupController - generate - ex ', ex);
+      console.log('EventController - generate - ex ', ex);
+    }
+  },
+  emit : function(props){
+    try{
+      let eventService = this.returnEventService();
+      eventService.emit(props);
+    }catch(ex){
+      console.log('EventController - emit - ex ', ex);
     }
   }
 });

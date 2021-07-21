@@ -10,7 +10,7 @@ const HomeController : HomeControllerInterface = BaseController.extend(<HomeCont
     res.send({
       status : 'success',
       status_code : 200,
-      return : 'Welcome to Mas Broker api service!'
+      return : 'Welcome to Mas Adapter api service!'
     });
   }
 });

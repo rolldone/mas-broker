@@ -1,8 +1,9 @@
 import BaseProto from "@root/base/BaseProto";
 import AuthController from "../controllers/xhr/AuthController";
 import HomeController from "../controllers/xhr/HomeController";
-import ManageBrokerController from "../controllers/xhr/ManageBrokerController";
-import ManageBrokerEventController from "../controllers/xhr/ManageBrokerEventController";
+import ManageAdapterController from "../controllers/xhr/ManageAdapterController";
+import ManageAdapterEventController from "../controllers/xhr/ManageAdapterEventController";
+import ManageGatewayController from "../controllers/xhr/ManageGatewayController";
 import ManageGroupController from "../controllers/xhr/ManageGroupController";
 import ManageEventController from "../controllers/xhr/ManagEventController";
 import UserController from "../controllers/xhr/UserController";
@@ -67,28 +68,41 @@ export default BaseProto.extend<ApiRouteInterface>({
       route.post('/delete', 'event.delete', [], ManageEventController.binding().deleteEvent);
     });
 
-    /* Manage member broker */
-    self.use('/broker', [
+    /* Manage member adapter */
+    self.use('/adapter', [
       SetAuthDriverMiddleware.binding('api').check,
       AuthMiddleware.binding().check
     ], function (route) {
-      route.post('/add', 'broker.add', [], ManageBrokerController.binding().addBroker);
-      route.post('/update', 'broker.update', [], ManageBrokerController.binding().updateBroker);
-      route.get('/brokers', 'broker.brokers', [], ManageBrokerController.binding().getBrokers);
-      route.get('/access-formats', 'broker.access_format', [], ManageBrokerController.binding().getAccessFormats);
-      route.get('/:id/view', 'broker.broker', [], ManageBrokerController.binding().getBroker);
+      route.post('/add', 'adapter.add', [], ManageAdapterController.binding().addAdapter);
+      route.post('/update', 'adapter.update', [], ManageAdapterController.binding().updateAdapter);
+      route.get('/adapters', 'adapter.adapters', [], ManageAdapterController.binding().getAdapters);
+      route.get('/access-formats', 'adapter.access_format', [], ManageAdapterController.binding().getAccessFormats);
+      route.get('/:id/view', 'adapter.adapter', [], ManageAdapterController.binding().getAdapter);
     })
 
-    /* Manage member broker event */
-    self.use('/broker/event', [
+    /* Manage member adapter event */
+    self.use('/adapter/event', [
       SetAuthDriverMiddleware.binding('api').check,
       AuthMiddleware.binding().check
     ], function (route) {
-      route.post('/add', 'broker.event.add', [], ManageBrokerEventController.binding().addEvent);
-      route.post('/update', 'broker.event.update', [], ManageBrokerEventController.binding().updateEvent);
-      route.post('/delete', 'broker.event.delete', [], ManageBrokerEventController.binding().deleteEvent);
-      route.get('/:id/view', 'broker.event.event', [], ManageBrokerEventController.binding().getEvent);
-      route.get('/events', 'broker.event.events', [], ManageBrokerEventController.binding().getEvents);
+      route.post('/add', 'adapter.event.add', [], ManageAdapterEventController.binding().addEvent);
+      route.post('/update', 'adapter.event.update', [], ManageAdapterEventController.binding().updateEvent);
+      route.post('/delete', 'adapter.event.delete', [], ManageAdapterEventController.binding().deleteEvent);
+      route.get('/:id/view', 'adapter.event.event', [], ManageAdapterEventController.binding().getEvent);
+      route.get('/events', 'adapter.event.events', [], ManageAdapterEventController.binding().getEvents);
+    })
+
+    /* Manage member gateway */
+    self.use('/gateway', [
+      SetAuthDriverMiddleware.binding('api').check,
+      AuthMiddleware.binding().check
+    ], function (route) {
+      route.post('/add', 'gateway.add', [], ManageGatewayController.binding().addGateway);
+      route.post('/update', 'gateway.update', [], ManageGatewayController.binding().updateGateway);
+      route.post('/delete', 'gateway.delete', [], ManageGatewayController.binding().deleteGateway);
+      route.get('/:id/view', 'gateway.view', [], ManageGatewayController.binding().getGateway);
+      route.get('/gateways', 'gateway.gateways', [], ManageGatewayController.binding().getGateways);
+      route.get('/middleware-collections', 'gateway.middleware_collections', [], ManageGatewayController.binding().getMiddlewareCollections);
     })
   }
 });

@@ -6,22 +6,22 @@ import Redis from 'redis';
 export interface ConnectionServiceInterface extends BaseServiceInterface {
   connect?: { (props: any): Promise<any> }
   disconect?: { (props: any): Promise<any> }
-  handleResponse: { (action: string, broker_key: string, err: any): void }
+  handleResponse: { (action: string, adapter_key: string, err: any): void }
 }
 
 declare var masterData: MasterDataInterface;
 
 export default BaseService.extend<ConnectionServiceInterface>({
-  handleResponse: function (action, broker_key, err) {
+  handleResponse: function (action, adapter_key, err) {
     switch (action) {
       case 'REDIS_AUTH_ERROR':
         console.log('Redisclient - ConnectionService - handleResponse - ex ');
         console.log(' ', err);
         let redis_client = masterData.getData('adapter.collection.redis_client', {}) as any;
-        if (redis_client[broker_key] == null) {
+        if (redis_client[adapter_key] == null) {
           return;
         }
-        delete redis_client[broker_key];
+        delete redis_client[adapter_key];
         masterData.saveData('adapter.collection.redis_client', redis_client);
         break;
     }
@@ -29,7 +29,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
   connect: async function (props) {
     try {
       let validation = this.returnValidator(props, {
-        broker_key: 'required',
+        adapter_key: 'required',
         port: 'required',
         host: 'required',
         no_ready_check: 'required',
@@ -48,7 +48,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
         db: config.db,
       });
       redisPub.auth(config.password);
-      redisPub.on('error', this.handleResponse.bind(this, 'REDIS_AUTH_ERROR', config.broker_key));
+      redisPub.on('error', this.handleResponse.bind(this, 'REDIS_AUTH_ERROR', config.adapter_key));
       const redisSub = Redis.createClient({
         port: config.port,
         host: config.host,
@@ -58,7 +58,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
         // return_buffers: true
       });
       redisSub.auth(config.password);
-      redisSub.on('error', this.handleResponse.bind(this, 'REDIS_AUTH_ERROR', config.broker_key));
+      redisSub.on('error', this.handleResponse.bind(this, 'REDIS_AUTH_ERROR', config.adapter_key));
       let nrpConfig = {
         emitter: redisPub,
         receiver: redisSub,
@@ -66,10 +66,10 @@ export default BaseService.extend<ConnectionServiceInterface>({
       };
       let nrp = RedisPubSub(nrpConfig);
       let redis_client = masterData.getData('adapter.collection.redis_client', {}) as any;
-      if (redis_client[config.broker_key] != null) {
+      if (redis_client[config.adapter_key] != null) {
         throw global.CustomError('error.adapter_exist', 'Adapter is exist');
       }
-      redis_client[config.broker_key] = <RedisPubSubListener>{
+      redis_client[config.adapter_key] = <RedisPubSubListener>{
         emit: function (whatKey: string, whatObject: any) {
           if (whatObject instanceof Error) {
             whatObject = global.serializeError(whatObject);
@@ -95,9 +95,16 @@ export default BaseService.extend<ConnectionServiceInterface>({
       /* Save the redis connection */
       masterData.saveData('adapter.collection.redis_client', redis_client);
       /* Go to create redis event listener */
-      if (props.broker_events != null) {
-        masterData.saveData('adapter.connection.redis.event.start_all', props.broker_events);
+      if (props.adapter_events != null) {
+        masterData.saveData('adapter.connection.redis.event.start_all', props.adapter_events);
       }
+      /* Test the redisPubsub first maybe. Remember setTimeout*/
+      setTimeout(function(){
+        redis_client[config.adapter_key].emit('first.channel',{
+          "from" : "test",
+          "value": "vmdfkvmkfdvm"
+        })
+      },2000);
     } catch (ex) {
       throw ex;
     }
@@ -105,7 +112,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
   disconect: async function (props) {
     try {
       let validation = this.returnValidator(props, {
-        broker_key: 'required'
+        adapter_key: 'required'
       });
       switch (await validation.check()) {
         case validation.fails:
@@ -113,11 +120,11 @@ export default BaseService.extend<ConnectionServiceInterface>({
       }
       let config = props;
       let redis_client = masterData.getData('adapter.collection.redis_client', {}) as any;
-      if (redis_client[config.broker_key] == null) {
+      if (redis_client[config.adapter_key] == null) {
         throw global.CustomError('error.adapter_exist', 'Adapter is not exist');
       }
-      redis_client[config.broker_key].end();
-      delete redis_client[config.broker_key];
+      redis_client[config.adapter_key].end();
+      delete redis_client[config.adapter_key];
       masterData.saveData('adapter.collection.redis_client', redis_client);
     } catch (ex) {
       throw ex;

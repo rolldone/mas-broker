@@ -2,10 +2,10 @@ const theIo = require('socket.io')
 
 export default function StartSocketIO(next : Function){
   console.log('Bootstrap -> Start Socket IO');
-  const io = theIo(global.Server, {
-    path: "/socket",
-    transports : ['websocket']
-  });
-  global.io = io;
+  // const io = theIo(global.Server, {
+  //   path: "/socket",
+  //   transports : ['websocket']
+  // });
+  global.io = theIo;
   return next(null);
 }

@@ -1,19 +1,23 @@
 import MainHomeController, { HomeControllerInterface } from "@root/app/main/controllers/xhr/HomeController";
 import ws from 'ws';
 const WebSocketWrapper = require('ws-wrapper');
+import {io} from 'socket.io-client';
 
 const HomeController = MainHomeController.extend<HomeControllerInterface>({
   index: function (req, res) {
     let action = req.query.action || 'terima';
-    const client = new WebSocketWrapper(new ws("ws://masbroker.lan/socket/9d8b8cdd937a943a2aec11549f68adc4?id=2", {}));
-    client.of('foo').on('test', function(props:any){
-      console.log('test -> ',props);
+    let gg = io('ws://masadapter.lan',{
+      path : '/socket-io/9e3ddb8ec284dbad4b0c44746d436e0d'
     });
+    const client = new WebSocketWrapper(new ws("ws://masadapter.lan/socket/dd6e20928f15e3b43ebc7022549870e3", {}));
     
     client.on('open', function(){
       if(action == 'terima'){
-        client.on('test', function(props:any){
+        client.on('first.channel', function(props:any){
           console.log('test tanpa of -> ',props);
+        });
+        client.of('foo').on('first.channel', function(props:any){
+          console.log('test -> ',props);
         });
       }
       setTimeout(()=>{
@@ -23,8 +27,8 @@ const HomeController = MainHomeController.extend<HomeControllerInterface>({
         });
       },1000);
       var test = ()=>{
+        console.log('avvvvvvvvvvvvvvvvv');
         setTimeout(function(){
-          console.log('vmfdkvmfdv');
           
           // const array = new Float32Array(5);
     
@@ -33,9 +37,9 @@ const HomeController = MainHomeController.extend<HomeControllerInterface>({
           //   }
     
           //   client.send(array);
-          client.emit('test',{
-            from : 'Donny',
-            payload : 'vmdfkvmdkfvmkvm'
+          client.of('foo').emit('first.channel',{
+            name : "Donny rolanda",
+            email : 'donny.rolanda@gmail.com'
           });
           test();
         },5000);
@@ -52,7 +56,7 @@ const HomeController = MainHomeController.extend<HomeControllerInterface>({
     res.send({
       status: 'success',
       status_code: 200,
-      return: 'Welcome to Mas Broker api service with test socketcluster!'
+      return: 'Welcome to Mas Adapter api service with test socketclusterrr!'
     });
   }
 });

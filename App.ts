@@ -6,6 +6,7 @@ import bootstrap from './bootstrap';
 import { Web, Api, Socket, Redis, EventEmit } from '@root/routes/v1/index';
 import { AppConfig } from './config';
 import { MasterDataInterface } from './bootstrap/StartMasterData';
+import middleware from './app/middleware';
 
 declare var masterData : MasterDataInterface
 
@@ -28,16 +29,17 @@ multithread(() => {
           // Socket.create(global.app);
           // Redis.create(global.app);
           callback(null);
-      }],
+      },
+      middleware],
     run : async function(){
       /* Server is ready! */
       /* You can create some programatic code here */
       /* Test nrp to socket */
       
       /* Load gate for client connect*/
-      masterData.saveData('websocket.group.start_groups',{});
-      /* Load adapter connect to outside broker service*/
-      masterData.saveData('broker.start_all',{});
+      // masterData.saveData('websocket.group.start_groups',{});
+      /* Load adapter connect to outside adapter service*/
+      masterData.saveData('adapter.start_all',{});
       console.log('Done');
     }
   } as AppInterface);
