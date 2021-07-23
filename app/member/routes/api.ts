@@ -17,14 +17,14 @@ export default BaseProto.extend<ApiRouteInterface>({
     let self = routes;
     /* Member route */
     self.use('', [], function (route) {
-      route.get('', 'home.index', [], HomeController.binding().index);
+      route.get('', 'home.member.index', [], HomeController.binding().index);
     });
 
     /* Manage member public auth */
     self.use('/auth', [], function (route) {
-      route.post('/login', 'auth.login', [], AuthController.binding().apiLogin);
-      route.post('/register', 'auth.register', [], AuthController.binding().register);
-      route.post('/logout', 'auth.logout', [], AuthController.binding().logout);
+      route.post('/login', 'member.auth.login', [], AuthController.binding().apiLogin);
+      route.post('/register', 'member.auth.register', [], AuthController.binding().register);
+      route.post('/logout', 'member.auth.logout', [], AuthController.binding().logout);
     });
 
     /* Manage member auth */
@@ -32,7 +32,7 @@ export default BaseProto.extend<ApiRouteInterface>({
       SetAuthDriverMiddleware.binding('api').check,
       AuthMiddleware.binding().check
     ], function (route) {
-      route.get('/profile', 'auth.profile', [], AuthController.binding().profile);
+      route.get('/profile', 'member.auth.profile', [], AuthController.binding().profile);
     });
 
     /* Manage member user */
@@ -40,8 +40,8 @@ export default BaseProto.extend<ApiRouteInterface>({
       SetAuthDriverMiddleware.binding('api').check,
       AuthMiddleware.binding().check
     ], function (route) {
-      route.get('/self', 'user.self', [], UserController.binding().getCurrentUser);
-      route.post('/self/update', 'user.self.update', [], UserController.binding().updateCurrentUser);
+      route.get('/self', 'member.user.self', [], UserController.binding().getCurrentUser);
+      route.post('/self/update', 'member.user.self.update', [], UserController.binding().updateCurrentUser);
     });
 
     /* Manage member group */

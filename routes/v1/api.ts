@@ -10,7 +10,7 @@ export default BaseRoute.extend<BaseRouteInterface>({
   baseRoute: '/api/v1',
   onready() {
     let self = this;
-
+    self.get('/display/route','display.route',[],self.displayRoute.bind(self));
     /* Main route example */
     self.use('/main', [], function (route) {
       route.get('', 'home.index', [], HomeController.binding().index);

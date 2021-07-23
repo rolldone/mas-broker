@@ -8,7 +8,7 @@ export default BaseRoute.extend<BaseRouteInterface>({
     let self = this;
     /* Main route example */
     self.use('/main',[],function(route){
-      route.get('','front.index',[],MainHomeController.binding().index);
+      route.get('','front.index.main',[],MainHomeController.binding().index);
     });
 
     /* Member route */
