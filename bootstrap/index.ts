@@ -17,11 +17,13 @@ const task = [
   StartPubSub,
   StartMasterData,
   StartConfig,
-  StartRedisPubSub,
+  /* Because this app dynamic redis connection turn off StartRedisPubSub */
+  // StartRedisPubSub,
   StartExpress,
   StartSocketIO,
   // StartSocketCluster,
-  StartRedisClient,
+  /* Because this app dynamic redis connection turn off StartRedisClient */
+  // StartRedisClient,
   StartWebSocket
   /* Other bootstrap ? */
 ];

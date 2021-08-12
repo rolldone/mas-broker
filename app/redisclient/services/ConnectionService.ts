@@ -17,11 +17,21 @@ export default BaseService.extend<ConnectionServiceInterface>({
       case 'REDIS_AUTH_ERROR':
         console.log('Redisclient - ConnectionService - handleResponse - ex ');
         console.log(' ', err);
-        let redis_client = masterData.getData('adapter.collection.redis_client', {}) as any;
+        var redis_client = masterData.getData('adapter.collection.redis_client', {}) as any;
         if (redis_client[adapter_key] == null) {
           return;
         }
-        delete redis_client[adapter_key];
+        // delete redis_client[adapter_key];
+        masterData.saveData('adapter.collection.redis_client', redis_client);
+        break;
+      case 'REDIS_NRP_ERROR':
+        console.log('Redisclient - ConnectionService - NRP - handleResponse - ex ');
+        console.log(' ', err);
+        var redis_client = masterData.getData('adapter.collection.redis_client', {}) as any;
+        if (redis_client[adapter_key] == null) {
+          return;
+        }
+        // delete redis_client[adapter_key];
         masterData.saveData('adapter.collection.redis_client', redis_client);
         break;
     }
@@ -65,6 +75,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
         scope: config.scope
       };
       let nrp = RedisPubSub(nrpConfig);
+      nrp.on("error",this.handleResponse.bind(this, 'REDIS_NRP_ERROR', config.adapter_key));
       let redis_client = masterData.getData('adapter.collection.redis_client', {}) as any;
       if (redis_client[config.adapter_key] != null) {
         throw global.CustomError('error.adapter_exist', 'Adapter is exist');
@@ -100,10 +111,14 @@ export default BaseService.extend<ConnectionServiceInterface>({
       }
       /* Test the redisPubsub first maybe. Remember setTimeout*/
       setTimeout(function(){
-        redis_client[config.adapter_key].emit('first.channel',{
-          "from" : "test",
-          "value": "vmdfkvmkfdvm"
-        })
+        try{
+          redis_client[config.adapter_key].emit('first.channel',{
+            "from" : "test",
+            "value": "vmdfkvmkfdvm"
+          })
+        }catch(ex){
+          console.log('Redis - first.channel - emit - ex ',ex);
+        }
       },2000);
     } catch (ex) {
       throw ex;

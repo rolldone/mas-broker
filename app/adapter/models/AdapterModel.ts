@@ -1,7 +1,7 @@
 import BaseModel, { BaseModelInterface } from "@root/base/BaseModel";
 import Adapter from "@root/sequelize/models/Adapter";
 
-export const ADAPTER_AS_CLIENT = 1 
+export const ADAPTER_AS_CLIENT = 1
 export const ADAPTER_AS_SERVER = 2
 
 export enum ADAPTER_TYPE {
@@ -30,7 +30,8 @@ export const ACCESS_CONFIG = {
     host: '',
     scope: '',
     db: '',
-    no_ready_check: false
+    no_ready_check: false,
+    port: 6379
   },
   RABBITMQ: {
     username: '',
