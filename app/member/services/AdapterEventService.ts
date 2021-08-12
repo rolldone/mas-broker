@@ -1,7 +1,7 @@
 import { BROKER_EVENT_STATUS } from "@root/app/adapter/models/AdapterEventModel";
 import BaseService from "@root/base/BaseService";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
-import { Adapter, Group, User } from "@root/models";
+import { Adapter, Group, User } from "@root/sequelize/models";
 import AdapterEventModel, { AdapterEventModelInterface } from "../models/AdapterEventModel";
 
 export interface AdapterEventServiceInterface extends BaseServiceInterface {
@@ -81,7 +81,7 @@ export default BaseService.extend<AdapterEventServiceInterface>({
           id: ids[a],
           user_id: props.user_id
         }) as any;
-        if(adapterEventItem != null){
+        if (adapterEventItem != null) {
           masterData.saveData('adapter.event.delete', adapterEventItem);
         }
       }
@@ -89,10 +89,10 @@ export default BaseService.extend<AdapterEventServiceInterface>({
       let resData = await adapterEventModel.delete({
         where: {
           id: ids,
-          user_id : props.user_id
+          user_id: props.user_id
         }
       });
-      
+
       return resData;
     } catch (ex) {
       throw ex;
@@ -113,7 +113,6 @@ export default BaseService.extend<AdapterEventServiceInterface>({
       let where = adapterEventModel.getJSON({
         id: props.id,
         user_id: props.user_id,
-        adapter_id: props.adapter_id,
         group_id: props.group_id
       });
       let resData = await adapterEventModel.first({
@@ -157,7 +156,9 @@ export default BaseService.extend<AdapterEventServiceInterface>({
         group_id: props.group_id,
         adapter_id: props.adapter_id
       });
-
+      let order = adapterEventModel.getJSON([
+        ['updatedAt', 'DESC']
+      ]);
       let resData = await adapterEventModel.get({
         where: where,
         include: [{
@@ -169,7 +170,8 @@ export default BaseService.extend<AdapterEventServiceInterface>({
         }, {
           model: User,
           as: 'user'
-        }]
+        }],
+        order: order,
       });
       resData = adapterEventModel.getJSON(resData);
       return resData;

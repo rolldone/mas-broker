@@ -1,6 +1,6 @@
 import BaseService from "@root/base/BaseService";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
-import { Adapter, AdapterEvent } from "@root/models";
+import { Adapter, AdapterEvent } from "@root/sequelize/models";
 import AdapterModel, { AdapterModelInterface, ADAPTER_STATUS } from "../models/AdapterModel";
 
 export interface AdapterServiceInterface extends BaseServiceInterface {

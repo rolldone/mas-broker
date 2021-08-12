@@ -1,6 +1,7 @@
 import { AppConfig } from "@root/config";
 import { Express} from "../tool";
 import Http from 'http';
+var cors = require('cors')
 var multer = require('multer');
 var upload = multer();
 var BodyParser = require("body-parser");
@@ -9,6 +10,7 @@ export default function(next : Function){
   try{
     console.log('Bootstrap -> Start Express');
     const app = Express;
+    app.use(cors());
     /* Request Type  */
     /* application/json */
     app.use(BodyParser.json());

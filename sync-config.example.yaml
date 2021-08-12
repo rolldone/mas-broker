@@ -1,0 +1,49 @@
+---
+size_limit: 20
+project_name: MasBroker
+username: root
+privateKey: C:/Users/donny/.ssh/openssh_nopassword.key
+host: masbroker.lan
+port: '22'
+localPath: D:/workspaces/mas-broker
+remotePath: "/root/workspaces/mas_broker"
+ignores: []
+downloads:
+- config/
+- seeders/
+- migrations/
+- package.json
+single_sync: 
+- dist
+direct_access:
+  config_file: ""
+  ssh_configs:
+  - Host: mas_broker_virtualbox
+    HostName: =host
+    User: =username
+    Port: =port
+    IdentityFile: =privateKey
+    RequestTTY: force
+    StrictHostKeyChecking: 'no'
+    PasswordAuthentication: 'no'
+    RemoteCommand: cd =remotePath && bash -l
+    ServerAliveInterval: 240
+    ServerAliveCountMax: 10
+  ssh_commands:
+  - access_name: Running devsync2
+    command: ngi-sync devsync2
+  - access_name: Log in VirtualBox only
+    command: ssh mas_broker_virtualbox
+  - access_name: Display Container
+    command: ssh mas_broker_virtualbox -o RemoteCommand=none -t docker container ps
+  - access_name: Login to mas_broker docker
+    command: ssh mas_broker_virtualbox -o RemoteCommand=none -t docker exec -it mas_broker_mas_broker_1 bash
+  - access_name: Display junk files
+    command: ssh mas_broker_virtualbox -o RemoteCommand=none -t "cd =remotePath && git clean -nd"
+  - access_name: Clean file target
+    command: ssh mas_broker_virtualbox -o RemoteCommand=none -t "cd =remotePath && git clean -fd"
+trigger_permission:
+  unlink_folder: true
+  unlink: true
+  change: true
+  add: true

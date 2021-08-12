@@ -1,21 +1,5 @@
 import BaseModel, { BaseModelInterface } from "@root/base/BaseModel";
-import { Adapter, AdapterEvent, Group, User } from "@root/models";
-
-AdapterEvent.belongsTo(User,{
-  foreignKey : 'user_id',
-  as : 'user'
-});
-
-AdapterEvent.belongsTo(Group,{
-  foreignKey : 'group_id',
-  as : 'group'
-})
-
-AdapterEvent.belongsTo(Adapter,{
-  foreignKey : 'adapter_id',
-  as : 'adapter'
-  
-})
+import { Adapter, AdapterEvent, Group, User } from "@root/sequelize/models";
 
 export const BROKER_EVENT_STATUS = {
   ON : 1,

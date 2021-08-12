@@ -1,6 +1,7 @@
 import BaseService from "@root/base/BaseService";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
-import { AdapterEvent, Group, User } from "@root/models";
+import { Adapter, AdapterEvent, Group, User } from "@root/sequelize/models";
+import { Op } from "sequelize";
 import GatewayModel, { GatewayModelInterface } from "../models/GatewayModel";
 
 export interface GatewayServiceInterface extends BaseServiceInterface {
@@ -139,7 +140,13 @@ export default BaseService.extend<GatewayServiceInterface>({
           throw global.CustomError('error.validation', validation.errors.errors);
       }
       let gatewayModel = this.returnGatewayModel();
-      let where = gatewayModel.getJSON(props);
+      let where = gatewayModel.getJSON({
+        group_id: props.group_id,
+        user_id: props.user_id
+      });
+      let order = gatewayModel.getJSON([
+        ['updatedAt', 'DESC']
+      ]);
       let resData = await gatewayModel.get({
         where: where,
         include: [{
@@ -148,7 +155,32 @@ export default BaseService.extend<GatewayServiceInterface>({
         }, {
           model: Group,
           as: 'group'
-        }]
+        }, {
+          model: AdapterEvent,
+          as: 'sender',
+          where : {
+            deletedAt : {
+              [Op.eq]: null
+            }
+          },
+          include: [{
+            model: Adapter,
+            as: 'adapter'
+          }]
+        }, {
+          model: AdapterEvent,
+          as: 'receiver',
+          where : {
+            deletedAt : {
+              [Op.eq]: null
+            }
+          },
+          include: [{
+            model: Adapter,
+            as: 'adapter'
+          }]
+        }],
+        order: order
       });
       resData = gatewayModel.getJSON(resData);
       return resData;
@@ -179,6 +211,20 @@ export default BaseService.extend<GatewayServiceInterface>({
         }, {
           model: Group,
           as: 'group'
+        }, {
+          model: AdapterEvent,
+          as: 'sender',
+          include: [{
+            model: Adapter,
+            as: 'adapter'
+          }]
+        }, {
+          model: AdapterEvent,
+          as: 'receiver',
+          include: [{
+            model: Adapter,
+            as: 'adapter'
+          }]
         }]
       })
       resData = gatewayModel.getJSON(resData);

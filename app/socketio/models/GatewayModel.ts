@@ -1,16 +1,5 @@
 import GatewayModel, { GatewayModelInterface as MemberGatewayModelInterface} from "@root/app/member/models/GatewayModel";
-import AdapterEvent from "../sequelize/AdapterEvent";
-import Gateway from "../sequelize/Gateway";
-
-Gateway.belongsTo(AdapterEvent,{
-  foreignKey : 'sender_id',
-  as : 'sender'
-});
-
-Gateway.belongsTo(AdapterEvent,{
-  foreignKey : 'receiver_id',
-  as : 'receiver'
-});
+import { Gateway } from "@root/sequelize/models";
 
 export interface GatewayModelInterface extends MemberGatewayModelInterface {}
 export default GatewayModel.extend<GatewayModelInterface>({

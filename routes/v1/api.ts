@@ -12,30 +12,30 @@ export default BaseRoute.extend<BaseRouteInterface>({
     let self = this;
     self.get('/display/route','display.route',[],self.displayRoute.bind(self));
     /* Main route example */
-    self.use('/main', [], function (route) {
-      route.get('', 'home.index', [], HomeController.binding().index);
-    });
+    // self.use('/main', [], function (route) {
+    //   route.get('', 'home.index', [], HomeController.binding().index);
+    // });
 
-    self.use('/main/auth', [], function (route) {
-      route.post('/login', 'auth.login', [], AuthController.binding().apiLogin);
-      route.post('/register', 'auth.register', [], AuthController.binding().register);
-      route.post('/logout', 'auth.logout', [], AuthController.binding().logout);
-    });
+    // self.use('/main/auth', [], function (route) {
+    //   route.post('/login', 'auth.login', [], AuthController.binding().apiLogin);
+    //   route.post('/register', 'auth.register', [], AuthController.binding().register);
+    //   route.post('/logout', 'auth.logout', [], AuthController.binding().logout);
+    // });
 
-    self.use('/main/auth', [
-      SetAuthDriverMiddleware.binding('api').check,
-      AuthMiddleware.binding().check
-    ], function (route) {
-      route.get('/profile', 'auth.profile', [], AuthController.binding().profile);
-    });
+    // self.use('/main/auth', [
+    //   SetAuthDriverMiddleware.binding('api').check,
+    //   AuthMiddleware.binding().check
+    // ], function (route) {
+    //   route.get('/profile', 'auth.profile', [], AuthController.binding().profile);
+    // });
 
-    self.use('/main/user', [
-      SetAuthDriverMiddleware.binding('api').check,
-      AuthMiddleware.binding().check
-    ], function (route) {
-      route.get('/self', 'user.self', [], UserController.binding().getCurrentUser);
-      route.post('/self/update', 'user.self.update', [], UserController.binding().updateCurrentUser);
-    });
+    // self.use('/main/user', [
+    //   SetAuthDriverMiddleware.binding('api').check,
+    //   AuthMiddleware.binding().check
+    // ], function (route) {
+    //   route.get('/self', 'user.self', [], UserController.binding().getCurrentUser);
+    //   route.post('/self/update', 'user.self.update', [], UserController.binding().updateCurrentUser);
+    // });
 
     /* Register member api route */
     api.create(self);

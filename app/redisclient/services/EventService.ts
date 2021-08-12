@@ -1,9 +1,8 @@
 import BaseService from "@root/base/BaseService";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
-import { AdapterEvent } from "@root/models";
+import { Adapter, AdapterEvent } from "@root/sequelize/models";
 import DataManipulation from "../compute/DataManipulation";
 import GatewayModel, { GatewayModelInterface, GATEWAY_STATUS } from "../models/GatewayModel";
-import Adapter from "../sequelize/Adapter";
 
 export interface EventServiceInterface extends BaseServiceInterface {
   returnGatewayModel?: { (): GatewayModelInterface }

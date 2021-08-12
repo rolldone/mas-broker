@@ -1,49 +1,50 @@
-const Database = require('../sequelize/Database');
+import DatabaseConfig from "@root/config/DatabaseConfig";
 import { Sequelize, Model, DataTypes } from "sequelize";
 
-const sequelize = new Sequelize(Database.main);
+const sequelize = new Sequelize(DatabaseConfig);
 
-class Gateway extends Model {
+class AdapterEvent extends Model {
 
 }
 
-Gateway.init({
-  id : {
+AdapterEvent.init({
+  id: {
     type: DataTypes.INTEGER.UNSIGNED,
     autoIncrement: true,
     primaryKey: true
   },
-  user_id : {
+  user_id: {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  group_id : {
+  group_id: {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  sender_id : {
+  adapter_id: {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  receiver_id : {
-    type: DataTypes.INTEGER.UNSIGNED,
-    allowNull: false
-  },
-  sender_name : {
+  event_key: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  receiver_name : {
+  name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  status : {
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  status: {
     type: DataTypes.TINYINT,
     allowNull: false
-  },
+  }
 }, {
-  tableName: 'gateways',
-  sequelize
+  tableName: 'adapter_events',
+  sequelize,
+  paranoid: true
 });
 
-export default Gateway;
+export default AdapterEvent;

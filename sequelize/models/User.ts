@@ -1,7 +1,7 @@
-const Database = require('../sequelize/Database');
+import DatabaseConfig from "@root/config/DatabaseConfig";
 import { Sequelize, Model, DataTypes } from "sequelize";
 
-const sequelize = new Sequelize(Database.main);
+const sequelize = new Sequelize(DatabaseConfig);
 
 class User extends Model {
   // public id!: number; // Note that the `null assertion` `!` is required in strict mode.

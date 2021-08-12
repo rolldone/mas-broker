@@ -5,7 +5,6 @@ import ManageAdapterController from "../controllers/xhr/ManageAdapterController"
 import ManageAdapterEventController from "../controllers/xhr/ManageAdapterEventController";
 import ManageGatewayController from "../controllers/xhr/ManageGatewayController";
 import ManageGroupController from "../controllers/xhr/ManageGroupController";
-import ManageEventController from "../controllers/xhr/ManagEventController";
 import UserController from "../controllers/xhr/UserController";
 import AuthMiddleware from "../middleware/AuthMiddleware";
 import SetAuthDriverMiddleware from "../middleware/SetAuthDriverMiddleware";
@@ -56,23 +55,12 @@ export default BaseProto.extend<ApiRouteInterface>({
       route.post('/delete', 'group.delete', [], ManageGroupController.binding().deleteGroup);
     })
 
-    /* Manage member event */
-    self.use('/event', [
-      SetAuthDriverMiddleware.binding('api').check,
-      AuthMiddleware.binding().check
-    ], function (route) {
-      route.get('/events', 'event.events', [], ManageEventController.binding().getEvents);
-      route.get('/:id/view', 'event.event', [], ManageEventController.binding().getEvent);
-      route.post('/add', 'event.add', [], ManageEventController.binding().addEvent);
-      route.post('/update', 'event.update', [], ManageEventController.binding().updateEvent);
-      route.post('/delete', 'event.delete', [], ManageEventController.binding().deleteEvent);
-    });
-
     /* Manage member adapter */
     self.use('/adapter', [
       SetAuthDriverMiddleware.binding('api').check,
       AuthMiddleware.binding().check
     ], function (route) {
+      route.post('/delete', 'adapter.delete', [], ManageAdapterController.binding().deleteAdapter);
       route.post('/add', 'adapter.add', [], ManageAdapterController.binding().addAdapter);
       route.post('/update', 'adapter.update', [], ManageAdapterController.binding().updateAdapter);
       route.get('/adapters', 'adapter.adapters', [], ManageAdapterController.binding().getAdapters);

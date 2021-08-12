@@ -1,7 +1,8 @@
-import AdapterModel, { ACCESS_NAME, ACCESS_CONFIG, AdapterModelInterface, ADAPTER_STATUS, ADAPTER_TYPE } from "@root/app/adapter/models/AdapterModel";
+import { ACCESS_NAME, ACCESS_CONFIG, AdapterModelInterface, ADAPTER_STATUS, ADAPTER_TYPE } from "@root/app/adapter/models/AdapterModel";
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
-import { User } from "@root/models";
+import { User } from "@root/sequelize/models";
 import DataManipulate from "../compute/DataManipulate";
+import AdapterModel from "../models/AdapterModel";
 import BaseService from "./BaseService";
 
 export interface AdapterServiceInterface extends BaseServiceInterface {
@@ -83,17 +84,27 @@ export default BaseService.extend<AdapterServiceInterface>({
   deleteAdapter: async function (props) {
     try {
       let validation = this.returnValidator(props, {
+        ids: 'required',
         user_id: 'required',
-        adapter_key: 'required',
-        name: 'required',
-        status: 'required',
-        access_name: 'required',
-        adapter_type: 'required'
+        group_id: 'required'
       });
       switch (await validation.check()) {
         case validation.fails:
           throw global.CustomError('error.validation', validation.errors.errors);
       }
+
+      let ids = JSON.parse(props.ids);
+      let adapterModel = this.returnAdapterModel();
+      let where = adapterModel.getJSON({
+        id: ids,
+        user_id: props.user_id,
+        group_id: props.group_id
+      })
+      let resData = await adapterModel.delete({
+        where: where
+      });
+
+      return resData;
 
     } catch (ex) {
       throw ex;
@@ -113,7 +124,7 @@ export default BaseService.extend<AdapterServiceInterface>({
       let where = adapterModel.getJSON({
         user_id: props.user_id,
         group_id: props.group_id,
-        adapter_type : props.adapter_type
+        adapter_type: props.adapter_type
       });
       let resData = await adapterModel.get({
         where: where,

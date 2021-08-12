@@ -1,5 +1,5 @@
 import AdapterEventModel, { AdapterEventModelInterface as MemberAdapterEventModelInterface} from "@root/app/member/models/AdapterEventModel";
-import { AdapterEvent } from "@root/models";
+import { AdapterEvent } from "@root/sequelize/models";
 export const ADAPTER_EVENT_STATUS = {
   OFF: 0,
   ON: 1

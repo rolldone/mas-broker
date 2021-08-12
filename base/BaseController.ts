@@ -53,7 +53,7 @@ export default BaseProto.extend<BaseControllerInterface>({
     return props;
   },
   returnSimpleError(ex : any, res : express.Response) : void{
-    res.json({
+    res.status(400).json({
       status : 'error',
       status_code : 400,
       return : serializeError(ex)

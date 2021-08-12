@@ -1,5 +1,5 @@
 import AdapterModel, { ACCESS_NAME as ADAPTER_ACCESS_NAME, AdapterModelInterface } from "@root/app/adapter/models/AdapterModel";
-import Adapter from "../sequelize/Adapter";
+import { Adapter } from "@root/sequelize/models";
 
 export const ACCESS_NAME = ADAPTER_ACCESS_NAME;
 

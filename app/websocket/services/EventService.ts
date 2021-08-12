@@ -1,5 +1,5 @@
 import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
-import { AdapterEvent } from "@root/models";
+import { AdapterEvent } from "@root/sequelize/models";
 import { ADAPTER_EVENT_STATUS } from "../models/AdapterEventModel";
 import GatewayModel, { GatewayModelInterface } from "../models/GatewayModel";
 import ConnectionService, { ConnectionServiceInterface } from "./ConnectionService";

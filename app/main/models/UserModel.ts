@@ -1,5 +1,5 @@
 import BaseModel, { BaseModelInterface } from "@root/base/BaseModel";
-import { User } from "@root/models";
+import { User } from "@root/sequelize/models";
 
 
 export interface UserModelInterface extends BaseModelInterface {

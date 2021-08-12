@@ -1,5 +1,5 @@
 import GroupModel, { GroupModelInterface } from "@root/app/member/models/GroupModel";
-import Group from "@root/models/Group";
+import Group from "@root/sequelize/models/Group";
 
 export const GROUP_STATUS = {
   ON: 1,

@@ -3,7 +3,7 @@ import BaseController from "@root/base/BaseController";
 import { Response, Request } from "express";
 import GroupService, { GroupServiceInterface } from "../../services/GroupService";
 
-declare var Auth : AuthInterface;
+declare var Auth: AuthInterface;
 
 export interface ManageGroupControllerInterface extends BaseControllerInterface {
   returnGroupService?: { (): GroupServiceInterface }
@@ -19,85 +19,87 @@ const ManageGroupController = BaseController.extend<ManageGroupControllerInterfa
     return GroupService.create();
   },
   getGroups: async function (req, res) {
-    try{
+    try {
       let props = req.query;
       let user = await Auth.getAuth() as any;
       props.user_id = user.id;
       let groupService = this.returnGroupService();
       let resData = await groupService.getGroups(props);
       resData = {
-        status : 'success',
-        status_code : 200,
-        return : resData
+        status: 'success',
+        status_code: 200,
+        return: resData
       }
       return res.status(resData.status_code).json(resData);
-    }catch(ex){
-      return this.returnSimpleError(ex,res);
+    } catch (ex) {
+      return this.returnSimpleError(ex, res);
     }
   },
   getGroup: async function (req, res) {
-    try{
+    try {
       let props = req.query;
       props.id = req.params.id;
+      let user: any = await Auth.getAuth();
+      props.user_id = user.id;
       let groupService = this.returnGroupService();
       let resData = await groupService.getGroup(props);
       resData = {
-        status : 'success',
-        status_code : 200,
-        return : resData
+        status: 'success',
+        status_code: 200,
+        return: resData
       }
       return res.status(resData.status_code).json(resData);
-    }catch(ex){
-      return this.returnSimpleError(ex,res);
+    } catch (ex) {
+      return this.returnSimpleError(ex, res);
     }
   },
   addGroup: async function (req, res) {
-    try{
+    try {
       let props = req.body;
       let user = await Auth.getAuth() as any;
       props.user_id = user.id;
       let groupService = this.returnGroupService();
       let resData = await groupService.addGroup(props);
       resData = {
-        status : 'success',
-        status_code : 200,
-        return : resData
+        status: 'success',
+        status_code: 200,
+        return: resData
       }
       return res.status(resData.status_code).json(resData);
-    }catch(ex){
-      return this.returnSimpleError(ex,res);
+    } catch (ex) {
+      return this.returnSimpleError(ex, res);
     }
   },
   updateGroup: async function (req, res) {
-    try{
+    try {
       let props = req.body;
       let user = await Auth.getAuth() as any;
       props.user_id = user.id;
       let groupService = this.returnGroupService();
       let resData = await groupService.updateGroup(props);
       resData = {
-        status : 'success',
-        status_code : 200,
-        return : resData
+        status: 'success',
+        status_code: 200,
+        return: resData
       }
       return res.status(resData.status_code).json(resData);
-    }catch(ex){
-      return this.returnSimpleError(ex,res);
+    } catch (ex) {
+      return this.returnSimpleError(ex, res);
     }
   },
   deleteGroup: async function (req, res) {
-    try{
+    try {
       let props = req.query;
       let groupService = this.returnGroupService();
       let resData = await groupService.deleteGroup(props);
       resData = {
-        status : 'success',
-        status_code : 200,
-        return : resData
+        status: 'success',
+        status_code: 200,
+        return: resData
       }
       return res.status(resData.status_code).json(resData);
-    }catch(ex){
-      return this.returnSimpleError(ex,res);
+    } catch (ex) {
+      return this.returnSimpleError(ex, res);
     }
   }
 });

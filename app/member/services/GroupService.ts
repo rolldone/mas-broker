@@ -3,10 +3,10 @@ import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import DataManipulate from "../compute/DataManipulate";
 import GroupModel, { GroupModelInterface } from "../models/GroupModel";
 
-declare var masterData : MasterDataInterface
+declare var masterData: MasterDataInterface
 
 export interface GroupServiceInterface extends BaseServiceInterface {
-  returnGroupModel ?: {():GroupModelInterface}
+  returnGroupModel?: { (): GroupModelInterface }
   getGroups?: { (props: any): Promise<any> }
   getGroup?: { (props: any): Promise<any> }
   addGroup?: { (props: any): Promise<any> }
@@ -15,13 +15,13 @@ export interface GroupServiceInterface extends BaseServiceInterface {
 }
 
 const GroupService = BaseService.extend<GroupServiceInterface>({
-  returnGroupModel : function(){
+  returnGroupModel: function () {
     return GroupModel.create();
   },
   getGroups: async function (props) {
     try {
       let validation = this.returnValidator(props, {
-        user_id : 'required'
+        user_id: 'required'
       });
       switch (await validation.check()) {
         case validation.fails:
@@ -29,8 +29,8 @@ const GroupService = BaseService.extend<GroupServiceInterface>({
       }
       let groupModel = this.returnGroupModel();
       let resData = await groupModel.get({
-        where : {
-          user_id : props.user_id
+        where: {
+          user_id: props.user_id
         }
       });
       return resData;
@@ -41,14 +41,21 @@ const GroupService = BaseService.extend<GroupServiceInterface>({
   getGroup: async function (props) {
     try {
       let validation = this.returnValidator(props, {
-        id : 'required'
+        id: 'required',
+        user_id: 'required'
       });
       switch (await validation.check()) {
         case validation.fails:
           throw global.CustomError('error.validation', validation.errors.errors);
       }
       let groupModel = this.returnGroupModel();
-      let resData = await groupModel.first(props);
+      let where = {
+        id: props.id,
+        user_id: props.user_id
+      }
+      let resData = await groupModel.first({
+        where: where
+      });
       return resData;
     } catch (ex) {
       throw ex;
@@ -67,9 +74,9 @@ const GroupService = BaseService.extend<GroupServiceInterface>({
       }
 
       let groupModel = this.returnGroupModel();
-      props.group_key = DataManipulate.binding().generateMd5(props.id+'-'+props.name+"-"+new Date().getTime());
+      props.group_key = DataManipulate.binding().generateMd5(props.id + '-' + props.name + "-" + new Date().getTime());
       let resData = await groupModel.save(props);
-      masterData.saveData('adapter.group.generate',resData);
+      masterData.saveData('adapter.group.generate', resData);
       return resData;
     } catch (ex) {
       throw ex;

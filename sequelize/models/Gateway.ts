@@ -1,13 +1,13 @@
-const Database = require('../sequelize/Database');
+import DatabaseConfig from "@root/config/DatabaseConfig";
 import { Sequelize, Model, DataTypes } from "sequelize";
 
-const sequelize = new Sequelize(Database.main);
+const sequelize = new Sequelize(DatabaseConfig);
 
-class AdapterEvent extends Model {
+class Gateway extends Model {
 
 }
 
-AdapterEvent.init({
+Gateway.init({
   id: {
     type: DataTypes.INTEGER.UNSIGNED,
     autoIncrement: true,
@@ -21,20 +21,28 @@ AdapterEvent.init({
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  adapter_id: {
+  sender_id: {
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  event_key: {
+  receiver_id: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false
+  },
+  sender_name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  name: {
+  receiver_name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  description: {
-    type: DataTypes.TEXT,
+  middleware_sender: {
+    type: DataTypes.JSON,
+    allowNull: true
+  },
+  middleware_receiver: {
+    type: DataTypes.JSON,
     allowNull: true
   },
   status: {
@@ -42,8 +50,8 @@ AdapterEvent.init({
     allowNull: false
   },
 }, {
-  tableName: 'adapter_events',
+  tableName: 'gateways',
   sequelize
 });
 
-export default AdapterEvent;
+export default Gateway;

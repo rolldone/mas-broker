@@ -1,5 +1,5 @@
 import AdapterModel, { AdapterModelInterface as AdapterAdapterModelInterface, ADAPTER_STATUS } from "@root/app/adapter/models/AdapterModel";
-import Adapter from "../sequelize/Adapter";
+import { Adapter } from "@root/sequelize/models";
 
 export interface AdapterModelInterface extends AdapterAdapterModelInterface{};
 

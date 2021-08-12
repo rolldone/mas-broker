@@ -1,21 +1,5 @@
 import BaseModel, { BaseModelInterface } from "@root/base/BaseModel";
-import { AdapterEvent, Group, User } from "@root/models";
-import Adapter from "@root/models/Adapter";
-
-Adapter.belongsTo(User, {
-  foreignKey: 'user_id',
-  as: 'user'
-});
-
-Adapter.belongsTo(Group, {
-  foreignKey: 'group_id',
-  as: 'group'
-})
-
-Adapter.hasMany(AdapterEvent, {
-  foreignKey: 'adapter_id',
-  as: 'adapter_events'
-})
+import Adapter from "@root/sequelize/models/Adapter";
 
 export const ADAPTER_AS_CLIENT = 1 
 export const ADAPTER_AS_SERVER = 2

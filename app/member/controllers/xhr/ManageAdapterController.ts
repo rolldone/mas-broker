@@ -12,7 +12,7 @@ export interface ManageAdapterControllerInterface extends BaseControllerInterfac
   getAccessFormats?: { (req: Request, res: Response): Promise<any> }
 }
 
-declare var Auth : AuthInterface
+declare var Auth: AuthInterface
 
 export default BaseController.extend<ManageAdapterControllerInterface>({
   returnAdapterService: function () {
@@ -22,6 +22,8 @@ export default BaseController.extend<ManageAdapterControllerInterface>({
     try {
       let props = req.body;
       let eventService = this.returnAdapterService();
+      let user: any = await Auth.getAuth();
+      props.user_id = user.id;
       let resData = await eventService.addAdapter(props) as any;
       resData = {
         status: 'success',
@@ -52,6 +54,8 @@ export default BaseController.extend<ManageAdapterControllerInterface>({
     try {
       let props = req.body;
       let eventService = this.returnAdapterService();
+      let user = await Auth.getAuth() as any;
+      props.user_id = user.id;
       let resData = eventService.deleteAdapter(props) as any;
       resData = {
         status: 'success',
@@ -83,7 +87,7 @@ export default BaseController.extend<ManageAdapterControllerInterface>({
   getAdapter: async function (req, res) {
     try {
       let props = this.getBaseQuery(req, {
-        id : req.params.id
+        id: req.params.id
       });
       let user = await Auth.getAuth() as any;
       props.user_id = user.id;
