@@ -5,6 +5,7 @@ import ManageAdapterController from "../controllers/xhr/ManageAdapterController"
 import ManageAdapterEventController from "../controllers/xhr/ManageAdapterEventController";
 import ManageGatewayController from "../controllers/xhr/ManageGatewayController";
 import ManageGroupController from "../controllers/xhr/ManageGroupController";
+import ManageTestToolController from "../controllers/xhr/ManageTestToolController";
 import UserController from "../controllers/xhr/UserController";
 import AuthMiddleware from "../middleware/AuthMiddleware";
 import SetAuthDriverMiddleware from "../middleware/SetAuthDriverMiddleware";
@@ -91,6 +92,18 @@ export default BaseProto.extend<ApiRouteInterface>({
       route.get('/:id/view', 'gateway.view', [], ManageGatewayController.binding().getGateway);
       route.get('/gateways', 'gateway.gateways', [], ManageGatewayController.binding().getGateways);
       route.get('/middleware-collections', 'gateway.middleware_collections', [], ManageGatewayController.binding().getMiddlewareCollections);
+    })
+
+    /* Manage test tool */
+    self.use('/test-tool', [
+      SetAuthDriverMiddleware.binding('api').check,
+      AuthMiddleware.binding().check
+    ], function (route) {
+      route.post('/add', 'test_tool.add', [], ManageTestToolController.binding().addTestTool);
+      route.post('/update', 'test_tool.update', [], ManageTestToolController.binding().updateTestTool);
+      route.post('/delete', 'test_tool.delete', [], ManageTestToolController.binding().deleteTestTool);
+      route.get('/:id/view', 'test_tool.view', [], ManageTestToolController.binding().getTestTool);
+      route.get('/test-tools', 'test_tool.test_tools', [], ManageTestToolController.binding().getTestTools);
     })
   }
 });

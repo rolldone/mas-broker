@@ -3,13 +3,16 @@ import Adapter from "./Adapter";
 import AdapterEvent from "./AdapterEvent";
 import User from "./User";
 import Gateway from "./Gateway";
+import TestTool from "./TestTool";
+
 
 export {
   Gateway,
   Group,
   User,
   Adapter,
-  AdapterEvent
+  AdapterEvent,
+  TestTool
 }
 
 export default function (callback: Function) {
@@ -71,6 +74,17 @@ export default function (callback: Function) {
   Gateway.belongsTo(AdapterEvent, {
     foreignKey: 'sender_id',
     as: 'sender'
+  })
+
+  /* Test Tool Relation */
+  TestTool.belongsTo(AdapterEvent, {
+    foreignKey: 'from_ad_event_id',
+    as: 'from_adapter_event'
+  })
+
+  TestTool.belongsTo(AdapterEvent, {
+    foreignKey: 'to_ad_event_id',
+    as: 'to_adapter_event'
   })
 
   console.log('Sequelize Relation initalize!');
