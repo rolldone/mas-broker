@@ -13,8 +13,8 @@ module.exports = {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 			},
-			group_key: {
-				type: Sequelize.TEXT,
+			group_id: {
+				type: Sequelize.INTEGER,
 				allowNull: false,
 			},
 			name: {
@@ -29,7 +29,7 @@ module.exports = {
 				type: Sequelize.INTEGER,
 				allowNull: false
 			},
-			to_ad_event_id : {
+			to_ad_event_id: {
 				type: Sequelize.INTEGER,
 				allowNull: false
 			},

@@ -1,3 +1,4 @@
+import { AuthInterface } from "@root/app/main/compute/Auth";
 import BaseController from "@root/base/BaseController";
 import { Request, Response } from 'express';
 import TestToolService, { TestToolServiceInterface } from "../../services/TestToolService";
@@ -11,6 +12,8 @@ export interface TestToolControllerInterface extends BaseControllerInterface {
   getTestTool?: { (req: Request, res: Response): Promise<any> }
 }
 
+declare let Auth: AuthInterface;
+
 const ManageTestToolController = BaseController.extend<TestToolControllerInterface>({
   returnTestToolService: function () {
     return TestToolService.create();
@@ -19,6 +22,8 @@ const ManageTestToolController = BaseController.extend<TestToolControllerInterfa
     try {
       let props = this.getBaseQuery(req, {});
       let testToolService = this.returnTestToolService();
+      let user : any = await Auth.getAuth();
+      props.user_id = user.id;
       let resData = await testToolService.getTestTools(props);
       resData = {
         status: 'success',

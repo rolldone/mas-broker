@@ -15,8 +15,8 @@ TestTool.init({
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
-  group_key: {
-    type: new DataTypes.TEXT,
+  group_id: {
+    type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false
   },
   name: {

@@ -1,5 +1,5 @@
 import BaseModel, { BaseModelInterface } from "@root/base/BaseModel";
-import { TestTool } from "@root/sequelize/models";
+import { Group, TestTool } from "@root/sequelize/models";
 
 export interface TestToolModelInterface extends BaseModelInterface { }
 
