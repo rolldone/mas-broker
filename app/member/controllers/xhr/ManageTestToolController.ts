@@ -22,7 +22,7 @@ const ManageTestToolController = BaseController.extend<TestToolControllerInterfa
     try {
       let props = this.getBaseQuery(req, {});
       let testToolService = this.returnTestToolService();
-      let user : any = await Auth.getAuth();
+      let user: any = await Auth.getAuth();
       props.user_id = user.id;
       let resData = await testToolService.getTestTools(props);
       resData = {
@@ -40,6 +40,8 @@ const ManageTestToolController = BaseController.extend<TestToolControllerInterfa
       let props = this.getBaseQuery(req, {
         id: req.params.id
       });
+      let user: any = await Auth.getAuth();
+      props.user_id = user.id;
       let testToolService = this.returnTestToolService();
       let resData = await testToolService.getTestTool(props);
       resData = {
@@ -56,6 +58,8 @@ const ManageTestToolController = BaseController.extend<TestToolControllerInterfa
     try {
       let props = req.body;
       let testToolService = this.returnTestToolService();
+      let user: any = await Auth.getAuth();
+      props.user_id = user.id;
       let resData = await testToolService.addTestTool(props);
       resData = {
         status: 'success',
@@ -71,6 +75,8 @@ const ManageTestToolController = BaseController.extend<TestToolControllerInterfa
     try {
       let props = req.body;
       let testToolService = this.returnTestToolService();
+      let user: any = await Auth.getAuth();
+      props.user_id = user.id;
       let resData = await testToolService.updateTestTool(props);
       resData = {
         status: 'success',
@@ -86,6 +92,8 @@ const ManageTestToolController = BaseController.extend<TestToolControllerInterfa
     try {
       let props = req.body;
       let testToolService = this.returnTestToolService();
+      let user: any = await Auth.getAuth();
+      props.user_id = user.id;
       let resData = await testToolService.deleteTestTool(props);
       resData = {
         status: 'success',

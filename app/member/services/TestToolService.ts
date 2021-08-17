@@ -1,4 +1,6 @@
 import BaseService from "@root/base/BaseService";
+import { Adapter, AdapterEvent, Group, User } from "@root/sequelize/models";
+import { Op } from "sequelize";
 import TestToolModel, { TestToolModelInterface } from "../models/TestToolModel";
 
 export interface TestToolServiceInterface extends BaseServiceInterface {
@@ -30,7 +32,38 @@ const TestToolService = BaseService.extend<TestToolServiceInterface>({
         user_id: props.user_id
       });
       let resData = await testToolModel.get({
-        where
+        where,
+        include: [{
+          model: User,
+          as: 'user'
+        }, {
+          model: Group,
+          as: 'group'
+        }, {
+          model: AdapterEvent,
+          as: 'from_ad_event',
+          where: {
+            deletedAt: {
+              [Op.eq]: null
+            }
+          },
+          include: [{
+            model: Adapter,
+            as: 'adapter'
+          }]
+        }, {
+          model: AdapterEvent,
+          as: 'to_ad_event',
+          where: {
+            deletedAt: {
+              [Op.eq]: null
+            }
+          },
+          include: [{
+            model: Adapter,
+            as: 'adapter'
+          }]
+        }]
       });
       return testToolModel.getJSON(resData);
     } catch (ex) {
@@ -40,7 +73,8 @@ const TestToolService = BaseService.extend<TestToolServiceInterface>({
   getTestTool: async function (props) {
     try {
       let validation = this.returnValidator(props, {
-        id: 'required'
+        id: 'required',
+        user_id: 'required'
       });
       switch (await validation.check()) {
         case validation.fails:
@@ -48,10 +82,43 @@ const TestToolService = BaseService.extend<TestToolServiceInterface>({
       }
       let testToolModel = this.returnTestToolModel();
       let where = testToolModel.getJSON({
-        id: props.id
+        id: props.id,
+        group_id: props.group_id,
+        user_id: props.user_id
       })
       let resData = await testToolModel.first({
-        where
+        where,
+        include: [{
+          model: User,
+          as: 'user'
+        }, {
+          model: Group,
+          as: 'group'
+        }, {
+          model: AdapterEvent,
+          as: 'from_ad_event',
+          where: {
+            deletedAt: {
+              [Op.eq]: null
+            }
+          },
+          include: [{
+            model: Adapter,
+            as: 'adapter'
+          }]
+        }, {
+          model: AdapterEvent,
+          as: 'to_ad_event',
+          where: {
+            deletedAt: {
+              [Op.eq]: null
+            }
+          },
+          include: [{
+            model: Adapter,
+            as: 'adapter'
+          }]
+        }]
       });
       resData = testToolModel.getJSON(resData);
       return resData;
@@ -63,9 +130,8 @@ const TestToolService = BaseService.extend<TestToolServiceInterface>({
     try {
       let validation = this.returnValidator(props, {
         user_id: 'required',
-        group_key: 'required',
+        group_id: 'required',
         name: 'required',
-        description: 'required',
         from_ad_event_id: 'required',
         to_ad_event_id: 'required',
       });
@@ -76,7 +142,7 @@ const TestToolService = BaseService.extend<TestToolServiceInterface>({
       let testToolModel = this.returnTestToolModel();
       let resData = await testToolModel.save({
         user_id: props.user_id,
-        group_key: props.group_key,
+        group_id: props.group_id,
         name: props.name,
         description: props.description,
         from_ad_event_id: props.from_ad_event_id,
@@ -92,7 +158,7 @@ const TestToolService = BaseService.extend<TestToolServiceInterface>({
       let validation = this.returnValidator(props, {
         id: 'required',
         user_id: 'required',
-        group_key: 'required',
+        group_id: 'required',
         name: 'required',
         description: 'required',
         from_ad_event_id: 'required',
@@ -114,7 +180,7 @@ const TestToolService = BaseService.extend<TestToolServiceInterface>({
       resData = await testToolModel.update({
         id: props.id,
         user_id: props.user_id,
-        group_key: props.group_key,
+        group_id: props.group_id,
         name: props.name,
         description: props.description,
         from_ad_event_id: props.from_ad_event_id,
@@ -128,7 +194,9 @@ const TestToolService = BaseService.extend<TestToolServiceInterface>({
   deleteTestTool: async function (props) {
     try {
       let validation = this.returnValidator(props, {
-        ids: "required"
+        ids: "required",
+        user_id: "required",
+        group_id: "required"
       })
       switch (await validation.check()) {
         case validation.fails:
@@ -138,7 +206,9 @@ const TestToolService = BaseService.extend<TestToolServiceInterface>({
       let testToolModel = this.returnTestToolModel();
       let resData = await testToolModel.delete({
         where: {
-          id: ids
+          id: ids,
+          group_id: props.group_id,
+          user_id: props.user_id
         }
       });
       return resData;

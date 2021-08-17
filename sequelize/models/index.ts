@@ -77,14 +77,24 @@ export default function (callback: Function) {
   })
 
   /* Test Tool Relation */
+  TestTool.belongsTo(User, {
+    foreignKey: 'user_id',
+    as: 'user'
+  })
+
+  TestTool.belongsTo(Group, {
+    foreignKey: 'group_id',
+    as: 'group'
+  })
+
   TestTool.belongsTo(AdapterEvent, {
     foreignKey: 'from_ad_event_id',
-    as: 'from_adapter_event'
+    as: 'from_ad_event'
   })
 
   TestTool.belongsTo(AdapterEvent, {
     foreignKey: 'to_ad_event_id',
-    as: 'to_adapter_event'
+    as: 'to_ad_event'
   })
 
   console.log('Sequelize Relation initalize!');
