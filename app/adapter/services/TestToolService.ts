@@ -76,11 +76,11 @@ export default BaseService.extend<TestToolServiceInterface>({
           // console.log('props->', props);
           let nrp = this.startRedisPubSub(adapter.config);
           nrp.on(to_ad_event.event_key, function (err: any, props: any) {
-            console.log('aaaaaaaaa -> ', props);
+            console.log('to -> ',to_ad_event.event_key,' -> ', props);
           })
           setTimeout(() => {
             nrp.emit(from_ad_event.event_key, props);
-            console.log('from_ad_event.event_key', adapter.config);
+            console.log('from -> ',from_ad_event.event_key,' -> ', adapter.config);
           }, 3000);
           break;
         case ACCESS_NAME.SOCKET_IO_SERVER:

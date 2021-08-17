@@ -19,6 +19,7 @@ export default BaseController.extend<ConnectionControllerInterface>({
         adapter_key: props.adapter_key,
         port: props.config.port,
         host: props.config.host,
+        scope: props.config.scope,
         password: props.config.password,
         no_ready_check: props.config.no_ready_check,
         db: props.config.db,

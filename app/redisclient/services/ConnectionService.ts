@@ -75,7 +75,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
         scope: config.scope
       };
       let nrp = RedisPubSub(nrpConfig);
-      nrp.on("error",this.handleResponse.bind(this, 'REDIS_NRP_ERROR', config.adapter_key));
+      nrp.on("error", this.handleResponse.bind(this, 'REDIS_NRP_ERROR', config.adapter_key));
       let redis_client = masterData.getData('adapter.collection.redis_client', {}) as any;
       if (redis_client[config.adapter_key] != null) {
         throw global.CustomError('error.adapter_exist', 'Adapter is exist');
@@ -99,7 +99,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
           });
           return unsubscribe;
         },
-        end : function(whatKey:string){
+        end: function (whatKey: string) {
           nrp.end();
         }
       }
@@ -110,16 +110,21 @@ export default BaseService.extend<ConnectionServiceInterface>({
         masterData.saveData('adapter.connection.redis.event.start_all', props.adapter_events);
       }
       /* Test the redisPubsub first maybe. Remember setTimeout*/
-      setTimeout(function(){
-        try{
-          redis_client[config.adapter_key].emit('first.event',{
-            "from" : "test",
-            "value": "vmdfkvmkfdvm"
-          })
-        }catch(ex){
-          console.log('Redis - first.channel - emit - ex ',ex);
-        }
-      },20000);
+      
+      // redis_client[config.adapter_key].on('first.event', function (err: any, props: any) {
+      //   console.log('force-check-err', err);
+      //   console.log('force-check-props', props);
+      // })
+      // setTimeout(function () {
+      //   try {
+      //     redis_client[config.adapter_key].emit('first.event', {
+      //       "from": "test",
+      //       "value": "vmdfkvmkfdvm"
+      //     })
+      //   } catch (ex) {
+      //     console.log('Redis - first.channel - emit - ex ', ex);
+      //   }
+      // }, 20000);
     } catch (ex) {
       throw ex;
     }
