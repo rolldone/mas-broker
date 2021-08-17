@@ -13,7 +13,7 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-     await queryInterface.removeColumn(
+    await queryInterface.removeColumn(
       'adapters', // table name
       'deletedAt')
   }

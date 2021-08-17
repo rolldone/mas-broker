@@ -3,6 +3,7 @@ import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import ManageAdapterController from "../controllers/ManageAdapterController";
 import ManageAdapterEventController from "../controllers/ManageAdapterEventController";
 import ManageGatewayController from "../controllers/ManageGatewayController";
+import ManageTestToolController from "../controllers/ManageTestToolController";
 
 declare var masterData: MasterDataInterface
 
@@ -21,5 +22,8 @@ export default BaseProto.extend<BaseProtoInterface<any>>({
     /* Manage Adapter Gateway */
     masterData.setOnListener('adapter.gateway.gateways', ManageGatewayController.binding().getGateways);
     masterData.setOnListener('adapter.gateway.view', ManageGatewayController.binding().getGateway);
+
+    /* Manage Adapter Test Tool */
+    masterData.setOnListener('adapter.test_tool.start', ManageTestToolController.binding().startTestTool);
   }
 })

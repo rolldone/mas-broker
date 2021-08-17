@@ -10,6 +10,7 @@ export interface TestToolControllerInterface extends BaseControllerInterface {
   deleteTestTool?: { (req: Request, res: Response): Promise<any> }
   getTestTools?: { (req: Request, res: Response): Promise<any> }
   getTestTool?: { (req: Request, res: Response): Promise<any> }
+  runningTestTool: { (req: Request, res: Response): Promise<any> }
 }
 
 declare let Auth: AuthInterface;
@@ -95,6 +96,23 @@ const ManageTestToolController = BaseController.extend<TestToolControllerInterfa
       let user: any = await Auth.getAuth();
       props.user_id = user.id;
       let resData = await testToolService.deleteTestTool(props);
+      resData = {
+        status: 'success',
+        status_code: 200,
+        return: resData
+      }
+      return res.status(resData.status_code).json(resData);
+    } catch (ex) {
+      return this.returnSimpleError(ex, res);
+    }
+  },
+  runningTestTool: async function (req, res) {
+    try {
+      let props = req.body;
+      let testToolService = this.returnTestToolService();
+      let user: any = await Auth.getAuth();
+      props.user_id = user.id;
+      let resData = await testToolService.runningTestTool(props);
       resData = {
         status: 'success',
         status_code: 200,

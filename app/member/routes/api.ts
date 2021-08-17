@@ -99,6 +99,7 @@ export default BaseProto.extend<ApiRouteInterface>({
       SetAuthDriverMiddleware.binding('api').check,
       AuthMiddleware.binding().check
     ], function (route) {
+      route.post('/run', 'test_tool.run', [], ManageTestToolController.binding().runningTestTool);
       route.post('/add', 'test_tool.add', [], ManageTestToolController.binding().addTestTool);
       route.post('/update', 'test_tool.update', [], ManageTestToolController.binding().updateTestTool);
       route.post('/delete', 'test_tool.delete', [], ManageTestToolController.binding().deleteTestTool);

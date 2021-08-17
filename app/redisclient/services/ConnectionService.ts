@@ -55,7 +55,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
         host: config.host,
         // auth: Env.REDIS_AUTH,
         no_ready_check: config.no_ready_check || false,
-        db: config.db,
+        db: parseInt(config.db),
       });
       redisPub.auth(config.password);
       redisPub.on('error', this.handleResponse.bind(this, 'REDIS_AUTH_ERROR', config.adapter_key));
@@ -64,7 +64,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
         host: config.host,
         // auth: Env.REDIS_AUTH,
         no_ready_check: config.no_ready_check || false,
-        db: config.db,
+        db: parseInt(config.db),
         // return_buffers: true
       });
       redisSub.auth(config.password);
@@ -112,14 +112,14 @@ export default BaseService.extend<ConnectionServiceInterface>({
       /* Test the redisPubsub first maybe. Remember setTimeout*/
       setTimeout(function(){
         try{
-          redis_client[config.adapter_key].emit('first.channel',{
+          redis_client[config.adapter_key].emit('first.event',{
             "from" : "test",
             "value": "vmdfkvmkfdvm"
           })
         }catch(ex){
           console.log('Redis - first.channel - emit - ex ',ex);
         }
-      },2000);
+      },20000);
     } catch (ex) {
       throw ex;
     }

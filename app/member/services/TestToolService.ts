@@ -1,4 +1,5 @@
 import BaseService from "@root/base/BaseService";
+import { MasterDataInterface } from "@root/bootstrap/StartMasterData";
 import { Adapter, AdapterEvent, Group, User } from "@root/sequelize/models";
 import { Op } from "sequelize";
 import TestToolModel, { TestToolModelInterface } from "../models/TestToolModel";
@@ -10,7 +11,10 @@ export interface TestToolServiceInterface extends BaseServiceInterface {
   addTestTool?: { (props: any): Promise<any> }
   updateTestTool?: { (props: any): Promise<any> }
   deleteTestTool?: { (props: any): Promise<any> }
+  runningTestTool?: { (props: any): Promise<any> }
 }
+
+declare var masterData: MasterDataInterface
 
 const TestToolService = BaseService.extend<TestToolServiceInterface>({
   returnTestToolModel: function () {
@@ -211,6 +215,64 @@ const TestToolService = BaseService.extend<TestToolServiceInterface>({
           user_id: props.user_id
         }
       });
+      return resData;
+    } catch (ex) {
+      throw ex;
+    }
+  },
+  runningTestTool: async function (props) {
+    try {
+      let validation = this.returnValidator(props, {
+        id: 'required',
+        user_id: "required",
+        group_id: "required"
+      });
+      switch (await validation.check()) {
+        case validation.fails:
+          throw global.CustomError('error.validation', validation.errors.errors);
+      }
+      let testToolModel = this.returnTestToolModel();
+      let where = testToolModel.getJSON({
+        id: props.id,
+        user_id: props.user_id,
+        group_id: props.group_id
+      });
+      let resData = await testToolModel.first({
+        where,
+        include: [{
+          model: User,
+          as: 'user'
+        }, {
+          model: Group,
+          as: 'group'
+        }, {
+          model: AdapterEvent,
+          as: 'from_ad_event',
+          where: {
+            deletedAt: {
+              [Op.eq]: null
+            }
+          },
+          include: [{
+            model: Adapter,
+            as: 'adapter'
+          }]
+        }, {
+          model: AdapterEvent,
+          as: 'to_ad_event',
+          where: {
+            deletedAt: {
+              [Op.eq]: null
+            }
+          },
+          include: [{
+            model: Adapter,
+            as: 'adapter'
+          }]
+        }]
+      })
+      resData = testToolModel.getJSON(resData);
+      masterData.saveData('adapter.test_tool.start', resData);
       return resData;
     } catch (ex) {
       throw ex;

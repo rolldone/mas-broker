@@ -15,5 +15,6 @@ export default BaseRoute.extend<BaseRouteInterface>({
     AdapterEventEmitter.create(this);
     RedisEventEmitter.create(this);
     SocketIOEventEmitter.create(this);
+    
   }
 });
