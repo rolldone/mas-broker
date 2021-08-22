@@ -30,7 +30,7 @@ multithread(() => {
         EventEmit.create(global.app);
         Web.create(global.app);
         Api.create(global.app);
-        // Socket.create(global.app);
+        Socket.create(global.app);
         // Redis.create(global.app);
         callback(null);
       },

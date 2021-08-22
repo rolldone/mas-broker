@@ -26,7 +26,7 @@ export default BaseService.extend<EventServiceInterface>({
       let resGatewayDatas = await gatewayModel.get({
         where: {
           receiver_id: receiver_id,
-          status : GATEWAY_STATUS.ON
+          status: GATEWAY_STATUS.ON
         },
         include: [{
           model: AdapterEvent,
@@ -74,9 +74,17 @@ export default BaseService.extend<EventServiceInterface>({
       console.log(' ', err);
       return;
     }
+    
+    /* Test tool */
+    masterData.saveData('adapter.test_tool.listen', {
+      event_key : adapter_event.event_key,
+      adapter_event : adapter_event,
+      from : props
+    });
+
     this.getGateways(adapter_event.id, props);
-    console.log('RedisClient - EventService - handleSubscribeEvent => ')
-    console.log(' ',adapter_event.event_key,' -> ', props);
+    // console.log('RedisClient - EventService - handleSubscribeEvent => ')
+    console.log(' ', adapter_event.event_key, ' -> ', props);
     /* Logic gateway at here */
   },
   add: async function (props) {

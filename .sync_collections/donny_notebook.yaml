@@ -1,0 +1,64 @@
+_super: null
+cli:
+  args:
+    _:
+      - direct
+_filename: D:\workspaces\mas-broker\sync-config.yaml
+saved_file_name: donny_notebook.yaml
+mode: null
+host: masbroker.lan
+port: "22"
+project_name: MasBroker
+username: root
+password: null
+pathMode: "0777"
+size_limit: 20
+localPath: D:/workspaces/mas-broker
+remotePath: /root/workspaces/mas_broker
+ignores: []
+privateKey: C:/Users/donny/.ssh/openssh_nopassword.key
+downloads:
+  - config/
+  - seeders/
+  - migrations/
+  - package.json
+jumps: null
+backup: null
+direct_access:
+  config_file: ""
+  ssh_configs:
+    - Host: mas_broker_virtualbox
+      HostName: masbroker.lan
+      User: root
+      Port: "22"
+      IdentityFile: C:/Users/donny/.ssh/openssh_nopassword.key
+      RequestTTY: force
+      StrictHostKeyChecking: no
+      PasswordAuthentication: no
+      RemoteCommand: cd /root/workspaces/mas_broker && bash -l
+      ServerAliveInterval: 240
+      ServerAliveCountMax: 10
+  ssh_commands:
+    - access_name: Open stmux
+      key: stmux
+      command: stmux --mouse [cmd:cygwin:cygwin]
+    - access_name: Open vscode
+      command: code .
+    - access_name: Running docker-compose
+      command: ssh mas_broker_virtualbox -o RemoteCommand=none -t "cd
+        /root/workspaces/mas_broker && docker-compose up"
+    - access_name: Log in VirtualBox only
+      command: ssh mas_broker_virtualbox
+    - access_name: Login to mas_broker docker
+      command: ssh mas_broker_virtualbox -o RemoteCommand=none -t docker exec -it
+        mas_broker_mas_adapter_1 bash
+    - access_name: Display junk files
+      command: ssh mas_broker_virtualbox -o RemoteCommand=none -t "cd
+        /root/workspaces/mas_broker && git clean -nd"
+single_sync:
+  - dist
+trigger_permission:
+  unlink_folder: true
+  unlink: true
+  change: true
+  add: true

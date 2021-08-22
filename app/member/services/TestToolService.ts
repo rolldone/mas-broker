@@ -225,7 +225,8 @@ const TestToolService = BaseService.extend<TestToolServiceInterface>({
       let validation = this.returnValidator(props, {
         id: 'required',
         user_id: "required",
-        group_id: "required"
+        group_id: "required",
+        token: "required"
       });
       switch (await validation.check()) {
         case validation.fails:
@@ -272,6 +273,7 @@ const TestToolService = BaseService.extend<TestToolServiceInterface>({
         }]
       })
       resData = testToolModel.getJSON(resData);
+      resData.token = props.token;
       masterData.saveData('adapter.test_tool.start', resData);
       return resData;
     } catch (ex) {

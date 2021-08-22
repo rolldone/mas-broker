@@ -122,7 +122,6 @@ export default BaseService.mixin<EventServiceInterface>({
   },
   startSocketEvents: async function (ws, events = []) {
     try {
-      console.log('bvbbbbbbbbbbbbbbb', events);
       if (events.length == 0) {
         return;
       }
@@ -139,7 +138,14 @@ export default BaseService.mixin<EventServiceInterface>({
             /* You can log this area */
             // news_of.emit(event_key,'test');
             // console.log('news_of',news_of.name);
-            // console.log('propsssssssssssssssssss', props);
+
+            /* Test tool */
+            masterData.saveData('adapter.test_tool.listen', {
+              event_key: adapter_event.event_key,
+              adapter_event: adapter_event,
+              from: props
+            });
+
             this.getGateways(adapter_event.id, {
               to: news_of.name,
               payload: props
@@ -181,7 +187,15 @@ export default BaseService.mixin<EventServiceInterface>({
       }
       let prepareToEmit = {} as any;
       let theSocket = socketCollections[pathGroup];
-      console.log('theSocket', socketCollections);
+      // console.log('theSocket', socketCollections);
+
+      /* Test tool */
+      masterData.saveData('adapter.test_tool.listen', {
+        event_key: sender.event_key,
+        adapter_event: sender,
+        from: value
+      });
+
       if (typeof value == 'object') {
         prepareToEmit.payload = value.payload;
         if (value.to != null) {
@@ -189,10 +203,10 @@ export default BaseService.mixin<EventServiceInterface>({
           theSocket.to(prepareToEmit.to).emit(sender.event_key, prepareToEmit.payload);
           return;
         }
-        theSocket.emit(sender.event_key, prepareToEmit.payload);
+        theSocket.emit(sender.event_key, prepareToEmit.payload || value);
         return;
       }
-      theSocket.emit(sender.event_key, value);
+      theSocket.emit(sender.event_key, value || props);
     })
   }
 });

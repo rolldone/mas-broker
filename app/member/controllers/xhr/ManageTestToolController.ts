@@ -112,6 +112,7 @@ const ManageTestToolController = BaseController.extend<TestToolControllerInterfa
       let testToolService = this.returnTestToolService();
       let user: any = await Auth.getAuth();
       props.user_id = user.id;
+      props.token = Auth.splitToken(req.headers.authorization);
       let resData = await testToolService.runningTestTool(props);
       resData = {
         status: 'success',

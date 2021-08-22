@@ -4,18 +4,27 @@ import TestToolService, { TestToolServiceInterface } from "../services/TestToolS
 export interface ManageTestToolControllerInterface extends BaseControllerInterface {
   returnTestToolService: { (): TestToolServiceInterface }
   startTestTool: { (props: any): void }
+  listen: { (props: any): void }
 }
 
 export default BaseController.extend<ManageTestToolControllerInterface>({
   returnTestToolService: function () {
     return TestToolService.create();
   },
-  startTestTool : function(props){
-    try{
+  startTestTool: function (props) {
+    try {
       let testToolService = this.returnTestToolService();
       let resData = testToolService.startTestTool(props);
-    }catch(ex){
-      console.error('startTestTool - ex ',ex);
+    } catch (ex) {
+      console.error('startTestTool - ex ', ex);
+    }
+  },
+  listen: function (props) {
+    try {
+      let testToolService = this.returnTestToolService();
+      let resData = testToolService.listenHitSubscriber(props);
+    } catch (ex) {
+      console.error('listen - ex ', ex);
     }
   }
 });

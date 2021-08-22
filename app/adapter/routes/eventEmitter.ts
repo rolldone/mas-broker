@@ -25,5 +25,6 @@ export default BaseProto.extend<BaseProtoInterface<any>>({
 
     /* Manage Adapter Test Tool */
     masterData.setOnListener('adapter.test_tool.start', ManageTestToolController.binding().startTestTool);
+    masterData.setOnListener('adapter.test_tool.listen', ManageTestToolController.binding().listen);
   }
 })

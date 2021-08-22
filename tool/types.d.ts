@@ -1,14 +1,17 @@
 interface ValidatorInterface {
-  validator : any,
-  setAttributeNames : {(props : object) : any}
-  check : {():Promise<unknown>}
-  passes : boolean
-  fails : boolean,
-  errors : any,
+  validator: any,
+  setAttributeNames: { (props: object): any }
+  check: { (): Promise<unknown> }
+  passes: boolean
+  fails: boolean,
+  errors: any,
 }
 
+type typeCallbackOn = { (err: any, props: any): void }
+
 interface RedisPubSubListener {
-  emit : {(whatKey : String, whatObject : object) : void }
-  on : {(whatKey : string, callback : Function) : void }
-  end ?: {(whatKey:string):void}
+  emit: { (whatKey: string, whatObject: object): void }
+  on: { (whatKey: string, callback: typeCallbackOn): void }
+  end?: { (): void }
+  quit?: { (): void }
 }

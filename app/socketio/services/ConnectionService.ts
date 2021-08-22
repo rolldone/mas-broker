@@ -5,10 +5,9 @@ import * as upath from 'upath';
 import { EventServiceInterface } from "./EventService";
 import { ADAPTER_EVENT_STATUS } from "../models/AdapterEventModel";
 import AdapterModel, { AdapterModelInterface } from "../models/AdapterModel";
-
+const io = require('socket.io')
 
 declare var masterData: MasterDataInterface;
-declare var io: any;
 declare var Server: any;
 
 export interface ConnectionServiceInterface extends Omit<BaseServiceInterface, 'create'> {
@@ -35,7 +34,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
 
   /** Function handle connection event on websocket */
   _defineOnConnection: function (ioServer, pathGroup: string, adapter_events: Array<any>, io: any) {
-    console.log('aaaaaaaaaaaaa', pathGroup, adapter_events);
+    // console.log('aaaaaaaaaaaaa', pathGroup, adapter_events);
     let self = this;
 
     /* Define websocket using websocket wrapper */
@@ -172,7 +171,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
       /* Create new websocket connection and create connection listener for listen new incoming request from user */
       socketioCollections[pathGroup] = io(Server, {
         path: pathGroup,
-        transports: ['websocket', "polling"]
+        // transports: ['websocket', "polling"]
       });
       socketioCollections[pathGroup].on('connection', this._defineOnConnection.bind(this, socketioCollections[pathGroup], pathGroup, props.adapter_events));
 

@@ -74,8 +74,8 @@ export default BaseService.extend<ConnectionServiceInterface>({
         receiver: redisSub,
         scope: config.scope
       };
-      let nrp = RedisPubSub(nrpConfig);
-      nrp.on("error",this.handleResponse.bind(this, 'REDIS_NRP_ERROR', config.adapter_key));
+      let nrp = RedisPubSub.create(nrpConfig);
+      nrp.on("error", this.handleResponse.bind(this, 'REDIS_NRP_ERROR', config.adapter_key));
       let redis_client = masterData.getData('adapter.collection.redis_client', {}) as any;
       if (redis_client[config.adapter_key] != null) {
         throw global.CustomError('error.adapter_exist', 'Adapter is exist');
@@ -88,19 +88,22 @@ export default BaseService.extend<ConnectionServiceInterface>({
           return nrp.emit(whatKey, whatObject);
         },
         on: function (whatKey: string, callback: Function) {
-          let unsubscribe = nrp.on(whatKey, function (props: any) {
+          let unsubscribe = nrp.on(whatKey, function (err: any, props: any) {
+            // console.log('propssssss', props);
             let testError = global.deserializeError(props.toString());
             if (testError.toString().indexOf('NonError:', 0) == 0) {
               callback(null, props);
               return;
-
             }
             callback(testError, null);
           });
           return unsubscribe;
         },
-        end : function(whatKey:string){
+        end: function () {
           nrp.end();
+        },
+        quit: function () {
+          nrp.quit();
         }
       }
       /* Save the redis connection */
@@ -110,16 +113,21 @@ export default BaseService.extend<ConnectionServiceInterface>({
         masterData.saveData('adapter.connection.redis.event.start_all', props.adapter_events);
       }
       /* Test the redisPubsub first maybe. Remember setTimeout*/
-      setTimeout(function(){
-        try{
-          redis_client[config.adapter_key].emit('first.event',{
-            "from" : "test",
-            "value": "vmdfkvmkfdvm"
-          })
-        }catch(ex){
-          console.log('Redis - first.channel - emit - ex ',ex);
-        }
-      },20000);
+
+      // redis_client[config.adapter_key].on('first.event', function (err: any, props: any) {
+      //   console.log('force-check-err', err);
+      //   console.log('force-check-props', props);
+      // })
+      // setTimeout(function () {
+      //   try {
+      //     redis_client[config.adapter_key].emit('first.event', {
+      //       "from": "test",
+      //       "value": "vmdfkvmkfdvm"
+      //     })
+      //   } catch (ex) {
+      //     console.log('Redis - first.channel - emit - ex ', ex);
+      //   }
+      // }, 20000);
     } catch (ex) {
       throw ex;
     }
