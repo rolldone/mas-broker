@@ -24,6 +24,7 @@ export default BaseService.extend<ConnectionServiceInterface>({
         // delete redis_client[adapter_key];
         masterData.saveData('adapter.collection.redis_client', redis_client);
         break;
+        
       case 'REDIS_NRP_ERROR':
         console.log('Redisclient - ConnectionService - NRP - handleResponse - ex ');
         console.log(' ', err);
@@ -113,7 +114,6 @@ export default BaseService.extend<ConnectionServiceInterface>({
         masterData.saveData('adapter.connection.redis.event.start_all', props.adapter_events);
       }
       /* Test the redisPubsub first maybe. Remember setTimeout*/
-
       // redis_client[config.adapter_key].on('first.event', function (err: any, props: any) {
       //   console.log('force-check-err', err);
       //   console.log('force-check-props', props);

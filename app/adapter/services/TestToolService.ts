@@ -122,6 +122,7 @@ export default BaseService.extend<TestToolServiceInterface>({
           break;
       }
 
+      
       let to_ad_event = props.to_ad_event;
       let to_adapter = to_ad_event.adapter;
       switch (to_adapter.access_name) {
