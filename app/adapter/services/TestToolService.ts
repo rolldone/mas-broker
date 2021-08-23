@@ -101,7 +101,7 @@ export default BaseService.extend<TestToolServiceInterface>({
               nrp.quit();
               console.log('nrp from is quit!');
             }, 2000);
-          }, 3000);
+          }, 10000);
           break;
         case ACCESS_NAME.SOCKET_IO_SERVER:
           var fromSocketIOClient = this.startSocketIO({
@@ -112,7 +112,7 @@ export default BaseService.extend<TestToolServiceInterface>({
           setTimeout(() => {
             fromSocketIOClient.close();
             console.log('fromSocketIOClient from is quit!');
-          }, 3000);
+          }, 10000);
           break;
         case ACCESS_NAME.WEB_SOCKET_SERVER:
           break;
@@ -122,7 +122,7 @@ export default BaseService.extend<TestToolServiceInterface>({
           break;
       }
 
-      
+
       let to_ad_event = props.to_ad_event;
       let to_adapter = to_ad_event.adapter;
       switch (to_adapter.access_name) {
@@ -130,8 +130,10 @@ export default BaseService.extend<TestToolServiceInterface>({
           let toNrp = this.startRedisPubSub(to_adapter.config);
           let _disconectToNrp: any = toNrp.on(to_ad_event.event_key, function (err: any, props: any) {
             // console.log('to -> ', to_ad_event.event_key, ' -> ', props);
-            _disconectToNrp();
-            toNrp.quit();
+            setTimeout(() => {
+              _disconectToNrp();
+              toNrp.quit();
+            }, 10000)
             console.log('nrp to is quit!');
           })
           break;
@@ -142,7 +144,9 @@ export default BaseService.extend<TestToolServiceInterface>({
           toSocketIOClient.on(to_ad_event.event_key, function (props: any) {
             // console.log('to -> ', to_ad_event.event_key, ' -> ', props);
             console.log('toSocketIOClient to is quit!');
-            toSocketIOClient.close();
+            setTimeout(() => {
+              toSocketIOClient.close();
+            }, 10000)
           });
           break;
         case ACCESS_NAME.WEB_SOCKET_SERVER:

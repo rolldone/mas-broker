@@ -1,8 +1,7 @@
 _super: null
 cli:
   args:
-    _:
-      - direct
+    _: []
 _filename: D:\workspaces\mas-broker\sync-config.yaml
 saved_file_name: donny_notebook.yaml
 mode: null
